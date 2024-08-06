@@ -1,5 +1,5 @@
-file(GLOB_RECURSE INC_FILES shared.cuh reduction.cuh multiply.cuh matfuns.cuh utils.cuh matvec.cuh profiler.h dendro.h)
-file(GLOB_RECURSE SRC_FILES reduction.cu multiply.cu matfuns.cu utils.cu matvec.cu profiler.cpp)
+file(GLOB_RECURSE INC_FILES shared.cuh reduction.cuh multiply.cuh matfuncs.cuh utils.cuh matvec.cuh profiler.h dendro.h)
+file(GLOB_RECURSE SRC_FILES reduction.cu multiply.cu matfuncs.cu utils.cu matvec.cu profiler.cpp)
 
 
 set(SOURCE_FILES ${INC_FILES} ${SRC_FILES})
