@@ -1,4 +1,5 @@
 #include "matfuncs.cuh"
+#include "matvec.cuh"
 
 void createMat(matvec_args_t *ctx, int in_color, int out_color, unsigned int block_size, unsigned int num_rows, unsigned int num_cols, int proc_rows, int proc_cols, bool conjugate, bool full, cudaStream_t s, bool newmv)
 {
@@ -183,7 +184,6 @@ void MatVec(matvec_args_t *args, double *d_in, double *res, bool conj, bool full
     cufftHandle inverse_plan_conj = NULL; // args->inverse_plan_conj;
     cublasHandle_t cublasHandle = args->cublasHandle;
     bool newmv = args->newmv;
-    double *res = args->res;
     double *res2 = NULL; // args->res2;
 
     compute_matvec(res2, res, d_in, d_mat_freq, size, num_cols, num_rows, conj, full, device, noise_scale, row_comm, col_comm, s, 0, d_in_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, d_out, d_out_conj, d_freq, d_freq_conj, d_out_freq, d_red_freq, d_red_freq_conj, d_freq_t, d_red_freq_t, d_freq_conj_t, d_red_freq_conj_t, cublasHandle, newmv);
