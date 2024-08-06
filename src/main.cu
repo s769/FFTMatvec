@@ -46,8 +46,10 @@ int main(int argc, char **argv)
   MPICHECK(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
   MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &nRanks));
 
-  auto proc_rows = parser.get<int>("proc_rows");
-  auto proc_cols = parser.get<int>("proc_cols");
+  // auto proc_rows = parser.get<int>("proc_rows");
+  // auto proc_cols = parser.get<int>("proc_cols");
+  int proc_rows = std::atoi(argv[1]);
+  int proc_cols = std::atoi(argv[2]);
 
   if (nRanks != proc_rows * proc_cols)
   {
@@ -62,21 +64,29 @@ int main(int argc, char **argv)
 
   bool newmv = true;
 
-  auto glob_inds = parser.get<bool>("glob_inds");
+  // auto glob_inds = parser.get<bool>("glob_inds");
+
+  bool glob_inds = false;
+  if (argc > 3)
+  {
+    glob_inds = (bool) std::atoi(argv[3]);
+  }
+
+
 
   int glob_num_cols, glob_num_rows, unpad_size, num_cols, num_rows;
 
-  if (glob_inds)
+  if (glob_inds && argc > 4)
   {
-    glob_num_cols = parser.get<int>("glob_cols");
-    glob_num_rows = parser.get<int>("glob_rows");
-    unpad_size = parser.get<int>("unpad_size");
+    glob_num_cols = std::atoi(argv[4]);
+    glob_num_rows = std::atoi(argv[5]);
+    unpad_size = std::atoi(argv[6]);
   }
-  else
+  else if (argc > 4)
   {
-    num_cols = parser.get<int>("num_cols");
-    num_rows = parser.get<int>("num_rows");
-    unpad_size = parser.get<int>("unpad_size");
+    num_cols = std::atoi(argv[4]);
+    num_rows = std::atoi(argv[5]);
+    unpad_size = std::atoi(argv[6]);
     glob_num_cols = num_cols * proc_cols;
     glob_num_rows = num_rows * proc_rows;
   }
