@@ -91,10 +91,10 @@ void PadVector(const double *const d_in, double *const d_pad, const unsigned int
   else
     PadVectorKernel<<<num_cols, std::min((int)(size + 1) / 2, MAX_BLOCK_SIZE), 0, s>>>(d_in, d_pad, num_cols, size);
   gpuErrchk(cudaPeekAtLastError());
-  #if ERR_CHK
+#if ERR_CHK
 
   gpuErrchk(cudaDeviceSynchronize());
-  #endif
+#endif
 }
 
 __global__ void PadVectorKernel(const double2 *const d_in, double2 *const d_pad, const unsigned int num_cols, const unsigned int size)
@@ -166,84 +166,78 @@ void UnpadRepadVector(const double *const d_in, double *const d_out, const unsig
     RepadVectorKernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(reinterpret_cast<const double2 *>(d_in), reinterpret_cast<double2 *>(d_out), num_cols, size / 2);
   }
   gpuErrchk(cudaPeekAtLastError());
-  #if ERR_CHK
+#if ERR_CHK
 
   gpuErrchk(cudaDeviceSynchronize());
-  #endif
+#endif
 }
-
-
 
 __global__ void transposeNoBankConflicts(Complex *odata, const Complex *idata, const unsigned int width, const unsigned int height)
 {
-    __shared__ Complex block[TILE_DIM][TILE_DIM + 1];
+  __shared__ Complex block[TILE_DIM][TILE_DIM + 1];
 
-    // read the matrix tile into shared memory
-    // load one element per thread from device memory (idata) and store it
-    // in transposed order in block[][]
-    unsigned int xIndex = blockIdx.x * TILE_DIM + threadIdx.x;
-    unsigned int yIndex = blockIdx.y * TILE_DIM + threadIdx.y;
+  // read the matrix tile into shared memory
+  // load one element per thread from device memory (idata) and store it
+  // in transposed order in block[][]
+  unsigned int xIndex = blockIdx.x * TILE_DIM + threadIdx.x;
+  unsigned int yIndex = blockIdx.y * TILE_DIM + threadIdx.y;
 
-    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
+  for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
+  {
+    if ((xIndex < width) && (yIndex + j < height))
     {
-        if ((xIndex < width) && (yIndex + j < height))
-        {
-            block[threadIdx.y + j][threadIdx.x] = idata[(size_t)(yIndex + j) * width + xIndex];
-        }
+      block[threadIdx.y + j][threadIdx.x] = idata[(size_t)(yIndex + j) * width + xIndex];
     }
+  }
 
-    // synchronise to ensure all writes to block[][] have completed
-    __syncthreads();
+  // synchronise to ensure all writes to block[][] have completed
+  __syncthreads();
 
-    // write the transposed matrix tile to global memory (odata) in linear order
-    xIndex = blockIdx.y * TILE_DIM + threadIdx.x;
-    yIndex = blockIdx.x * TILE_DIM + threadIdx.y;
+  // write the transposed matrix tile to global memory (odata) in linear order
+  xIndex = blockIdx.y * TILE_DIM + threadIdx.x;
+  yIndex = blockIdx.x * TILE_DIM + threadIdx.y;
 
-    for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
+  for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
+  {
+    if ((xIndex < height) && (yIndex + j < width))
     {
-        if ((xIndex < height) && (yIndex + j < width))
-        {
-            odata[(size_t)(yIndex + j) * height + xIndex] = block[threadIdx.x][threadIdx.y + j];
-        }
+      odata[(size_t)(yIndex + j) * height + xIndex] = block[threadIdx.x][threadIdx.y + j];
     }
+  }
 }
-
 
 void transpose2d(Complex *odata, const Complex *idata, const unsigned int width, const unsigned int height, cudaStream_t s)
 {
-    if (width == 1 || height == 1)
-    {
-      if (s != NULL)
-        cudaMemcpyAsync(odata, idata, width * height * sizeof(Complex), cudaMemcpyDeviceToDevice, s);
-      else
-        cudaMemcpy(odata, idata, width * height * sizeof(Complex), cudaMemcpyDeviceToDevice);
-    }
-
-
-    dim3 blocks((width + TILE_DIM - 1) / TILE_DIM, (height + TILE_DIM - 1) / TILE_DIM, 1);
-    dim3 threads(TILE_DIM, BLOCK_ROWS, 1);
+  if (width == 1 || height == 1)
+  {
     if (s != NULL)
-      transposeNoBankConflicts<<<blocks, threads, 0, s>>>(odata, idata, width, height);
+      cudaMemcpyAsync(odata, idata, width * height * sizeof(Complex), cudaMemcpyDeviceToDevice, s);
     else
-      transposeNoBankConflicts<<<blocks, threads>>>(odata, idata, width, height);
+      cudaMemcpy(odata, idata, width * height * sizeof(Complex), cudaMemcpyDeviceToDevice);
+  }
+
+  dim3 blocks((width + TILE_DIM - 1) / TILE_DIM, (height + TILE_DIM - 1) / TILE_DIM, 1);
+  dim3 threads(TILE_DIM, BLOCK_ROWS, 1);
+  if (s != NULL)
+    transposeNoBankConflicts<<<blocks, threads, 0, s>>>(odata, idata, width, height);
+  else
+    transposeNoBankConflicts<<<blocks, threads>>>(odata, idata, width, height);
 
   gpuErrchk(cudaPeekAtLastError());
-  #if ERR_CHK
+#if ERR_CHK
 
   gpuErrchk(cudaDeviceSynchronize());
-  #endif
-
+#endif
 }
 
-
-__global__ void createIdentityKernel(double * const d_in, int num_r, int num_c)
+__global__ void createIdentityKernel(double *const d_in, int num_r, int num_c)
 {
-  int x = blockDim.x*blockIdx.x + threadIdx.x;
-  int y = blockDim.y*blockIdx.y + threadIdx.y;
+  int x = blockDim.x * blockIdx.x + threadIdx.x;
+  int y = blockDim.y * blockIdx.y + threadIdx.y;
 
   if (x < num_r && y < num_c)
   {
-    size_t ind = (size_t)num_r*y + x;
+    size_t ind = (size_t)num_r * y + x;
     if (y < num_r)
     {
       if (x == y)
@@ -253,25 +247,24 @@ __global__ void createIdentityKernel(double * const d_in, int num_r, int num_c)
     }
     else
       d_in[ind] = 0.0;
-    }
-
+  }
 }
 
-void createIdentity(double * const d_in, int num_r, int num_c, cudaStream_t s)
+void createIdentity(double *const d_in, int num_r, int num_c, cudaStream_t s)
 {
   dim3 threads(32, 32, 1);
   dim3 blocks((num_r + threads.x - 1) / threads.x, (num_c + threads.y - 1) / threads.y, 1);
   createIdentityKernel<<<blocks, threads, 0, s>>>(d_in, num_r, num_c);
   gpuErrchk(cudaPeekAtLastError());
-  #if ERR_CHK
+#if ERR_CHK
 
   gpuErrchk(cudaDeviceSynchronize());
-  #endif
+#endif
 }
 
-void printVec(double * vec, int len, int unpad_size)
+void printVec(double *vec, int len, int unpad_size)
 {
-  double * h_vec;
+  double *h_vec;
   h_vec = (double *)malloc(len * unpad_size * sizeof(double));
   gpuErrchk(cudaMemcpy(h_vec, vec, len * unpad_size * sizeof(double), cudaMemcpyDeviceToHost));
 
@@ -284,4 +277,19 @@ void printVec(double * vec, int len, int unpad_size)
     printf("\n");
   }
   free(h_vec);
+}
+
+void printVecMPI(double *vec, int len, int unpad_size, int rank, int world_size)
+{
+  if (rank == 0)
+    printf("Vector:\n");
+  for (int r = 0; r < world_size; r++)
+  {
+    if (rank == r)
+    {
+      printf("Rank: %d\n", r);
+      printVec(vec, len, unpad_size);
+    }
+    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+  }
 }

@@ -188,7 +188,15 @@ int main(int argc, char **argv)
 
 
   MatVec(&args_f, d_in_f, d_out_f, false, false);
+
+  printVecMPI(d_out_f, num_rows, unpad_size, world_rank, nRanks);
+
   MatVec(&args_fs, d_in_fs, d_out_fs, true, false);
+
+  printVecMPI(d_out_fs, num_cols, unpad_size, world_rank, nRanks);
+
+
+ 
 
 
 

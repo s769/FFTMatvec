@@ -29,6 +29,7 @@ void transpose2d(Complex *, const Complex *, const unsigned int, const unsigned 
 void createIdentity(double * const, int, int, cudaStream_t);
 
 void printVec(double * vec, int len, int unpad_size);
+void printVecMPI(double * vec, int len, int unpad_size, int rank, int world_size);
 
 
 #endif
