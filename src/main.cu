@@ -21,11 +21,11 @@ void configureParser(cli::Parser &parser)
   parser.set_required<int>("pr", "proc_rows", "Number of processor rows");
   parser.set_required<int>("pc", "proc_cols", "Number of processor columns");
   parser.set_required<bool>("g", "glob_inds", "Use global indices");
-  parser.set_optional<int>("Nm", "glob_cols", "Number of global columns", 10);
-  parser.set_optional<int>("Nd", "glob_rows", "Number of global rows", 5);
-  parser.set_optional<int>("Nt", "unpad_size", "Number of time points", 7);
-  parser.set_optional<int>("nm", "num_cols", "Number of local columns", 3);
-  parser.set_optional<int>("nr", "num_rows", "Number of local rows", 2);
+  parser.set_optional<int>("Nm", "glob_cols", 10, "Number of global columns");
+  parser.set_optional<int>("Nd", "glob_rows", 5, "Number of global rows");
+  parser.set_optional<int>("Nt", "unpad_size", 7, "Number of time points");
+  parser.set_optional<int>("nm", "num_cols", 3, "Number of local columns");
+  parser.set_optional<int>("nr", "num_rows", 2, "Number of local rows");
 }
 
 /********/
