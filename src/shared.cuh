@@ -56,28 +56,7 @@ typedef ncclComm_t Comm_t;
 typedef MPI_Comm Comm_t;
 #endif
 
-typedef struct {
-  Complex *d_mat_freq, *d_mat_freq_conj;
-  unsigned int size;
-  unsigned int num_cols;
-  unsigned int num_rows;
-  bool conjugate;
-  bool newmv;
-  // bool full;
-  int device;
-  double noise_scale;
-  Comm_t row_comm;
-  Comm_t col_comm;
-  cudaStream_t s;
-  // MPI_Comm vec_comm;
-  int row_color, col_color;
-  double * d_in, * d_in_pad, * d_out, * d_out_conj, * res, * res2;
-  Complex * d_freq, * d_out_freq, * d_freq_conj, *d_red_freq, *d_red_freq_conj, * d_freq_t, * d_red_freq_t, * d_freq_conj_t, * d_red_freq_conj_t;
-  cufftHandle forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj;
-  cublasHandle_t cublasHandle;
-  // int test;
-  // double * test2;
-} matvec_args_t;
+
 
 
 

@@ -24,7 +24,6 @@ typedef struct {
   cublasHandle_t cublasHandle;
   // int test;
   // double * test2;
-  Mat R, M;
 } matvec_args_t;
 
 
