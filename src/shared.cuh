@@ -48,6 +48,13 @@ typedef int fft_int_t;
 #include <array>
 #endif
 
+typedef double2 Complex;
+
+#if NCCL
+typedef ncclComm_t Comm_t;
+#else
+typedef MPI_Comm Comm_t;
+#endif
 
 typedef struct {
   Complex *d_mat_freq, *d_mat_freq_conj;
@@ -70,17 +77,11 @@ typedef struct {
   cublasHandle_t cublasHandle;
   // int test;
   // double * test2;
-  Mat R, M;
 } matvec_args_t;
 
 
-typedef double2 Complex;
 
-#if NCCL
-typedef ncclComm_t Comm_t;
-#else
-typedef MPI_Comm Comm_t;
-#endif
+
 
 // static __device__ __host__ inline Complex ComplexAdd(Complex, Complex);
 
