@@ -4,6 +4,7 @@
 #include "multiply.cuh"
 #include "utils.cuh"
 #include "matfuncs.cuh"
+#include "cmdparser.hpp"
 
 
 
