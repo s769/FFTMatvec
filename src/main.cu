@@ -39,9 +39,9 @@ int main(int argc, char **argv)
 
   MPICHECK(MPI_Init(&argc, &argv));
 
-  cli::Parser parser(argc, argv);
-  configureParser(parser);
-  parser.run_and_exit_if_error();
+  // cli::Parser parser(argc, argv);
+  // configureParser(parser);
+  // parser.run_and_exit_if_error();
 
   MPICHECK(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
   MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &nRanks));
