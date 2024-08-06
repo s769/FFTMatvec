@@ -105,6 +105,13 @@ int main(int argc, char **argv)
     glob_num_rows = num_rows * proc_rows;
   }
 
+  if (world_rank == 0)
+  {
+    printf("Proc Rows: %d, Proc Cols: %d\n", proc_rows, proc_cols);
+    printf("Global Rows: %d, Global Cols: %d\n", glob_num_rows, glob_num_cols);
+    printf("Unpad Size: %d\n", unpad_size);
+  }
+
   double *h_mat;
 
   if (!glob_inds)
