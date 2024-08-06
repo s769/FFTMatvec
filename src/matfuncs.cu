@@ -167,8 +167,8 @@ void MatVec(matvec_args_t *args, double *d_in, double *res, bool conj, bool full
     Complex *d_red_freq_conj_t = NULL;
     cufftHandle forward_plan = args->forward_plan;
     cufftHandle inverse_plan = args->inverse_plan;
-    cufftHandle forward_plan_conj; // args->forward_plan_conj;
-    cufftHandle inverse_plan_conj; // args->inverse_plan_conj;
+    cufftHandle forward_plan_conj = args->forward_plan_conj;
+    cufftHandle inverse_plan_conj = args->inverse_plan_conj;
     cublasHandle_t cublasHandle = args->cublasHandle;
     bool newmv = args->newmv;
     double *res2 = NULL; // args->res2;
