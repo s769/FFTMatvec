@@ -16,6 +16,6 @@ set_target_properties( fft_matvec
 # target_compile_options(fft_matvec PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -Xcompiler=-fopenmp>)
 target_link_options(fft_matvec PUBLIC ${OpenMP_CXX_FLAGS})
 
-target_link_libraries(fft_matvec FFT_mvec cufft cublas cuTranspose nccl OpenMP::OpenMP_CXX)
+target_link_libraries(fft_matvec FFT_mvec cufft cublas cuTranspose nccl OpenMP::OpenMP_CXX MPI::MPI_CXX MPI::MPI_C)
 
 
