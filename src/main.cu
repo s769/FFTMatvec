@@ -5,6 +5,7 @@
 #include "utils.cuh"
 #include "matfuncs.cuh"
 #include "cmdparser.hpp"
+#include "matvec.cuh"
 
 
 
@@ -63,7 +64,7 @@ int main(int argc, char **argv)
 
   auto glob_inds = parser.get<bool>("glob_inds");
 
-  auto glob_num_cols, glob_num_rows, unpad_size, num_cols, num_rows;
+  int glob_num_cols, glob_num_rows, unpad_size, num_cols, num_rows;
 
   if (glob_inds)
   {
@@ -155,11 +156,11 @@ int main(int argc, char **argv)
 
   double *d_in_f, *d_in_fs, *d_out_f, *d_out_fs;
 
-  (row_color == 0) ? init_vec(num_cols, unpad_size, &d_in_f, true) : init_vec(num_cols, unpad_size, &d_in_f, false);
-  (col_color == 0) ? init_vec(num_rows, unpad_size, &d_in_fs, true) : init_vec(num_rows, unpad_size, &d_in_fs, false);
+  (row_color == 0) ? init_vector(num_cols, unpad_size, &d_in_f, true) : init_vector(num_cols, unpad_size, &d_in_f, false);
+  (col_color == 0) ? init_vector(num_rows, unpad_size, &d_in_fs, true) : init_vector(num_rows, unpad_size, &d_in_fs, false);
 
-  init_vec(num_rows, unpad_size, &d_out_f, false);
-  init_vec(num_cols, unpad_size, &d_out_fs, false);
+  init_vector(num_rows, unpad_size, &d_out_f, false);
+  init_vector(num_cols, unpad_size, &d_out_fs, false);
 
 
   MatVec(&args_f, d_in_f, d_out_f, false, false);
