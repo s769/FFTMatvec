@@ -82,11 +82,25 @@ int main(int argc, char **argv)
     glob_num_rows = std::atoi(argv[5]);
     unpad_size = std::atoi(argv[6]);
   }
-  else if (argc > 4)
+  else if (argc > 4 && !glob_inds)
   {
     num_cols = std::atoi(argv[4]);
     num_rows = std::atoi(argv[5]);
     unpad_size = std::atoi(argv[6]);
+    glob_num_cols = num_cols * proc_cols;
+    glob_num_rows = num_rows * proc_rows;
+  }
+  else if (glob_inds)
+  {
+    glob_num_cols = 10;
+    glob_num_rows = 5;
+    unpad_size = 7;
+  }
+  else
+  {
+    num_cols = 3;
+    num_rows = 2;
+    unpad_size = 7;
     glob_num_cols = num_cols * proc_cols;
     glob_num_rows = num_rows * proc_rows;
   }
