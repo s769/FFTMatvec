@@ -6,17 +6,6 @@ void createMat(matvec_args_t *ctx, int in_color, int out_color, unsigned int blo
     unsigned int vec_in_len = (conjugate) ? num_rows : num_cols;
     unsigned int vec_out_len = (conjugate) ? num_cols : num_rows;
 
-    int local_size_row, local_size_col;
-    if (!full)
-    {
-        local_size_row = (out_color == 0) ? block_size / 2 * vec_out_len : 0;
-        local_size_col = (in_color == 0) ? block_size / 2 * vec_in_len : 0;
-    }
-    else
-    {
-        local_size_row = (in_color == 0) ? block_size / 2 * vec_in_len : 0;
-        local_size_col = (in_color == 0) ? block_size / 2 * vec_in_len : 0;
-    }
 
     fft_int_t n[1] = {(fft_int_t)block_size};
     int rank = 1;
@@ -164,8 +153,6 @@ void MatVec(matvec_args_t *args, double *d_in, double *res, bool conj, bool full
     Comm_t row_comm = args->row_comm;
     Comm_t col_comm = args->col_comm;
     cudaStream_t s = args->s;
-    int row_color = args->row_color;
-    int col_color = args->col_color;
     double *d_in_pad = args->d_in_pad;
     double *d_out = args->d_out;
     double *d_out_conj = NULL; // args->d_out_conj;
@@ -180,8 +167,8 @@ void MatVec(matvec_args_t *args, double *d_in, double *res, bool conj, bool full
     Complex *d_red_freq_conj_t = NULL;
     cufftHandle forward_plan = args->forward_plan;
     cufftHandle inverse_plan = args->inverse_plan;
-    cufftHandle forward_plan_conj = NULL; // args->forward_plan_conj;
-    cufftHandle inverse_plan_conj = NULL; // args->inverse_plan_conj;
+    cufftHandle forward_plan_conj; // args->forward_plan_conj;
+    cufftHandle inverse_plan_conj; // args->inverse_plan_conj;
     cublasHandle_t cublasHandle = args->cublasHandle;
     bool newmv = args->newmv;
     double *res2 = NULL; // args->res2;
