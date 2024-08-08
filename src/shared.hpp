@@ -1,6 +1,16 @@
 
-#ifndef __shared_h__
-#define __shared_h__
+/**
+ * @file shared.hpp
+ * @brief Header file containing shared definitions and includes.
+ *
+ * This file contains various definitions and includes that are commonly used across multiple source files.
+ * It includes standard C and C++ libraries, CUDA libraries, OpenMP, MPI, NCCL, and other necessary headers.
+ * It also defines various constants, types, and helper functions for error checking.
+ *
+ * @note This file should be included in all source files that require these shared definitions and includes.
+ */
+#ifndef __SHARED_H__
+#define __SHARED_H__
 
 #include <stdio.h>
 #include <iostream>
@@ -8,19 +18,17 @@
 #include <cufft.h>
 #include <cuda_runtime.h>
 #include <assert.h>
-#include <cmath>
 #include <time.h>
 #include <sys/time.h>
+
+#include <omp.h>
 
 
 #include <cublas_v2.h>
 
-#define USECPSEC 1000000ULL
 
-#define NOT_POWER_OF_TWO(x) ((x & (x - 1)) != 0)
 #define MAX_BLOCK_SIZE 1024
 #define TIME_MPI 0
-#define NCCL 1
 #define ERR_CHK 1
 #define FFT_64 0
 #define ROW_SETUP 1
@@ -31,17 +39,14 @@ typedef long long int fft_int_t;
 typedef int fft_int_t;
 #endif
 
-#define CUDA_GRAPH 0 //!TIME_MPI
 
 #include <string>
 #include <vector>
 
 
 #include <mpi.h>
-#if NCCL
 #include <unistd.h>
 #include <nccl.h>
-#endif
 
 #if TIME_MPI
 #include "profiler.h"
@@ -50,21 +55,6 @@ typedef int fft_int_t;
 
 typedef double2 Complex;
 
-#if NCCL
-typedef ncclComm_t Comm_t;
-#else
-typedef MPI_Comm Comm_t;
-#endif
-
-
-
-
-
-
-
-// static __device__ __host__ inline Complex ComplexAdd(Complex, Complex);
-
-// void fft_matvec();
 
 #define gpuErrchk(ans)                        \
     {                                         \

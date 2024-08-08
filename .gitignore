@@ -4,3 +4,6 @@
 *.ptx
 *.cubin
 *.fatbin
+build/*
+
+/oden/srvenkat/Development/nccl/build
