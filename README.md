@@ -1,1 +1,73 @@
-# matvec-test
+# Multi-GPU Accelerated FFT-Based Matvec for Block Triangular Toeplitz Matrices
+
+This repository contains the code for the paper "Venkat S, Fernando M, Henneking S, Ghattas O. Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18.
+
+## Installation
+
+To build the code, the following dependencies are required:
+- CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU
+- NCCL
+
+First, clone the repository:
+```bash
+git clone https://github.com/s769/matvec-test.git
+cd matvec-test
+```
+
+Initialize and build the `cutranspose` submodule:
+```bash
+git submodule update --init --recursive
+cd cutranspose
+cmake -B build
+cmake --build build
+```
+
+Optionally, you can run the tests:
+```bash
+cd build
+./cuttest -s 10 -p 2,1,0
+```
+
+Finally, build the main code:
+```bash
+cd matvec-test/
+cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+## Usage
+
+The main executable is `fft_matvec`. It takes the following arguments:
+
+- `-pr` (int): Number of processor rows (default: 1)
+- `-pc` (int): Number of processor columns (default: 1)
+- `-g` (bool): Use global sizes (default: false)
+- `Nm` (int): Number of global block columns (default: 10, ignored if `-g` is false)
+- `Nd` (int): Number of global block rows (default: 5, ignored if `-g` is false)   
+- `Nt` (int): Block size (default: 7)
+- `nm` (int): Number of local block columns (default: 3, ignored if `-g` is true)
+- `nd` (int): Number of local block rows (default: 2, ignored if `-g` is true)
+- `v` (bool): Print input/output vectors (default: false)
+- `N` (int): Number of matvecs to use for timing (default: 100)
+- `raw` (bool): Print raw timing data instead of table (default: false)
+- `h` (bool): Print help message
+
+For boolean arguments, just pass the flag to enable it without a value. For example:
+```bash
+mpiexec -np 4 ./build/fft_matvec -pr 2 -pc 2 -g -Nm 20 -Nd 10 -Nt 7 -nm 4 -nd 3 -v -N 100
+```
+
+will run the code with 4 processors, a 2x2 processor grid, global sizes, 20 global block columns, 10 global block rows, a block size of 7, 4 local block columns, 3 local block rows, print input/output vectors, and use 100 matvecs for timing.
+
+To reproduce the results in the paper, run with the configurations described in the Numerical Results section.
+
+
+## License
+
+This code is released under the MIT License. See [LICENSE](LICENSE) for more information.
+```
+
+
+
+
+
