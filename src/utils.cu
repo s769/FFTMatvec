@@ -308,16 +308,16 @@ void Utils::printTimes(int reps, bool table)
     MPICHECK(MPI_Reduce((void*)&mpi_times_fs, (void*)max_times_fs, times_len, MPI_LONG_DOUBLE,
         MPI_MAX, 0, MPI_COMM_WORLD));
 
-    for (int i = 0; i < 3; i++) {
-        mean_times[i] /= world_size;
-    }
 
-    for (int i = 0; i < times_len; i++) {
-        mean_times_f[i] /= world_size;
-        mean_times_fs[i] /= world_size;
-    }
 
     if (world_rank == 0) {
+        for (int i = 0; i < 3; i++) {
+            mean_times[i] /= world_size;
+        }
+        for (int i = 0; i < times_len; i++) {
+            mean_times_f[i] /= world_size;
+            mean_times_fs[i] /= world_size;
+        }
         if (table) {
             std::cout << "Aggregate Times: " << std::endl;
             std::cout << std::endl;
