@@ -3,7 +3,7 @@
 #include "Matrix.hpp"
 
 
-Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full, double noise_scale) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size), conjugate(conjugate), full(full), noise_scale(noise_scale)
+Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size), conjugate(conjugate), full(full)
 {
     // Initialize the matrix data structures
 
@@ -159,12 +159,10 @@ void Matrix::matvec(Vector &x, Vector &y, bool full)
         out_vec = (full) ? col_vec_unpad : row_vec_unpad;
 
 
-
-
     if (full)
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, true, device, noise_scale, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, true, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
     else
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, false, device, noise_scale, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, false, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
     gpuErrchk(cudaStreamSynchronize(s));
 
 
@@ -227,9 +225,9 @@ void Matrix::transpose_matvec(Vector &x, Vector &y, bool full)
 
     
     if (full)
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, true, device, noise_scale, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, true, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
     else
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, false, device, noise_scale, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, false, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
     gpuErrchk(cudaStreamSynchronize(s));
 
     if (out_color == 0)

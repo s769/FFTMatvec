@@ -1,4 +1,4 @@
-file(GLOB_RECURSE INC_FILES shared.hpp utils.cuh matvec.hpp profiler.h dendro.h Comm.hpp Matrix.hpp Vector.hpp)
+file(GLOB_RECURSE INC_FILES shared.hpp table.hpp utils.hpp matvec.hpp profiler.hpp Comm.hpp Matrix.hpp Vector.hpp)
 file(GLOB_RECURSE SRC_FILES utils.cu matvec.cpp profiler.cpp Comm.cpp Matrix.cpp Vector.cpp)
 
 

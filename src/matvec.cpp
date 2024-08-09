@@ -1,11 +1,9 @@
 #include "matvec.hpp"
 
 #if TIME_MPI
-enum_array<ProfilerTimesFull, profiler_t, 21> t_list;
-enum_array<ProfilerTimes, profiler_t, 9> t_list_f;
-enum_array<ProfilerTimes, profiler_t, 9> t_list_fs;
-enum_array<ProfilerTimesNew, profiler_t, 10> t_list_f_new;
-enum_array<ProfilerTimesNew, profiler_t, 10> t_list_fs_new;
+enum_array<ProfilerTimesFull, profiler_t, 3> t_list;
+enum_array<ProfilerTimes, profiler_t, 10> t_list_f;
+enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 #endif
 
 
@@ -124,29 +122,19 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
     unsigned int vec_out_len = (conjugate) ? num_cols : num_rows;
 
 #if TIME_MPI
-
-    enum_array<ProfilerTimesNew, profiler_t, 10>* tl = (conjugate) ? &t_list_fs_new : &t_list_f_new;
-
-    (*tl)[ProfilerTimesNew::FFT].start();
+    enum_array<ProfilerTimes, profiler_t, 10>* tl = (conjugate) ? &t_list_fs : &t_list_f;
+    (*tl)[ProfilerTimes::FFT].start();
 #endif
 
     cufftSafeCall(cufftExecD2Z(forward_plan, in_vec, in_vec_freq));
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-    // if(conjugate)
-    //   t_list[ProfilerTimes::FFTFS].stop();
-    // else
-    //   t_list[ProfilerTimes::FFTF].stop();
-    (*tl)[ProfilerTimesNew::FFT].stop();
+    (*tl)[ProfilerTimes::FFT].stop();
 #endif
 
 #if TIME_MPI
-    // if(conjugate)
-    //   t_list[ProfilerTimes::EWPFS].start();
-    // else
-    //   t_list[ProfilerTimes::EWP].start();
-    (*tl)[ProfilerTimesNew::TRANS1].start();
+    (*tl)[ProfilerTimes::TRANS1].start();
 #endif
 
     cuDoubleComplex alpha({ 1, 0 });
@@ -164,21 +152,11 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-    // if(conjugate)
-    //   t_list[ProfilerTimes::EWPFS].stop();
-    // else{
-    //   t_list[ProfilerTimes::EWP].stop();
-    // }
-    (*tl)[ProfilerTimesNew::TRANS1].stop();
+    (*tl)[ProfilerTimes::TRANS1].stop();
 #endif
 
 #if TIME_MPI
-    // if(conjugate)
-    //   t_list[ProfilerTimes::REDFS].start();
-    // else
-    //   t_list[ProfilerTimes::RED].start();
-
-    (*tl)[ProfilerTimesNew::SBGEMV].start();
+    (*tl)[ProfilerTimes::SBGEMV].start();
 #endif
 
     cublasOperation_t transa = (conjugate) ? CUBLAS_OP_C : CUBLAS_OP_N;
@@ -195,17 +173,12 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 #endif
 
 #if TIME_MPI
-    // if(conjugate)
-    //   t_list[ProfilerTimes::REDFS].stop();
-    // else
-    //   t_list[ProfilerTimes::RED].stop();
     gpuErrchk(cudaDeviceSynchronize());
-
-    (*tl)[ProfilerTimesNew::SBGEMV].stop();
+    (*tl)[ProfilerTimes::SBGEMV].stop();
 #endif
 
 #if TIME_MPI
-    (*tl)[ProfilerTimesNew::TRANS2].start();
+    (*tl)[ProfilerTimes::TRANS2].start();
 #endif
 
 #if !FFT_64
@@ -220,55 +193,34 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-    (*tl)[ProfilerTimesNew::TRANS2].stop();
+    (*tl)[ProfilerTimes::TRANS2].stop();
 #endif
 
 #if TIME_MPI
-    // if(conjugate)
-    //   t_list[ProfilerTimes::IFFTFS].start();
-    // else
-    //   t_list[ProfilerTimes::IFFT].start();
-
-    (*tl)[ProfilerTimesNew::IFFT].start();
+    (*tl)[ProfilerTimes::IFFT].start();
 #endif
 
     cufftSafeCall(cufftExecZ2D(inverse_plan, out_vec_freq, out_vec_pad));
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-    // if(conjugate)
-    //   t_list[ProfilerTimes::IFFTFS].stop();
-    // else
-    //   t_list[ProfilerTimes::IFFT].stop();
-
-    (*tl)[ProfilerTimesNew::IFFT].stop();
+    (*tl)[ProfilerTimes::IFFT].stop();
 #endif
 
 #if TIME_MPI
-    // if(conjugate)
-    //   t_list[ProfilerTimes::UNPADFS].start();
-    // else
-    //   t_list[ProfilerTimes::UNPAD].start();
-
-    (*tl)[ProfilerTimesNew::UNPAD].start();
+    (*tl)[ProfilerTimes::UNPAD].start();
 #endif
 
-    UnpadRepadVector(out_vec_pad, out_vec, vec_out_len, block_size, unpad, s);
+    Utils::UnpadRepadVector(out_vec_pad, out_vec, vec_out_len, block_size, unpad, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-
-    // if(conjugate)
-    //   t_list[ProfilerTimes::UNPADFS].stop();
-    // else
-    //   t_list[ProfilerTimes::UNPAD].stop();
-
-    (*tl)[ProfilerTimesNew::UNPAD].stop();
+    (*tl)[ProfilerTimes::UNPAD].stop();
 #endif
 }
 
 void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int block_size,
     const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
-    const unsigned int device, double scale, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
+    const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
     cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
     cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj, double* const out_vec_pad,
     Complex* const in_vec_freq, Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi,
@@ -277,22 +229,12 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 {
 
 #if TIME_MPI
-    enum_array<ProfilerTimes, profiler_t, 9>*tl, *tl2;
-    enum_array<ProfilerTimesNew, profiler_t, 10>*tl_new, *tl2_new;
+    enum_array<ProfilerTimes, profiler_t, 10>*tl, *tl2;
     if (full)
         tl2 = (conjugate) ? &t_list_fs : &t_list_f;
-
     tl = (conjugate) ? &t_list_fs : &t_list_f;
-
-    if (full)
-        tl2_new = (conjugate) ? &t_list_fs_new : &t_list_f_new;
-
-    tl_new = (conjugate) ? &t_list_fs_new : &t_list_f_new;
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    if (!newmv)
-        (*tl)[ProfilerTimes::TOT].start();
-    else
-        (*tl_new)[ProfilerTimesNew::TOT].start();
+    (*tl)[ProfilerTimes::TOT].start();
 #endif
     unsigned int vec_in_len = (conjugate) ? num_rows : num_cols;
     unsigned int vec_out_len = (conjugate) ? num_cols : num_rows;
@@ -300,39 +242,25 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 
 #if TIME_MPI
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    if (!newmv)
-        (*tl)[ProfilerTimes::BROADCAST].start();
-    else
-        (*tl_new)[ProfilerTimesNew::BROADCAST].start();
+    (*tl)[ProfilerTimes::BROADCAST].start();
 #endif
     ncclComm_t comm = (conjugate) ? nccl_row_comm : nccl_col_comm;
     ncclComm_t comm2 = (conjugate) ? nccl_col_comm : nccl_row_comm;
     NCCLCHECK(ncclBroadcast(
         (const void*)in_vec, (void*)in_vec, (size_t)vec_in_len * block_size / 2, ncclDouble, 0, comm, s));
-#if !CUDA_GRAPH
     gpuErrchk(cudaStreamSynchronize(s));
-#endif
 #if TIME_MPI
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    if (!newmv)
-        (*tl)[ProfilerTimes::BROADCAST].stop();
-    else
-        (*tl_new)[ProfilerTimesNew::BROADCAST].stop();
+    (*tl)[ProfilerTimes::BROADCAST].stop();
 #endif
 
 #if TIME_MPI
-    if (!newmv)
-        (*tl)[ProfilerTimes::PAD].start();
-    else
-        (*tl_new)[ProfilerTimesNew::PAD].start();
+    (*tl)[ProfilerTimes::PAD].start();
 #endif
-    PadVector(in_vec, in_vec_pad, vec_in_len, block_size, s);
+    Utils::PadVector(in_vec, in_vec_pad, vec_in_len, block_size, s);
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
-    if (!newmv)
-        (*tl)[ProfilerTimes::PAD].stop();
-    else
-        (*tl_new)[ProfilerTimesNew::PAD].stop();
+    (*tl)[ProfilerTimes::PAD].stop();
 #endif
 
     Complex *mat_freq_tosi1, *mat_freq_tosi2;
@@ -362,30 +290,16 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
     if (!full) {
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl)[ProfilerTimes::NCCLC].start();
-        else
-            (*tl_new)[ProfilerTimesNew::NCCLC].start();
+        (*tl)[ProfilerTimes::NCCLC].start();
 #endif
         NCCLCHECK(ncclReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * block_size / 2,
             ncclDouble, ncclSum, 0, comm2, s));
-#if !CUDA_GRAPH
         gpuErrchk(cudaStreamSynchronize(s));
-#endif
 
 #if TIME_MPI
-        // MPI_Barrier(MPI_COMM_WORLD);
-        // mpi_time += MPI_Wtime();
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl)[ProfilerTimes::NCCLC].stop();
-        else
-            (*tl_new)[ProfilerTimesNew::NCCLC].stop();
-
-        if (!newmv)
-            (*tl)[ProfilerTimes::TOT].stop();
-        else
-            (*tl_new)[ProfilerTimesNew::TOT].stop();
+        (*tl)[ProfilerTimes::NCCLC].stop();
+        (*tl)[ProfilerTimes::TOT].stop();
 #endif
     }
 
@@ -393,45 +307,20 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl)[ProfilerTimes::NCCLC].start();
-        else
-            (*tl_new)[ProfilerTimesNew::NCCLC].start();
+        (*tl)[ProfilerTimes::NCCLC].start();
 #endif
         NCCLCHECK(ncclAllReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * block_size,
             ncclDouble, ncclSum, comm2, s));
-#if !CUDA_GRAPH
         gpuErrchk(cudaStreamSynchronize(s));
-#endif
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl)[ProfilerTimes::NCCLC].stop();
-        else
-            (*tl_new)[ProfilerTimesNew::NCCLC].stop();
-
-        if (!newmv)
-            (*tl)[ProfilerTimes::TOT].stop();
-        else
-            (*tl_new)[ProfilerTimesNew::TOT].stop();
-#endif
-#if TIME_MPI
-        t_list[ProfilerTimesFull::SCALE].start();
-#endif
-
-        // ScaleVector(out_vec, block_size, vec_out_len, scale, s);
-
-#if TIME_MPI
-        gpuErrchk(cudaDeviceSynchronize());
-        t_list[ProfilerTimesFull::SCALE].stop();
+        (*tl)[ProfilerTimes::NCCLC].stop();
+        (*tl)[ProfilerTimes::TOT].stop();
 #endif
 
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl2)[ProfilerTimes::TOT].start();
-        else
-            (*tl2_new)[ProfilerTimesNew::TOT].start();
+        (*tl2)[ProfilerTimes::TOT].start();
 #endif
 
         local_matvec(out_vec, res_vec, mat_freq_tosi2, block_size, num_cols, num_rows, !(conjugate), true,
@@ -440,33 +329,17 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 
 #if TIME_MPI
         gpuErrchk(cudaDeviceSynchronize());
-
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl2)[ProfilerTimes::NCCLC].start();
-        else
-            (*tl2_new)[ProfilerTimesNew::NCCLC].start();
+        (*tl2)[ProfilerTimes::NCCLC].start();
 #endif
         NCCLCHECK(ncclReduce((const void*)out_vec, (void*)out_vec, (size_t)vec_in_len * block_size / 2,
             ncclDouble, ncclSum, 0, comm, s));
-#if !CUDA_GRAPH
         gpuErrchk(cudaStreamSynchronize(s));
-#endif
 
 #if TIME_MPI
-        // MPI_Barrier(MPI_COMM_WORLD);
-        // mpi_time += MPI_Wtime();
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-        if (!newmv)
-            (*tl2)[ProfilerTimes::NCCLC].stop();
-        else
-            (*tl2_new)[ProfilerTimesNew::NCCLC].stop();
-
-        if (!newmv)
-            (*tl2)[ProfilerTimes::TOT].stop();
-        else
-            (*tl2_new)[ProfilerTimesNew::TOT].stop();
-// t_list[ProfilerTimes::FULL].stop();
+        (*tl2)[ProfilerTimes::NCCLC].stop();
+        (*tl2)[ProfilerTimes::TOT].stop();
 #endif
     }
 }

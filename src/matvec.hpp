@@ -10,7 +10,7 @@
 #define __matvec_h__
 
 #include "shared.hpp"
-#include "utils.cuh"
+#include "utils.hpp"
 #include <cutranspose.h>
 
 namespace Matvec {
@@ -95,7 +95,7 @@ namespace Matvec {
      */
     void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int block_size,
         const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
-        const unsigned int device, double scale, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
+        const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
         cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
         cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj, double* const out_vec_pad,
         Complex* const in_vec_freq, Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi,

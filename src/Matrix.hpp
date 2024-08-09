@@ -21,7 +21,6 @@ private:
     Comm& comm; /**< Reference to the communication object. */
     bool conjugate; /**< Flag indicating if the matrix is conjugate. */
     bool full; /**< Flag indicating if the matrix is full. */
-    double noise_scale; /**< The noise scale of the matrix. */
     Complex *mat_freq_tosi; /**< Pointer to the matrix frequency in TOSI format. */
     Complex *mat_freq_tosi_other=nullptr; /**< Pointer to the other matrix frequency in TOSI format. */
     unsigned int block_size; /**< The block size of the matrix. */
@@ -52,9 +51,8 @@ public:
      * @param block_size The block size of the matrix.
      * @param conjugate Flag indicating if the matrix is conjugate.
      * @param full Flag indicating if the matrix is full.
-     * @param noise_scale The noise scale of the matrix.
      */
-    Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full, double noise_scale = 1.0);
+    Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full);
 
     /**
      * @brief Destroys the Matrix object.
@@ -110,7 +108,6 @@ public:
     unsigned int get_block_size() { return block_size; } /**< Returns the block size of the matrix. */
     bool is_conjugate() { return conjugate; } /**< Returns true if the matrix is conjugate, false otherwise. */
     bool is_full() { return full; } /**< Returns true if the matrix is full, false otherwise. */
-    double get_noise_scale() { return noise_scale; } /**< Returns the noise scale of the matrix. */
     bool is_initialized() { return initialized; } /**< Returns true if the matrix is initialized, false otherwise. */
     bool get_has_mat_freq_tosi_other() { return has_mat_freq_tosi_other; } /**< Returns true if the other matrix frequency in TOSI format exists, false otherwise. */
 

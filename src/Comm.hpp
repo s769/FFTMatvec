@@ -7,7 +7,7 @@
 #define __COMM_HPP__
 
 #include "shared.hpp"
-#include "utils.cuh"
+#include "utils.hpp"
 
 /**
  * @class Comm

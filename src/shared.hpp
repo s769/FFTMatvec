@@ -28,7 +28,7 @@
 
 
 #define MAX_BLOCK_SIZE 1024
-#define TIME_MPI 0
+#define TIME_MPI 1
 #define ERR_CHK 1
 #define FFT_64 0
 #define ROW_SETUP 1
@@ -49,7 +49,7 @@ typedef int fft_int_t;
 #include <nccl.h>
 
 #if TIME_MPI
-#include "profiler.h"
+#include "profiler.hpp"
 #include <array>
 #endif
 
@@ -60,6 +60,14 @@ typedef double2 Complex;
     {                                         \
         gpuAssert((ans), __FILE__, __LINE__); \
     }
+/**
+ * @brief Checks the CUDA error code and prints an error message if an error occurred.
+ *
+ * @param code The CUDA error code to check.
+ * @param file The name of the file where the error occurred.
+ * @param line The line number where the error occurred.
+ * @param abort Flag indicating whether to abort the program if an error occurred (default: true).
+ */
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
 {
     if (code != cudaSuccess)
@@ -73,6 +81,12 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort =
     }
 }
 
+/**
+ * @brief Returns the string representation of a CUDA FFT error code.
+ *
+ * @param error The CUDA FFT error code.
+ * @return The string representation of the error code.
+ */
 static const char *_cudaGetErrorEnum(cufftResult error)
 {
     switch (error)
@@ -111,6 +125,14 @@ static const char *_cudaGetErrorEnum(cufftResult error)
     return "<unknown>";
 }
 
+/**
+ * @brief Returns the string representation of a CUDA error code.
+ *
+ * This function takes a `cublasStatus_t` error code as input and returns the corresponding string representation.
+ *
+ * @param error The CUDA error code to convert.
+ * @return The string representation of the CUDA error code.
+ */
 static const char *_cudaGetErrorEnum2(cublasStatus_t error)
 {
     switch (error)
@@ -145,6 +167,13 @@ static const char *_cudaGetErrorEnum2(cublasStatus_t error)
 
 
 #define cufftSafeCall(err) __cufftSafeCall(err, __FILE__, __LINE__)
+/**
+ * @brief Safely calls the cufft function and checks for errors.
+ *
+ * @param err The cufftResult error code.
+ * @param file The file path where the function is called.
+ * @param line The line number where the function is called.
+ */
 inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
 {
     if (CUFFT_SUCCESS != err)
@@ -159,6 +188,13 @@ inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
 typedef Complex data_t;
 
 #define cublasSafeCall(err) __cublasSafeCall(err, __FILE__, __LINE__)
+/**
+ * @brief Safely calls the cuBLAS function and checks for errors.
+ * 
+ * @param err The cuBLAS status code.
+ * @param file The file path where the function is called.
+ * @param line The line number where the function is called.
+ */
 inline void __cublasSafeCall(cublasStatus_t err, const char *file, const int line)
 {
     // printf("CUBLAS status: %s\n", _cudaGetErrorEnum2(err));
@@ -227,41 +263,11 @@ enum class ProfilerTimesFull : unsigned int
 {
     COMM_INIT = 0,
     SETUP,
-    BROADCAST,
-    PAD,
-    FFT,
-    EWP,
-    REDN,
-    IFFT,
-    UNPAD,
-    NCCLC,
-    SCALE,
-    FFTFS,
-    EWPFS,
-    REDFS,
-    IFFTFS,
-    UNPADFS,
-    NCCLFS,
-    TOT,
-    FSTOT,
     FULL,
-    CLEANUP
 };
+
 
 enum class ProfilerTimes : unsigned int
-{
-    BROADCAST = 0,
-    PAD,
-    FFT,
-    EWP,
-    REDN,
-    IFFT,
-    UNPAD,
-    NCCLC,
-    TOT,
-};
-
-enum class ProfilerTimesNew : unsigned int
 {
     BROADCAST = 0,
     PAD,
@@ -277,11 +283,9 @@ enum class ProfilerTimesNew : unsigned int
 
 
 
-extern enum_array<ProfilerTimesFull, profiler_t, 21> t_list;
-extern enum_array<ProfilerTimes, profiler_t, 9> t_list_f;
-extern enum_array<ProfilerTimes, profiler_t, 9> t_list_fs;
-extern enum_array<ProfilerTimesNew, profiler_t, 10> t_list_f_new;
-extern enum_array<ProfilerTimesNew, profiler_t, 10> t_list_fs_new;
+extern enum_array<ProfilerTimesFull, profiler_t, 3> t_list;
+extern enum_array<ProfilerTimes, profiler_t, 10> t_list_f;
+extern enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 
 
 #endif

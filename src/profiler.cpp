@@ -6,7 +6,7 @@
 *@brief simple profiler based on Hari's sort_profiler for bssn application.
 */
 //
-#include "profiler.h"
+#include "profiler.hpp"
 
         profiler_t::profiler_t () {
             seconds  = 0.0;   // openmp wall time

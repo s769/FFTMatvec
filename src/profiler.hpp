@@ -14,7 +14,6 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include "dendro.h"
 #ifdef HAVE_PAPI
 #include <papi.h>
 #endif
@@ -46,7 +45,6 @@ class profiler_t
             long long _pri_p_flpops; // papi floating point operations
 
 };
-
 
 
 
