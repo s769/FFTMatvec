@@ -213,8 +213,8 @@ void Utils::makeTable(std::vector<std::string> col_names, std::vector<long doubl
     tabulate::Table::Row_t mean_row(mean_str.begin(), mean_str.end());
     tabulate::Table::Row_t max_row(max_str.begin(), max_str.end());
 
-    table.add_row(mean_row);
     table.add_row(min_row);
+    table.add_row(mean_row);
     table.add_row(max_row);
 
     std::cout << table << std::endl;
@@ -223,7 +223,7 @@ void Utils::makeTable(std::vector<std::string> col_names, std::vector<long doubl
 void Utils::printRaw(long double* mean_times, long double* min_times, long double* max_times,
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
-    int world_size, int times_len)
+    int times_len)
 {
 
     for (int i = 0; i < 3; i++)
@@ -351,7 +351,7 @@ void Utils::printTimes(int reps, bool table)
                 mean_times_v, min_times_v, max_times_v);
         } else {
             printRaw(mean_times, min_times, max_times, mean_times_f, min_times_f, max_times_f,
-                mean_times_fs, min_times_fs, max_times_fs, world_size, times_len);
+                mean_times_fs, min_times_fs, max_times_fs, times_len);
         }
 
         delete[] mean_times;

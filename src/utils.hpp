@@ -141,13 +141,12 @@ void makeTable(std::vector<std::string> col_names, std::vector<long double> mean
  * @param mean_times_fs The mean times for the forward FFT in TOSI format.
  * @param min_times_fs The minimum times for the forward FFT in TOSI format.
  * @param max_times_fs The maximum times for the forward FFT in TOSI format.
- * @param world_size The total number of processes.
  * @param times_len The number of timing segments.
  */
 void printRaw(long double* mean_times, long double* min_times, long double* max_times,
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
-    int world_size, int times_len);
+    int times_len);
 
 }
 
