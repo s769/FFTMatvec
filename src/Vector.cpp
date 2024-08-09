@@ -132,30 +132,41 @@ void Vector::print(std::string name)
         double *h_vec = new double[num_blocks * unpad_size];
         gpuErrchk(cudaMemcpy(h_vec, d_vec, (size_t)num_blocks * unpad_size * sizeof(double), cudaMemcpyDeviceToHost));
 
+
         int rank = comm.get_world_rank();
         int group_rank = (row_or_col == "row") ? comm.get_col_color() : comm.get_row_color();
         if (group_rank == 0)
             printf("Vector %s: \n", name.c_str());
         int num_ranks = (row_or_col == "row") ? comm.get_proc_cols() : comm.get_proc_rows();
-        for (int r = 0; r < num_ranks; r++)
+
+        double * h_vec_full;
+        if (group_rank == 0)
+            h_vec_full = new double[(size_t)num_blocks * unpad_size * num_ranks];
+
+        MPI_Comm group_comm = (row_or_col == "row") ? comm.get_col_comm() : comm.get_row_comm();
+
+        MPICHECK(MPI_Gather(h_vec, (size_t)num_blocks * unpad_size, MPI_DOUBLE, h_vec_full, (size_t)num_blocks * unpad_size, MPI_DOUBLE, 0, group_comm));
+
+        if (group_rank == 0)
         {
-            if (group_rank == r)
+            for (int r = 0; r < num_ranks; r++)
             {
                 printf("Group Rank %d: \n", group_rank);
                 for (int i = 0; i < num_blocks; i++)
                 {
                     for (int j = 0; j < unpad_size; j++)
                     {
-                    printf("block: %d, t: %d, val: %f\n", i, j, h_vec[i * unpad_size + j]);
+                    printf("block: %d, t: %d, val: %f\n", i, j, h_vec_full[(size_t)r * num_blocks * unpad_size + (size_t)i * unpad_size + j]);
                     }
                     printf("\n");
                 }
                 printf("\n");
             }
-            MPICHECK(MPI_Barrier(comm.get_global_comm()));
+
+            delete[] h_vec_full;
         }
         
-
+        
         delete[] h_vec;
     }
 }

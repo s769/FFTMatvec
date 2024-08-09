@@ -175,8 +175,8 @@ int main(int argc, char** argv)
 #endif
 
 #if TIME_MPI
-  MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-  t_list[ProfilerTimesFull::FULL].start();
+        MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+        t_list[ProfilerTimesFull::FULL].start();
 #endif
 
         for (int i = 0; i < reps + WARMUP; i++) {
@@ -188,7 +188,8 @@ int main(int argc, char** argv)
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         t_list[ProfilerTimesFull::FULL].stop();
 #endif
-        printf("Finished Matvecs\n");
+        if (world_rank == 0)
+            printf("Finished Matvecs\n");
         if (print) {
             out_F.print("out_F");
             out_FS.print("out_FS");
@@ -207,8 +208,10 @@ int main(int argc, char** argv)
 #endif
 
         auto print_raw = parser.get<bool>("raw");
-
-        printf("Timing Results Showing Mean, Min, and Max Times Over %d Processor(s) (%d Matvecs):\n\n", world_size, reps);
+        if (world_rank == 0)
+            printf("Timing Results Showing Mean, Min, and Max Times Over %d Processor(s) (%d "
+                   "Matvecs):\n\n",
+                world_size, reps);
 
         Utils::printTimes(reps, !print_raw);
     }
