@@ -126,20 +126,24 @@ void Vector::init_vec_ones()
 void Vector::print(std::string name)
 {
     // Print the vector to stdout
-    if (on_grid())
-    {   
+
         int unpad_size = block_size / 2;
-        double *h_vec = new double[num_blocks * unpad_size];
-        gpuErrchk(cudaMemcpy(h_vec, d_vec, (size_t)num_blocks * unpad_size * sizeof(double), cudaMemcpyDeviceToHost));
+    
+        double *h_vec;
+        if (on_grid())
+        {
+            h_vec = new double[num_blocks * unpad_size];
+            gpuErrchk(cudaMemcpy(h_vec, d_vec, (size_t)num_blocks * unpad_size * sizeof(double), cudaMemcpyDeviceToHost));
+        }
 
         int rank = comm.get_world_rank();
         int group_rank = (row_or_col == "row") ? comm.get_col_color() : comm.get_row_color();
-        if (group_rank == 0)
+        if (group_rank == 0 && on_grid())
             printf("Vector %s: \n", name.c_str());
         int num_ranks = (row_or_col == "row") ? comm.get_proc_cols() : comm.get_proc_rows();
         for (int r = 0; r < num_ranks; r++)
         {
-            if (group_rank == r)
+            if (group_rank == r && on_grid())
             {
                 printf("Group Rank %d: \n", group_rank);
                 for (int i = 0; i < num_blocks; i++)
@@ -152,15 +156,13 @@ void Vector::print(std::string name)
                 }
                 printf("\n");
             }
-            MPI_Comm group_comm = (row_or_col == "row") ? comm.get_col_comm() : comm.get_row_comm();
 
-            MPICHECK(MPI_Barrier(group_comm));
+            MPICHECK(MPI_Barrier(comm.get_global_comm()));
         }
         
-
-        delete[] h_vec;
-    }
-    MPICHECK(MPI_Barrier(comm.get_global_comm()));
+        if (on_grid())
+            delete[] h_vec;
+    
 }
 
 
