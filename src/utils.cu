@@ -209,8 +209,8 @@ void Utils::makeTable(std::vector<std::string> col_names, std::vector<long doubl
         max_str.push_back(std::to_string(max[i]));
     }
 
-    tabulate::Table::Row_t mean_row(mean_str.begin(), mean_str.end());
     tabulate::Table::Row_t min_row(min_str.begin(), min_str.end());
+    tabulate::Table::Row_t mean_row(mean_str.begin(), mean_str.end());
     tabulate::Table::Row_t max_row(max_str.begin(), max_str.end());
 
     table.add_row(mean_row);
@@ -227,28 +227,28 @@ void Utils::printRaw(long double* mean_times, long double* min_times, long doubl
 {
 
     for (int i = 0; i < 3; i++)
-        printf("%Lf\t", mean_times[i] / world_size);
+        printf("%Lf\t", min_times[i]);
     printf("\n");
     for (int i = 0; i < 3; i++)
-        printf("%Lf\t", min_times[i]);
+        printf("%Lf\t", mean_times[i]);
     printf("\n");
     for (int i = 0; i < 3; i++)
         printf("%Lf\t", max_times[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
-        printf("%Lf\t", mean_times_f[i] / world_size);
+        printf("%Lf\t", min_times_f[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
-        printf("%Lf\t", min_times_f[i]);
+        printf("%Lf\t", mean_times_f[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
         printf("%Lf\t", max_times_f[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
-        printf("%Lf\t", mean_times_fs[i] / world_size);
+        printf("%Lf\t", min_times_fs[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
-        printf("%Lf\t", min_times_fs[i]);
+        printf("%Lf\t", mean_times_fs[i]);
     printf("\n");
     for (int i = 0; i < times_len; i++)
         printf("%Lf\t", max_times_fs[i]);
@@ -308,14 +308,22 @@ void Utils::printTimes(int reps, bool table)
     MPICHECK(MPI_Reduce((void*)&mpi_times_fs, (void*)max_times_fs, times_len, MPI_LONG_DOUBLE,
         MPI_MAX, 0, MPI_COMM_WORLD));
 
+    for (int i = 0; i < 3; i++) {
+        mean_times[i] /= world_size;
+    }
+
+    for (int i = 0; i < times_len; i++) {
+        mean_times_f[i] /= world_size;
+        mean_times_fs[i] /= world_size;
+    }
+
     if (world_rank == 0) {
         if (table) {
             std::cout << "Aggregate Times: " << std::endl;
             std::cout << std::endl;
 
             makeTable({ "Summary", "Initialize", "Setup", "Matvecs" },
-                { mean_times[0] / world_size, mean_times[1] / world_size,
-                    mean_times[2] / world_size },
+                { mean_times[0], mean_times[1], mean_times[2] },
                 { min_times[0], min_times[1], min_times[2] },
                 { max_times[0], max_times[1], max_times[2] });
             std::vector<long double> mean_times_v(mean_times_f, mean_times_f + times_len);
@@ -327,8 +335,6 @@ void Utils::printTimes(int reps, bool table)
             std::cout << "Average Times per Matvec: " << std::endl;
 
             std::cout << std::endl;
-
-
 
             makeTable({ "F Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
                           "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
