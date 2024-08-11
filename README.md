@@ -50,6 +50,7 @@ The main executable is `fft_matvec`. It takes the following arguments:
 - `v` (bool): Print input/output vectors (default: false)
 - `N` (int): Number of matvecs to use for timing (default: 100)
 - `raw` (bool): Print raw timing data instead of table (default: false)
+- `t` (bool): Check matvec results (default: false)
 - `h` (bool): Print help message
 
 For boolean arguments, just pass the flag to enable it without a value. For example:
