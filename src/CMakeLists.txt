@@ -1,5 +1,5 @@
-file(GLOB_RECURSE INC_FILES shared.hpp table.hpp utils.hpp matvec.hpp profiler.hpp Comm.hpp Matrix.hpp Vector.hpp)
-file(GLOB_RECURSE SRC_FILES utils.cu matvec.cpp profiler.cpp Comm.cpp Matrix.cpp Vector.cpp)
+file(GLOB_RECURSE INC_FILES shared.hpp table.hpp utils.hpp matvec.hpp profiler.hpp Comm.hpp Matrix.hpp Vector.hpp tester.hpp)
+file(GLOB_RECURSE SRC_FILES utils.cu matvec.cpp profiler.cpp Comm.cpp Matrix.cpp Vector.cpp tester.cpp)
 
 
 set(SOURCE_FILES ${INC_FILES} ${SRC_FILES})

@@ -102,7 +102,7 @@ public:
     cufftHandle get_inverse_plan() { return inverse_plan; } /**< Returns the inverse plan for FFT. */
     cufftHandle get_forward_plan_conj() { return forward_plan_conj; } /**< Returns the forward plan for conjugate FFT. */
     cufftHandle get_inverse_plan_conj() { return inverse_plan_conj; } /**< Returns the inverse plan for conjugate FFT. */
-    Comm get_comm() { return comm; } /**< Returns the communication object. */
+    Comm& get_comm() { return comm; } /**< Returns reference to the communication object. */
     unsigned int get_num_cols() { return num_cols; } /**< Returns the number of columns in the matrix. */
     unsigned int get_num_rows() { return num_rows; } /**< Returns the number of rows in the matrix. */
     unsigned int get_block_size() { return block_size; } /**< Returns the block size of the matrix. */

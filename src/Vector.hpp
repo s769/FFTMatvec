@@ -132,6 +132,12 @@ public:
     unsigned int get_block_size() { return block_size; }
 
     /**
+     * @brief Gets the communication object.
+     * @return The communication object.
+     */
+    Comm& get_comm() { return comm; }
+
+    /**
      * @brief Gets the row or column descriptor.
      * @return The row or column descriptor.
      */

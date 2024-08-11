@@ -6,6 +6,7 @@
 #include "matvec.hpp"
 #include "shared.hpp"
 #include "utils.hpp"
+#include "tester.hpp"
 
 #if TIME_MPI
 #define WARMUP 10
@@ -30,6 +31,7 @@ void configureParser(cli::Parser& parser)
     parser.set_optional<bool>("v", "verbose", false, "Print vectors");
     parser.set_optional<int>("N", "reps", 100, "Number of repetitions (for timing purposes)");
     parser.set_optional<bool>("raw", "print_raw", false, "Print raw times (instead of table)");
+    parser.set_optional<bool>("t", "test", false, "Run tests");
 }
 
 /********/
@@ -188,6 +190,15 @@ int main(int argc, char** argv)
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         t_list[ProfilerTimesFull::FULL].stop();
 #endif
+
+        auto test = parser.get<bool>("t");
+
+        if (test) {
+            Tester::checkOnesMatvec(comm, F, out_F, false, false);
+            Tester::checkOnesMatvec(comm, F, out_FS, true, false);
+        }
+
+
         if (world_rank == 0)
             printf("Finished Matvecs\n");
         if (print) {
