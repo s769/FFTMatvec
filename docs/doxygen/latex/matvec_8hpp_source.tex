@@ -1,0 +1,38 @@
+\hypertarget{matvec_8hpp_source}{}\doxysection{matvec.\+hpp}
+\label{matvec_8hpp_source}\index{/home/srvenkat/matvec-\/test/src/matvec.hpp@{/home/srvenkat/matvec-\/test/src/matvec.hpp}}
+\mbox{\hyperlink{matvec_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#ifndef\ \_\_matvec\_h\_\_}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#define\ \_\_matvec\_h\_\_}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{shared_8hpp}{shared.hpp}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{utils_8hpp}{utils.hpp}}"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <cutranspose.h>}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{namespace\ }Matvec\ \{}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{matvec_8hpp_aabe780dd505d3c74bda0cead3705d835}{setup}}(Complex**\ d\_mat\_freq,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ h\_mat,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ block\_size,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_cols,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_rows,\ cublasHandle\_t\ cublasHandle);}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{matvec_8hpp_a88ade5f11b1bb8dff52f6cf9af8c5c0e}{local\_matvec}}(\textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ out\_vec,\ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ in\_vec,\ \textcolor{keyword}{const}\ Complex*\ \textcolor{keyword}{const}\ d\_mat\_freq,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_cols,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_rows,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ conjugate,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ unpad,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ device,\ cufftHandle\ forward\_plan,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ cufftHandle\ inverse\_plan,\ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ out\_vec\_pad,\ Complex*\ \textcolor{keyword}{const}\ in\_vec\_freq,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ Complex*\ \textcolor{keyword}{const}\ out\_vec\_freq\_tosi,\ Complex*\ \textcolor{keyword}{const}\ in\_vec\_freq\_tosi,\ Complex*\ \textcolor{keyword}{const}\ out\_vec\_freq,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ cudaStream\_t\ s,\ cublasHandle\_t\ cublasHandle);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{matvec_8hpp_a1a73c2b528fe5b4b2ec3fd4de4765659}{compute\_matvec}}(\textcolor{keywordtype}{double}*\ out\_vec,\ \textcolor{keywordtype}{double}*\ in\_vec,\ Complex*\ mat\_freq\_tosi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ block\_size,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_cols,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ num\_rows,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ conjugate,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ full,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ device,\ ncclComm\_t\ nccl\_row\_comm,\ ncclComm\_t\ nccl\_col\_comm,}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ cudaStream\_t\ s,\ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ in\_vec\_pad,\ cufftHandle\ forward\_plan,\ cufftHandle\ inverse\_plan,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ cufftHandle\ forward\_plan\_conj,\ cufftHandle\ inverse\_plan\_conj,\ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ out\_vec\_pad,}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ Complex*\ \textcolor{keyword}{const}\ in\_vec\_freq,\ Complex*\ \textcolor{keyword}{const}\ out\_vec\_freq\_tosi,\ Complex*\ \textcolor{keyword}{const}\ in\_vec\_freq\_tosi,}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ Complex*\ \textcolor{keyword}{const}\ out\_vec\_freq,\ cublasHandle\_t\ cublasHandle,\ Complex*\ mat\_freq\_tosi\_other,}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}*\ \textcolor{keyword}{const}\ res\_pad);}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

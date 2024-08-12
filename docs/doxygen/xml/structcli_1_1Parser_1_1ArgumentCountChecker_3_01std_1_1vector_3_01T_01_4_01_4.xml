@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structcli_1_1Parser_1_1ArgumentCountChecker_3_01std_1_1vector_3_01T_01_4_01_4" kind="struct" language="C++" prot="private">
+    <compoundname>cli::Parser::ArgumentCountChecker&lt; std::vector&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structcli_1_1Parser_1_1ArgumentCountChecker_3_01std_1_1vector_3_01T_01_4_01_4_1a54568f1ed90be9dc11721d6c3ebc50d2" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr bool</type>
+        <definition>constexpr bool cli::Parser::ArgumentCountChecker&lt; std::vector&lt; T &gt; &gt;::Variadic</definition>
+        <argsstring></argsstring>
+        <name>Variadic</name>
+        <qualifiedname>cli::Parser::ArgumentCountChecker&lt; std::vector&lt; T &gt; &gt;::Variadic</qualifiedname>
+        <initializer>= true</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="94" column="23" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="92" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="93" bodyend="95"/>
+    <listofallmembers>
+      <member refid="structcli_1_1Parser_1_1ArgumentCountChecker_3_01std_1_1vector_3_01T_01_4_01_4_1a54568f1ed90be9dc11721d6c3ebc50d2" prot="public" virt="non-virtual"><scope>cli::Parser::ArgumentCountChecker&lt; std::vector&lt; T &gt; &gt;</scope><name>Variadic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

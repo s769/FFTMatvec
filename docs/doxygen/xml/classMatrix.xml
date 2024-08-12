@@ -1,0 +1,1046 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classMatrix" kind="class" language="C++" prot="public">
+    <compoundname>Matrix</compoundname>
+    <includes refid="Matrix_8hpp" local="no">Matrix.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classMatrix_1ab559034d838cbfd14902e31cf1f5d7b4" prot="private" static="no" mutable="no">
+        <type><ref refid="classComm" kindref="compound">Comm</ref> &amp;</type>
+        <definition>Comm&amp; Matrix::comm</definition>
+        <argsstring></argsstring>
+        <name>comm</name>
+        <qualifiedname>Matrix::comm</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Reference to the communication object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="21" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a5c6bb278fcbcba358b78c0a31d3cb1f8" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Matrix::conjugate</definition>
+        <argsstring></argsstring>
+        <name>conjugate</name>
+        <qualifiedname>Matrix::conjugate</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Flag indicating if the matrix is conjugate. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="22" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a6239acac4d197241d29465cf05586b3a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Matrix::full</definition>
+        <argsstring></argsstring>
+        <name>full</name>
+        <qualifiedname>Matrix::full</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Flag indicating if the matrix is full. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="23" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a1a0c2a814ca0cf69cf894bead1868cf0" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::mat_freq_tosi</definition>
+        <argsstring></argsstring>
+        <name>mat_freq_tosi</name>
+        <qualifiedname>Matrix::mat_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the matrix frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="24" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1ac37e36211ac73d668d1cc96662ed2dc6" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::mat_freq_tosi_other</definition>
+        <argsstring></argsstring>
+        <name>mat_freq_tosi_other</name>
+        <qualifiedname>Matrix::mat_freq_tosi_other</qualifiedname>
+        <initializer>=nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the other matrix frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="25" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a85bdb3f98b06b69811a5731942ccf185" prot="private" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::block_size</definition>
+        <argsstring></argsstring>
+        <name>block_size</name>
+        <qualifiedname>Matrix::block_size</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The block size of the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="26" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a0999612372421da8f99d76539753d1dd" prot="private" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::num_cols</definition>
+        <argsstring></argsstring>
+        <name>num_cols</name>
+        <qualifiedname>Matrix::num_cols</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of columns in the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="27" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a036a8202595162e16c1c9aba661bf66f" prot="private" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::num_rows</definition>
+        <argsstring></argsstring>
+        <name>num_rows</name>
+        <qualifiedname>Matrix::num_rows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The number of rows in the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="28" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a140f4de1b873a23105a4892f3d2ba794" prot="private" static="no" mutable="no">
+        <type>double *</type>
+        <definition>double* Matrix::col_vec_unpad</definition>
+        <argsstring></argsstring>
+        <name>col_vec_unpad</name>
+        <qualifiedname>Matrix::col_vec_unpad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the unpadded column vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="29" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1aaa096f2da07460da9ed0e4f46acfe66e" prot="private" static="no" mutable="no">
+        <type>double *</type>
+        <definition>double* Matrix::col_vec_pad</definition>
+        <argsstring></argsstring>
+        <name>col_vec_pad</name>
+        <qualifiedname>Matrix::col_vec_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the padded column vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="30" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a1cbad93612de6d15216685cf80b75bf8" prot="private" static="no" mutable="no">
+        <type>double *</type>
+        <definition>double* Matrix::row_vec_pad</definition>
+        <argsstring></argsstring>
+        <name>row_vec_pad</name>
+        <qualifiedname>Matrix::row_vec_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the padded row vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="31" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a88aed528d49fb0142b2d4ebe2bcc964c" prot="private" static="no" mutable="no">
+        <type>double *</type>
+        <definition>double* Matrix::row_vec_unpad</definition>
+        <argsstring></argsstring>
+        <name>row_vec_unpad</name>
+        <qualifiedname>Matrix::row_vec_unpad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the unpadded row vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="32" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a8775eefeeb17fa90facd782ebfbb0796" prot="private" static="no" mutable="no">
+        <type>double *</type>
+        <definition>double* Matrix::res_pad</definition>
+        <argsstring></argsstring>
+        <name>res_pad</name>
+        <qualifiedname>Matrix::res_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the padded result vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="33" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1abce6dd31daf9caeb05d41c3cc8d16fd4" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::col_vec_freq</definition>
+        <argsstring></argsstring>
+        <name>col_vec_freq</name>
+        <qualifiedname>Matrix::col_vec_freq</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the column vector frequency. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="34" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a6f0115c87753476686e13b19e95b27fa" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::row_vec_freq</definition>
+        <argsstring></argsstring>
+        <name>row_vec_freq</name>
+        <qualifiedname>Matrix::row_vec_freq</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the row vector frequency. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="35" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1af0b640c2dc1990c84b3be2e1ec2d1e9d" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::col_vec_freq_tosi</definition>
+        <argsstring></argsstring>
+        <name>col_vec_freq_tosi</name>
+        <qualifiedname>Matrix::col_vec_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the column vector frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="36" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a45d5731a1ebf946e059074f40f8ddc9d" prot="private" static="no" mutable="no">
+        <type>Complex *</type>
+        <definition>Complex* Matrix::row_vec_freq_tosi</definition>
+        <argsstring></argsstring>
+        <name>row_vec_freq_tosi</name>
+        <qualifiedname>Matrix::row_vec_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Pointer to the row vector frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="37" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a6d92e48804feeb10030421006e623a2f" prot="private" static="no" mutable="no">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::forward_plan</definition>
+        <argsstring></argsstring>
+        <name>forward_plan</name>
+        <qualifiedname>Matrix::forward_plan</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The forward plan for FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="38" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a93ebed3f802673b57dd268ac87534688" prot="private" static="no" mutable="no">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::inverse_plan</definition>
+        <argsstring></argsstring>
+        <name>inverse_plan</name>
+        <qualifiedname>Matrix::inverse_plan</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The inverse plan for FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="39" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a7d16172dfe25f39ca92ee5ad0ad04244" prot="private" static="no" mutable="no">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::forward_plan_conj</definition>
+        <argsstring></argsstring>
+        <name>forward_plan_conj</name>
+        <qualifiedname>Matrix::forward_plan_conj</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The forward plan for conjugate FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="40" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a9c190aa0b664268a58572ccd49a80030" prot="private" static="no" mutable="no">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::inverse_plan_conj</definition>
+        <argsstring></argsstring>
+        <name>inverse_plan_conj</name>
+        <qualifiedname>Matrix::inverse_plan_conj</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The inverse plan for conjugate FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="41" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a6837b64c8dd2f42989d194f8a2271a83" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Matrix::initialized</definition>
+        <argsstring></argsstring>
+        <name>initialized</name>
+        <qualifiedname>Matrix::initialized</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Flag indicating if the matrix is initialized. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="42" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classMatrix_1a7b90084e64232a2873b7eda4b5944bdc" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool Matrix::has_mat_freq_tosi_other</definition>
+        <argsstring></argsstring>
+        <name>has_mat_freq_tosi_other</name>
+        <qualifiedname>Matrix::has_mat_freq_tosi_other</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Flag indicating if the other matrix frequency in TOSI format exists. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="43" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classMatrix_1afe7d1bcd790920eaa5542aa8f4fc3125" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Matrix::Matrix</definition>
+        <argsstring>(Comm &amp;comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full)</argsstring>
+        <name>Matrix</name>
+        <qualifiedname>Matrix::Matrix</qualifiedname>
+        <param>
+          <type><ref refid="classComm" kindref="compound">Comm</ref> &amp;</type>
+          <declname>comm</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>num_cols</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>num_rows</declname>
+        </param>
+        <param>
+          <type>unsigned int</type>
+          <declname>block_size</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>conjugate</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>full</declname>
+        </param>
+        <briefdescription>
+<para>Constructs a <ref refid="classMatrix" kindref="compound">Matrix</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>comm</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The communication object. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>num_cols</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of columns in the matrix. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>num_rows</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of rows in the matrix. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>block_size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The block size of the matrix. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>conjugate</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating if the matrix is conjugate. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>full</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating if the matrix is full. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="55" column="5" bodyfile="/home/srvenkat/matvec-test/src/Matrix.cpp" bodystart="6" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a9b1c3627f573d78a2f08623fdfef990f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>Matrix::~Matrix</definition>
+        <argsstring>()</argsstring>
+        <name>~Matrix</name>
+        <qualifiedname>Matrix::~Matrix</qualifiedname>
+        <briefdescription>
+<para>Destroys the <ref refid="classMatrix" kindref="compound">Matrix</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="60" column="5" bodyfile="/home/srvenkat/matvec-test/src/Matrix.cpp" bodystart="68" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Matrix::init_mat_from_file</definition>
+        <argsstring>(std::string filename)</argsstring>
+        <name>init_mat_from_file</name>
+        <qualifiedname>Matrix::init_mat_from_file</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+<para>Initializes the matrix from a file. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>filename</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The name of the file. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="66" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ad283bb30fdf703e377d374a0627e4f5a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Matrix::init_mat_ones</definition>
+        <argsstring>()</argsstring>
+        <name>init_mat_ones</name>
+        <qualifiedname>Matrix::init_mat_ones</qualifiedname>
+        <briefdescription>
+<para>Initializes the matrix with ones. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="71" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.cpp" bodystart="93" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ae783ee8f81d18bff66a3dd7584693200" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Matrix::matvec</definition>
+        <argsstring>(Vector &amp;x, Vector &amp;y, bool full=false)</argsstring>
+        <name>matvec</name>
+        <qualifiedname>Matrix::matvec</qualifiedname>
+        <param>
+          <type><ref refid="classVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>full</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Performs matrix-vector multiplication. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The input vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>full</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating if the matrix is full. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="79" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.cpp" bodystart="119" bodyend="172"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a8bb582b3010c05408cbd53d1a3b45b2b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Matrix::transpose_matvec</definition>
+        <argsstring>(Vector &amp;x, Vector &amp;y, bool full=false)</argsstring>
+        <name>transpose_matvec</name>
+        <qualifiedname>Matrix::transpose_matvec</qualifiedname>
+        <param>
+          <type><ref refid="classVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classVector" kindref="compound">Vector</ref> &amp;</type>
+          <declname>y</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>full</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para>Performs transpose matrix-vector multiplication. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The input vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>full</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating if the matrix is full.</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Perform transpose matrix-vector multiplication.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>x</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The input vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>y</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>full</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether the matrix is of the form (FF^*\/F^*F) or just (F\/F^*).</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+This function performs transpose matrix-vector multiplication using the initialized matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="87" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.cpp" bodystart="184" bodyend="236"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double *</type>
+        <definition>double * Matrix::get_col_vec_unpad</definition>
+        <argsstring>()</argsstring>
+        <name>get_col_vec_unpad</name>
+        <qualifiedname>Matrix::get_col_vec_unpad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the unpadded column vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="90" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double *</type>
+        <definition>double * Matrix::get_col_vec_pad</definition>
+        <argsstring>()</argsstring>
+        <name>get_col_vec_pad</name>
+        <qualifiedname>Matrix::get_col_vec_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the padded column vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="91" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="91" bodyend="90"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1aef7e1d0088466f052e691a2a0a21777a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double *</type>
+        <definition>double * Matrix::get_row_vec_pad</definition>
+        <argsstring>()</argsstring>
+        <name>get_row_vec_pad</name>
+        <qualifiedname>Matrix::get_row_vec_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the padded row vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="92" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="92" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double *</type>
+        <definition>double * Matrix::get_row_vec_unpad</definition>
+        <argsstring>()</argsstring>
+        <name>get_row_vec_unpad</name>
+        <qualifiedname>Matrix::get_row_vec_unpad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the unpadded row vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="93" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="93" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a698561569c4e2bf9aeea020b74e0b765" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double *</type>
+        <definition>double * Matrix::get_res_pad</definition>
+        <argsstring>()</argsstring>
+        <name>get_res_pad</name>
+        <qualifiedname>Matrix::get_res_pad</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the padded result vector. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="94" column="13" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="94" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_col_vec_freq</definition>
+        <argsstring>()</argsstring>
+        <name>get_col_vec_freq</name>
+        <qualifiedname>Matrix::get_col_vec_freq</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the column vector frequency. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="95" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="95" bodyend="94"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a77191e751f3bd43991c65a2cd4d73442" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_row_vec_freq</definition>
+        <argsstring>()</argsstring>
+        <name>get_row_vec_freq</name>
+        <qualifiedname>Matrix::get_row_vec_freq</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the row vector frequency. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="96" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="96" bodyend="95"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ab06aac90fc1e2d73000b8670083456a4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_col_vec_freq_tosi</definition>
+        <argsstring>()</argsstring>
+        <name>get_col_vec_freq_tosi</name>
+        <qualifiedname>Matrix::get_col_vec_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the column vector frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="97" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="97" bodyend="96"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a48e87cc905863eee0c878c5c134c083b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_row_vec_freq_tosi</definition>
+        <argsstring>()</argsstring>
+        <name>get_row_vec_freq_tosi</name>
+        <qualifiedname>Matrix::get_row_vec_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the row vector frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="98" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="98" bodyend="97"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1aef078a629a60e268506fb93b5bc38017" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_mat_freq_tosi</definition>
+        <argsstring>()</argsstring>
+        <name>get_mat_freq_tosi</name>
+        <qualifiedname>Matrix::get_mat_freq_tosi</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the matrix frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="99" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="99" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Complex *</type>
+        <definition>Complex * Matrix::get_mat_freq_tosi_other</definition>
+        <argsstring>()</argsstring>
+        <name>get_mat_freq_tosi_other</name>
+        <qualifiedname>Matrix::get_mat_freq_tosi_other</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the other matrix frequency in TOSI format. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="100" column="14" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="100" bodyend="99"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::get_forward_plan</definition>
+        <argsstring>()</argsstring>
+        <name>get_forward_plan</name>
+        <qualifiedname>Matrix::get_forward_plan</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the forward plan for FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="101" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="101" bodyend="100"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::get_inverse_plan</definition>
+        <argsstring>()</argsstring>
+        <name>get_inverse_plan</name>
+        <qualifiedname>Matrix::get_inverse_plan</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the inverse plan for FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="102" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="102" bodyend="101"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a23dfad440fd74167ea41eab9ead758b7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::get_forward_plan_conj</definition>
+        <argsstring>()</argsstring>
+        <name>get_forward_plan_conj</name>
+        <qualifiedname>Matrix::get_forward_plan_conj</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the forward plan for conjugate FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="103" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="103" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>cufftHandle</type>
+        <definition>cufftHandle Matrix::get_inverse_plan_conj</definition>
+        <argsstring>()</argsstring>
+        <name>get_inverse_plan_conj</name>
+        <qualifiedname>Matrix::get_inverse_plan_conj</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the inverse plan for conjugate FFT. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="104" column="17" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="104" bodyend="103"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1af926bc937be55312a3ae9722b6dab1aa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classComm" kindref="compound">Comm</ref> &amp;</type>
+        <definition>Comm &amp; Matrix::get_comm</definition>
+        <argsstring>()</argsstring>
+        <name>get_comm</name>
+        <qualifiedname>Matrix::get_comm</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns reference to the communication object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="105" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="105" bodyend="104"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a9109683a18135aea66065efff1991b7f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::get_num_cols</definition>
+        <argsstring>()</argsstring>
+        <name>get_num_cols</name>
+        <qualifiedname>Matrix::get_num_cols</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the number of columns in the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="106" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="106" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::get_num_rows</definition>
+        <argsstring>()</argsstring>
+        <name>get_num_rows</name>
+        <qualifiedname>Matrix::get_num_rows</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the number of rows in the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="107" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="107" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ab7f659b541f79e9810ff197a17affee2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>unsigned int Matrix::get_block_size</definition>
+        <argsstring>()</argsstring>
+        <name>get_block_size</name>
+        <qualifiedname>Matrix::get_block_size</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the block size of the matrix. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="108" column="18" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="108" bodyend="107"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a5fa5be1d8da5556aa66752f360162096" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Matrix::is_conjugate</definition>
+        <argsstring>()</argsstring>
+        <name>is_conjugate</name>
+        <qualifiedname>Matrix::is_conjugate</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the matrix is conjugate, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="109" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="109" bodyend="108"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Matrix::is_full</definition>
+        <argsstring>()</argsstring>
+        <name>is_full</name>
+        <qualifiedname>Matrix::is_full</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the matrix is full, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="110" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="110" bodyend="109"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Matrix::is_initialized</definition>
+        <argsstring>()</argsstring>
+        <name>is_initialized</name>
+        <qualifiedname>Matrix::is_initialized</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the matrix is initialized, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="111" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="111" bodyend="110"/>
+      </memberdef>
+      <memberdef kind="function" id="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool Matrix::get_has_mat_freq_tosi_other</definition>
+        <argsstring>()</argsstring>
+        <name>get_has_mat_freq_tosi_other</name>
+        <qualifiedname>Matrix::get_has_mat_freq_tosi_other</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns true if the other matrix frequency in TOSI format exists, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="112" column="10" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="112" bodyend="111"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Represents a matrix and provides matrix operations. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/Matrix.hpp" line="18" column="1" bodyfile="/home/srvenkat/matvec-test/src/Matrix.hpp" bodystart="18" bodyend="114"/>
+    <listofallmembers>
+      <member refid="classMatrix_1a85bdb3f98b06b69811a5731942ccf185" prot="private" virt="non-virtual"><scope>Matrix</scope><name>block_size</name></member>
+      <member refid="classMatrix_1abce6dd31daf9caeb05d41c3cc8d16fd4" prot="private" virt="non-virtual"><scope>Matrix</scope><name>col_vec_freq</name></member>
+      <member refid="classMatrix_1af0b640c2dc1990c84b3be2e1ec2d1e9d" prot="private" virt="non-virtual"><scope>Matrix</scope><name>col_vec_freq_tosi</name></member>
+      <member refid="classMatrix_1aaa096f2da07460da9ed0e4f46acfe66e" prot="private" virt="non-virtual"><scope>Matrix</scope><name>col_vec_pad</name></member>
+      <member refid="classMatrix_1a140f4de1b873a23105a4892f3d2ba794" prot="private" virt="non-virtual"><scope>Matrix</scope><name>col_vec_unpad</name></member>
+      <member refid="classMatrix_1ab559034d838cbfd14902e31cf1f5d7b4" prot="private" virt="non-virtual"><scope>Matrix</scope><name>comm</name></member>
+      <member refid="classMatrix_1a5c6bb278fcbcba358b78c0a31d3cb1f8" prot="private" virt="non-virtual"><scope>Matrix</scope><name>conjugate</name></member>
+      <member refid="classMatrix_1a6d92e48804feeb10030421006e623a2f" prot="private" virt="non-virtual"><scope>Matrix</scope><name>forward_plan</name></member>
+      <member refid="classMatrix_1a7d16172dfe25f39ca92ee5ad0ad04244" prot="private" virt="non-virtual"><scope>Matrix</scope><name>forward_plan_conj</name></member>
+      <member refid="classMatrix_1a6239acac4d197241d29465cf05586b3a" prot="private" virt="non-virtual"><scope>Matrix</scope><name>full</name></member>
+      <member refid="classMatrix_1ab7f659b541f79e9810ff197a17affee2" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_block_size</name></member>
+      <member refid="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_col_vec_freq</name></member>
+      <member refid="classMatrix_1ab06aac90fc1e2d73000b8670083456a4" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_col_vec_freq_tosi</name></member>
+      <member refid="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_col_vec_pad</name></member>
+      <member refid="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_col_vec_unpad</name></member>
+      <member refid="classMatrix_1af926bc937be55312a3ae9722b6dab1aa" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_comm</name></member>
+      <member refid="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_forward_plan</name></member>
+      <member refid="classMatrix_1a23dfad440fd74167ea41eab9ead758b7" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_forward_plan_conj</name></member>
+      <member refid="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_has_mat_freq_tosi_other</name></member>
+      <member refid="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_inverse_plan</name></member>
+      <member refid="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_inverse_plan_conj</name></member>
+      <member refid="classMatrix_1aef078a629a60e268506fb93b5bc38017" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_mat_freq_tosi</name></member>
+      <member refid="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_mat_freq_tosi_other</name></member>
+      <member refid="classMatrix_1a9109683a18135aea66065efff1991b7f" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_num_cols</name></member>
+      <member refid="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_num_rows</name></member>
+      <member refid="classMatrix_1a698561569c4e2bf9aeea020b74e0b765" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_res_pad</name></member>
+      <member refid="classMatrix_1a77191e751f3bd43991c65a2cd4d73442" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_row_vec_freq</name></member>
+      <member refid="classMatrix_1a48e87cc905863eee0c878c5c134c083b" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_row_vec_freq_tosi</name></member>
+      <member refid="classMatrix_1aef7e1d0088466f052e691a2a0a21777a" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_row_vec_pad</name></member>
+      <member refid="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5" prot="public" virt="non-virtual"><scope>Matrix</scope><name>get_row_vec_unpad</name></member>
+      <member refid="classMatrix_1a7b90084e64232a2873b7eda4b5944bdc" prot="private" virt="non-virtual"><scope>Matrix</scope><name>has_mat_freq_tosi_other</name></member>
+      <member refid="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd" prot="public" virt="non-virtual"><scope>Matrix</scope><name>init_mat_from_file</name></member>
+      <member refid="classMatrix_1ad283bb30fdf703e377d374a0627e4f5a" prot="public" virt="non-virtual"><scope>Matrix</scope><name>init_mat_ones</name></member>
+      <member refid="classMatrix_1a6837b64c8dd2f42989d194f8a2271a83" prot="private" virt="non-virtual"><scope>Matrix</scope><name>initialized</name></member>
+      <member refid="classMatrix_1a93ebed3f802673b57dd268ac87534688" prot="private" virt="non-virtual"><scope>Matrix</scope><name>inverse_plan</name></member>
+      <member refid="classMatrix_1a9c190aa0b664268a58572ccd49a80030" prot="private" virt="non-virtual"><scope>Matrix</scope><name>inverse_plan_conj</name></member>
+      <member refid="classMatrix_1a5fa5be1d8da5556aa66752f360162096" prot="public" virt="non-virtual"><scope>Matrix</scope><name>is_conjugate</name></member>
+      <member refid="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c" prot="public" virt="non-virtual"><scope>Matrix</scope><name>is_full</name></member>
+      <member refid="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2" prot="public" virt="non-virtual"><scope>Matrix</scope><name>is_initialized</name></member>
+      <member refid="classMatrix_1a1a0c2a814ca0cf69cf894bead1868cf0" prot="private" virt="non-virtual"><scope>Matrix</scope><name>mat_freq_tosi</name></member>
+      <member refid="classMatrix_1ac37e36211ac73d668d1cc96662ed2dc6" prot="private" virt="non-virtual"><scope>Matrix</scope><name>mat_freq_tosi_other</name></member>
+      <member refid="classMatrix_1afe7d1bcd790920eaa5542aa8f4fc3125" prot="public" virt="non-virtual"><scope>Matrix</scope><name>Matrix</name></member>
+      <member refid="classMatrix_1ae783ee8f81d18bff66a3dd7584693200" prot="public" virt="non-virtual"><scope>Matrix</scope><name>matvec</name></member>
+      <member refid="classMatrix_1a0999612372421da8f99d76539753d1dd" prot="private" virt="non-virtual"><scope>Matrix</scope><name>num_cols</name></member>
+      <member refid="classMatrix_1a036a8202595162e16c1c9aba661bf66f" prot="private" virt="non-virtual"><scope>Matrix</scope><name>num_rows</name></member>
+      <member refid="classMatrix_1a8775eefeeb17fa90facd782ebfbb0796" prot="private" virt="non-virtual"><scope>Matrix</scope><name>res_pad</name></member>
+      <member refid="classMatrix_1a6f0115c87753476686e13b19e95b27fa" prot="private" virt="non-virtual"><scope>Matrix</scope><name>row_vec_freq</name></member>
+      <member refid="classMatrix_1a45d5731a1ebf946e059074f40f8ddc9d" prot="private" virt="non-virtual"><scope>Matrix</scope><name>row_vec_freq_tosi</name></member>
+      <member refid="classMatrix_1a1cbad93612de6d15216685cf80b75bf8" prot="private" virt="non-virtual"><scope>Matrix</scope><name>row_vec_pad</name></member>
+      <member refid="classMatrix_1a88aed528d49fb0142b2d4ebe2bcc964c" prot="private" virt="non-virtual"><scope>Matrix</scope><name>row_vec_unpad</name></member>
+      <member refid="classMatrix_1a8bb582b3010c05408cbd53d1a3b45b2b" prot="public" virt="non-virtual"><scope>Matrix</scope><name>transpose_matvec</name></member>
+      <member refid="classMatrix_1a9b1c3627f573d78a2f08623fdfef990f" prot="public" virt="non-virtual"><scope>Matrix</scope><name>~Matrix</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

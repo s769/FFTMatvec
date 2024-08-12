@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structcli_1_1CallbackArgs" kind="struct" language="C++" prot="public">
+    <compoundname>cli::CallbackArgs</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structcli_1_1CallbackArgs_1a067f4373b8d851e0f9a75bb4f47a0481" prot="public" static="no" mutable="no">
+        <type>const std::vector&lt; std::string &gt; &amp;</type>
+        <definition>const std::vector&lt;std::string&gt;&amp; cli::CallbackArgs::arguments</definition>
+        <argsstring></argsstring>
+        <name>arguments</name>
+        <qualifiedname>cli::CallbackArgs::arguments</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="38" column="19" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcli_1_1CallbackArgs_1aad7d49175a5a9bfeeab97373eae56641" prot="public" static="no" mutable="no">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; cli::CallbackArgs::output</definition>
+        <argsstring></argsstring>
+        <name>output</name>
+        <qualifiedname>cli::CallbackArgs::output</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="39" column="14" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structcli_1_1CallbackArgs_1aa8dd51d3a23d30207283f2268560f804" prot="public" static="no" mutable="no">
+        <type>std::ostream &amp;</type>
+        <definition>std::ostream&amp; cli::CallbackArgs::error</definition>
+        <argsstring></argsstring>
+        <name>error</name>
+        <qualifiedname>cli::CallbackArgs::error</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="40" column="14" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="37" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="37" bodyend="41"/>
+    <listofallmembers>
+      <member refid="structcli_1_1CallbackArgs_1a067f4373b8d851e0f9a75bb4f47a0481" prot="public" virt="non-virtual"><scope>cli::CallbackArgs</scope><name>arguments</name></member>
+      <member refid="structcli_1_1CallbackArgs_1aa8dd51d3a23d30207283f2268560f804" prot="public" virt="non-virtual"><scope>cli::CallbackArgs</scope><name>error</name></member>
+      <member refid="structcli_1_1CallbackArgs_1aad7d49175a5a9bfeeab97373eae56641" prot="public" virt="non-virtual"><scope>cli::CallbackArgs</scope><name>output</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

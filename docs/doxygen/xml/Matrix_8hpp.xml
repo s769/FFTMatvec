@@ -1,0 +1,371 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="Matrix_8hpp" kind="file" language="C++">
+    <compoundname>Matrix.hpp</compoundname>
+    <includes refid="shared_8hpp" local="yes">shared.hpp</includes>
+    <includes refid="Comm_8hpp" local="yes">Comm.hpp</includes>
+    <includes refid="Vector_8hpp" local="yes">Vector.hpp</includes>
+    <includes refid="matvec_8hpp" local="yes">matvec.hpp</includes>
+    <includedby refid="Matrix_8cpp" local="yes">/home/srvenkat/matvec-test/src/Matrix.cpp</includedby>
+    <includedby refid="main_8cpp" local="yes">/home/srvenkat/matvec-test/src/main.cpp</includedby>
+    <includedby refid="tester_8hpp" local="yes">/home/srvenkat/matvec-test/src/tester.hpp</includedby>
+    <incdepgraph>
+      <node id="22">
+        <label>Comm.hpp</label>
+        <link refid="Comm_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/home/srvenkat/matvec-test/src/Matrix.hpp</label>
+        <link refid="Matrix_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>Vector.hpp</label>
+        <link refid="Vector_8hpp"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="45">
+        <label>matvec.hpp</label>
+        <link refid="matvec_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>profiler.hpp</label>
+        <link refid="profiler_8hpp_source"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>shared.hpp</label>
+        <link refid="shared_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>table.hpp</label>
+        <link refid="table_8hpp_source"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>utils.hpp</label>
+        <link refid="utils_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>algorithm</label>
+      </node>
+      <node id="21">
+        <label>array</label>
+      </node>
+      <node id="8">
+        <label>assert.h</label>
+      </node>
+      <node id="29">
+        <label>cassert</label>
+      </node>
+      <node id="40">
+        <label>cctype</label>
+      </node>
+      <node id="35">
+        <label>clocale</label>
+      </node>
+      <node id="25">
+        <label>cstddef</label>
+      </node>
+      <node id="34">
+        <label>cstdint</label>
+      </node>
+      <node id="33">
+        <label>cstdio</label>
+      </node>
+      <node id="37">
+        <label>cstdlib</label>
+      </node>
+      <node id="12">
+        <label>cublas_v2.h</label>
+      </node>
+      <node id="7">
+        <label>cuda_runtime.h</label>
+      </node>
+      <node id="6">
+        <label>cufft.h</label>
+      </node>
+      <node id="46">
+        <label>cutranspose.h</label>
+      </node>
+      <node id="20">
+        <label>fstream</label>
+      </node>
+      <node id="42">
+        <label>functional</label>
+      </node>
+      <node id="19">
+        <label>iomanip</label>
+      </node>
+      <node id="4">
+        <label>iostream</label>
+      </node>
+      <node id="31">
+        <label>iterator</label>
+      </node>
+      <node id="26">
+        <label>limits</label>
+      </node>
+      <node id="36">
+        <label>locale</label>
+      </node>
+      <node id="39">
+        <label>memory</label>
+      </node>
+      <node id="15">
+        <label>mpi.h</label>
+      </node>
+      <node id="17">
+        <label>nccl.h</label>
+      </node>
+      <node id="27">
+        <label>new</label>
+      </node>
+      <node id="11">
+        <label>omp.h</label>
+      </node>
+      <node id="43">
+        <label>optional</label>
+      </node>
+      <node id="32">
+        <label>ostream</label>
+      </node>
+      <node id="41">
+        <label>sstream</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+      <node id="5">
+        <label>stdlib.h</label>
+      </node>
+      <node id="13">
+        <label>string</label>
+      </node>
+      <node id="10">
+        <label>sys/time.h</label>
+      </node>
+      <node id="9">
+        <label>time.h</label>
+      </node>
+      <node id="16">
+        <label>unistd.h</label>
+      </node>
+      <node id="28">
+        <label>utility</label>
+      </node>
+      <node id="14">
+        <label>vector</label>
+      </node>
+      <node id="38">
+        <label>wchar.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/home/srvenkat/matvec-test/src/Matrix.hpp</label>
+        <link refid="Matrix_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/home/srvenkat/matvec-test/src/tester.hpp</label>
+        <link refid="tester_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classMatrix" prot="public">Matrix</innerclass>
+    <briefdescription>
+<para>This file contains the declaration of the <ref refid="classMatrix" kindref="compound">Matrix</ref> class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>__MATRIX_HPP__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__MATRIX_HPP__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="shared_8hpp" kindref="compound">shared.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Comm_8hpp" kindref="compound">Comm.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Vector_8hpp" kindref="compound">Vector.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="matvec_8hpp" kindref="compound">matvec.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="classMatrix" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classMatrix" kindref="compound">Matrix</ref><sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm;<sp/></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conjugate;<sp/></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full;<sp/></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*mat_freq_tosi;<sp/></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*mat_freq_tosi_other=</highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>block_size;<sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_cols;<sp/></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_rows;<sp/></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/>col_vec_unpad;<sp/></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/>col_vec_pad;<sp/></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/>row_vec_pad;<sp/></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/>row_vec_unpad;<sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/>res_pad;<sp/></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/>col_vec_freq;<sp/></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*row_vec_freq;<sp/></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/>col_vec_freq_tosi;<sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/>row_vec_freq_tosi;<sp/></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/>forward_plan;<sp/></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/>inverse_plan;<sp/></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/>forward_plan_conj;<sp/></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/>inverse_plan_conj;<sp/></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>initialized<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>has_mat_freq_tosi_other<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;<sp/></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classMatrix" kindref="compound">Matrix</ref>(<ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_cols,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>num_rows,<sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>block_size,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conjugate,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classMatrix_1a9b1c3627f573d78a2f08623fdfef990f" kindref="member">~Matrix</ref>();</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd" kindref="member">init_mat_from_file</ref>(std::string<sp/>filename);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1ad283bb30fdf703e377d374a0627e4f5a" kindref="member">init_mat_ones</ref>();</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1ae783ee8f81d18bff66a3dd7584693200" kindref="member">matvec</ref>(<ref refid="classVector" kindref="compound">Vector</ref><sp/>&amp;x,<sp/><ref refid="classVector" kindref="compound">Vector</ref><sp/>&amp;y,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1a8bb582b3010c05408cbd53d1a3b45b2b" kindref="member">transpose_matvec</ref>(<ref refid="classVector" kindref="compound">Vector</ref><sp/>&amp;x,<sp/><ref refid="classVector" kindref="compound">Vector</ref><sp/>&amp;y,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Getters</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90" refid="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae" kindref="member">get_col_vec_unpad</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_vec_unpad;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="91" refid="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb" kindref="member">get_col_vec_pad</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_vec_pad;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="92" refid="classMatrix_1aef7e1d0088466f052e691a2a0a21777a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classMatrix_1aef7e1d0088466f052e691a2a0a21777a" kindref="member">get_row_vec_pad</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>row_vec_pad;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="93" refid="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5" kindref="member">get_row_vec_unpad</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>row_vec_unpad;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="94" refid="classMatrix_1a698561569c4e2bf9aeea020b74e0b765" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classMatrix_1a698561569c4e2bf9aeea020b74e0b765" kindref="member">get_res_pad</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>res_pad;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="95" refid="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e" kindref="member">get_col_vec_freq</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_vec_freq;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="96" refid="classMatrix_1a77191e751f3bd43991c65a2cd4d73442" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1a77191e751f3bd43991c65a2cd4d73442" kindref="member">get_row_vec_freq</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>row_vec_freq;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="97" refid="classMatrix_1ab06aac90fc1e2d73000b8670083456a4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1ab06aac90fc1e2d73000b8670083456a4" kindref="member">get_col_vec_freq_tosi</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>col_vec_freq_tosi;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="98" refid="classMatrix_1a48e87cc905863eee0c878c5c134c083b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1a48e87cc905863eee0c878c5c134c083b" kindref="member">get_row_vec_freq_tosi</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>row_vec_freq_tosi;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="99" refid="classMatrix_1aef078a629a60e268506fb93b5bc38017" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1aef078a629a60e268506fb93b5bc38017" kindref="member">get_mat_freq_tosi</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>mat_freq_tosi;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="100" refid="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>Complex<sp/>*<sp/><ref refid="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3" kindref="member">get_mat_freq_tosi_other</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>mat_freq_tosi_other;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="101" refid="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/><ref refid="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d" kindref="member">get_forward_plan</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>forward_plan;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="102" refid="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/><ref refid="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184" kindref="member">get_inverse_plan</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>inverse_plan;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="103" refid="classMatrix_1a23dfad440fd74167ea41eab9ead758b7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/><ref refid="classMatrix_1a23dfad440fd74167ea41eab9ead758b7" kindref="member">get_forward_plan_conj</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>forward_plan_conj;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="104" refid="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>cufftHandle<sp/><ref refid="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe" kindref="member">get_inverse_plan_conj</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>inverse_plan_conj;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="105" refid="classMatrix_1af926bc937be55312a3ae9722b6dab1aa" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/><ref refid="classMatrix_1af926bc937be55312a3ae9722b6dab1aa" kindref="member">get_comm</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>comm;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="106" refid="classMatrix_1a9109683a18135aea66065efff1991b7f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1a9109683a18135aea66065efff1991b7f" kindref="member">get_num_cols</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>num_cols;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="107" refid="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9" kindref="member">get_num_rows</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>num_rows;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="108" refid="classMatrix_1ab7f659b541f79e9810ff197a17affee2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1ab7f659b541f79e9810ff197a17affee2" kindref="member">get_block_size</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>block_size;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="109" refid="classMatrix_1a5fa5be1d8da5556aa66752f360162096" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1a5fa5be1d8da5556aa66752f360162096" kindref="member">is_conjugate</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>conjugate;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="110" refid="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c" kindref="member">is_full</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>full;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="111" refid="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2" kindref="member">is_initialized</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>initialized;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="112" refid="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98" kindref="member">get_has_mat_freq_tosi_other</ref>()<sp/>{<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>has_mat_freq_tosi_other;<sp/>}<sp/></highlight></codeline>
+<codeline lineno="114"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/home/srvenkat/matvec-test/src/Matrix.hpp"/>
+  </compounddef>
+</doxygen>

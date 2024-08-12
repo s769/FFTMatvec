@@ -1,0 +1,118 @@
+\hypertarget{classcli_1_1Parser}{}\doxysection{cli\+::Parser Class Reference}
+\label{classcli_1_1Parser}\index{cli::Parser@{cli::Parser}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a4b2651ce28d71029675ff6f80c05cbc7}\label{classcli_1_1Parser_a4b2651ce28d71029675ff6f80c05cbc7}} 
+{\bfseries Parser} (int argc, const char $\ast$$\ast$argv)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_af9d1b127e0f01af22d6bd751a79789fc}\label{classcli_1_1Parser_af9d1b127e0f01af22d6bd751a79789fc}} 
+{\bfseries Parser} (int argc, char $\ast$$\ast$argv)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_adeb476ce5a5685ae43177b442d830257}\label{classcli_1_1Parser_adeb476ce5a5685ae43177b442d830257}} 
+{\bfseries Parser} (int argc, const char $\ast$$\ast$argv, std\+::string general\+Program\+Description\+For\+Help\+Text)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_af93fad273a99df145a615969b91bb9bc}\label{classcli_1_1Parser_af93fad273a99df145a615969b91bb9bc}} 
+{\bfseries Parser} (int argc, char $\ast$$\ast$argv, std\+::string general\+Program\+Description\+For\+Help\+Text)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aeca9c6ff69d4164f3559557374e5f960}\label{classcli_1_1Parser_aeca9c6ff69d4164f3559557374e5f960}} 
+{\bfseries Parser} (std\+::string general\+Program\+Description\+For\+Help\+Text)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a245be97da6004895fff2cbfb659a8b65}\label{classcli_1_1Parser_a245be97da6004895fff2cbfb659a8b65}} 
+void {\bfseries init} (int argc, char $\ast$$\ast$argv)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a7cf56bc176f67f049c3301d4308eefa0}\label{classcli_1_1Parser_a7cf56bc176f67f049c3301d4308eefa0}} 
+void {\bfseries init} (int argc, const char $\ast$$\ast$argv)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_abcdc6eeb22b86620b0c4cce12bbe590a}\label{classcli_1_1Parser_abcdc6eeb22b86620b0c4cce12bbe590a}} 
+bool {\bfseries has\+\_\+help} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ad56b5b6e2ee7be4a1514e551615f4888}\label{classcli_1_1Parser_ad56b5b6e2ee7be4a1514e551615f4888}} 
+void {\bfseries enable\+\_\+help} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ace97fc2349810f614cac6f00397212d2}\label{classcli_1_1Parser_ace97fc2349810f614cac6f00397212d2}} 
+void {\bfseries disable\+\_\+help} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ab1838c5dc9937c7275012d1d803b9549}\label{classcli_1_1Parser_ab1838c5dc9937c7275012d1d803b9549}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries set\+\_\+default} (bool is\+\_\+required, const std\+::string \&description=\char`\"{}\char`\"{}, T default\+Value=T())
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a8eeb4fea96787b2c5f073db0960508b6}\label{classcli_1_1Parser_a8eeb4fea96787b2c5f073db0960508b6}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries set\+\_\+required} (const std\+::string \&name, const std\+::string \&alternative, const std\+::string \&description=\char`\"{}\char`\"{}, bool dominant=false)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a9fa95b466a0240d21859e00332eb8500}\label{classcli_1_1Parser_a9fa95b466a0240d21859e00332eb8500}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries set\+\_\+optional} (const std\+::string \&name, const std\+::string \&alternative, T default\+Value, const std\+::string \&description=\char`\"{}\char`\"{}, bool dominant=false)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_afbd8dd563f9af6474c0202e595abd0e4}\label{classcli_1_1Parser_afbd8dd563f9af6474c0202e595abd0e4}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries set\+\_\+callback} (const std\+::string \&name, const std\+::string \&alternative, std\+::function$<$ T(\mbox{\hyperlink{structcli_1_1CallbackArgs}{Callback\+Args}} \&)$>$ callback, const std\+::string \&description=\char`\"{}\char`\"{}, bool dominant=false)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aa16c85a042b26c6ee895cd6b5fcf1f62}\label{classcli_1_1Parser_aa16c85a042b26c6ee895cd6b5fcf1f62}} 
+void {\bfseries run\+\_\+and\+\_\+exit\+\_\+if\+\_\+error} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a064a6325e34bee99c926d3f55e63a974}\label{classcli_1_1Parser_a064a6325e34bee99c926d3f55e63a974}} 
+bool {\bfseries run} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a975ce1340603cbcdf4114cae601de6f0}\label{classcli_1_1Parser_a975ce1340603cbcdf4114cae601de6f0}} 
+bool {\bfseries run} (std\+::ostream \&output)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ae8b9885d50e8f8fe3218ec502400d1ce}\label{classcli_1_1Parser_ae8b9885d50e8f8fe3218ec502400d1ce}} 
+bool {\bfseries does\+Argument\+Exist} (std\+::string name, std\+::string alt\+Name)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a6d9b168d9ee10fbda7059a852f5e0dca}\label{classcli_1_1Parser_a6d9b168d9ee10fbda7059a852f5e0dca}} 
+bool {\bfseries does\+Help\+Exist} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a3ad93c0c665d10be15bda2cbf34f4cb3}\label{classcli_1_1Parser_a3ad93c0c665d10be15bda2cbf34f4cb3}} 
+bool {\bfseries run} (std\+::ostream \&output, std\+::ostream \&error)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_acb45fcf1aabe43de27b8e04997d3e4ac}\label{classcli_1_1Parser_acb45fcf1aabe43de27b8e04997d3e4ac}} 
+{\footnotesize template$<$typename T $>$ }\\T {\bfseries get} (const std\+::string \&name) const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a3b9ea5011e80d7b9ff4126340228a3bb}\label{classcli_1_1Parser_a3b9ea5011e80d7b9ff4126340228a3bb}} 
+{\footnotesize template$<$typename T $>$ }\\T {\bfseries get\+\_\+default} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ab04755869e2b733c8cddff7770d5c49a}\label{classcli_1_1Parser_ab04755869e2b733c8cddff7770d5c49a}} 
+{\footnotesize template$<$typename T $>$ }\\T {\bfseries get\+\_\+if} (const std\+::string \&name, std\+::function$<$ T(T)$>$ callback) const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a3d0c3f3a396418a2559fbb5eec36fc1f}\label{classcli_1_1Parser_a3d0c3f3a396418a2559fbb5eec36fc1f}} 
+int {\bfseries requirements} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ab9de2cccb9b25f2341b724bf86a9a937}\label{classcli_1_1Parser_ab9de2cccb9b25f2341b724bf86a9a937}} 
+int {\bfseries commands} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aa1ca553b427b2b20f279e8bca3212fd0}\label{classcli_1_1Parser_aa1ca553b427b2b20f279e8bca3212fd0}} 
+const std\+::string \& {\bfseries app\+\_\+name} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aea2f8211bf2dec8b14288072eb2ba6a9}\label{classcli_1_1Parser_aea2f8211bf2dec8b14288072eb2ba6a9}} 
+Cmd\+Base $\ast$ {\bfseries find} (const std\+::string \&name)
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aa2b02aec579b7d73428b640d1266d826}\label{classcli_1_1Parser_aa2b02aec579b7d73428b640d1266d826}} 
+Cmd\+Base $\ast$ {\bfseries find\+\_\+default} ()
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ac4a215fb3e3e872b7be7c36710fde482}\label{classcli_1_1Parser_ac4a215fb3e3e872b7be7c36710fde482}} 
+std\+::string {\bfseries usage} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_aeaa3b673df8f0b75c00a46d8f3410f9f}\label{classcli_1_1Parser_aeaa3b673df8f0b75c00a46d8f3410f9f}} 
+void {\bfseries print\+\_\+help} (std\+::stringstream \&ss) const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a27ce5403f5bfca98b73ab011c17f6b72}\label{classcli_1_1Parser_a27ce5403f5bfca98b73ab011c17f6b72}} 
+std\+::string {\bfseries howto\+\_\+required} (Cmd\+Base $\ast$command) const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a638d278f17f18c73796c4f70c5e982ce}\label{classcli_1_1Parser_a638d278f17f18c73796c4f70c5e982ce}} 
+std\+::string {\bfseries howto\+\_\+use} (Cmd\+Base $\ast$command) const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_ad24240813fe42edd89357ea3f3a28a51}\label{classcli_1_1Parser_ad24240813fe42edd89357ea3f3a28a51}} 
+std\+::string {\bfseries no\+\_\+default} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_adf8d01d65679e7d0d11e4ae90e88ea7b}\label{classcli_1_1Parser_adf8d01d65679e7d0d11e4ae90e88ea7b}} 
+const std\+::string \& {\bfseries get\+\_\+general\+\_\+help\+\_\+text} () const
+\item 
+\mbox{\Hypertarget{classcli_1_1Parser_a50c06026b2cdabebeda972894306aea8}\label{classcli_1_1Parser_a50c06026b2cdabebeda972894306aea8}} 
+void {\bfseries set\+\_\+general\+\_\+help\+\_\+text} (const std\+::string \&general\+Help\+Text)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/srvenkat/matvec-\/test/src/cmdparser.\+hpp\end{DoxyCompactItemize}

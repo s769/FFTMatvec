@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacenonstd_1_1variants_1_1std17" kind="namespace" language="C++">
+    <compoundname>nonstd::variants::std17</compoundname>
+    <briefdescription>
+<para>type traits C++17: </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="473" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1359 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classcli_1_1Parser" kind="class" language="C++" prot="public">
+    <compoundname>cli::Parser</compoundname>
+    <innerclass refid="structcli_1_1Parser_1_1ArgumentCountChecker" prot="private">cli::Parser::ArgumentCountChecker</innerclass>
+    <innerclass refid="structcli_1_1Parser_1_1ArgumentCountChecker_3_01cli_1_1NumericalBase_3_01T_01_4_01_4" prot="private">cli::Parser::ArgumentCountChecker&lt; cli::NumericalBase&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="structcli_1_1Parser_1_1ArgumentCountChecker_3_01std_1_1vector_3_01T_01_4_01_4" prot="private">cli::Parser::ArgumentCountChecker&lt; std::vector&lt; T &gt; &gt;</innerclass>
+    <innerclass refid="classcli_1_1Parser_1_1CmdArgument" prot="private">cli::Parser::CmdArgument</innerclass>
+    <innerclass refid="classcli_1_1Parser_1_1CmdBase" prot="private">cli::Parser::CmdBase</innerclass>
+    <innerclass refid="classcli_1_1Parser_1_1CmdFunction" prot="private">cli::Parser::CmdFunction</innerclass>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classcli_1_1Parser_1acab7ec6c510341295d7ab1b6d83e9583" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::_appname</definition>
+        <argsstring></argsstring>
+        <name>_appname</name>
+        <qualifiedname>cli::Parser::_appname</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="607" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="607" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classcli_1_1Parser_1ae2ebaa25bc167470d609b1a7ebb80ca4" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::_general_help_text</definition>
+        <argsstring></argsstring>
+        <name>_general_help_text</name>
+        <qualifiedname>cli::Parser::_general_help_text</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="608" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="608" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classcli_1_1Parser_1ad20bd3b643e6b2a9df47643fd160902c" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; cli::Parser::_arguments</definition>
+        <argsstring></argsstring>
+        <name>_arguments</name>
+        <qualifiedname>cli::Parser::_arguments</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="609" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="609" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classcli_1_1Parser_1aff74d0f864e11c4e8823d73f63938d23" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; CmdBase * &gt;</type>
+        <definition>std::vector&lt;CmdBase*&gt; cli::Parser::_commands</definition>
+        <argsstring></argsstring>
+        <name>_commands</name>
+        <qualifiedname>cli::Parser::_commands</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="610" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="610" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="classcli_1_1Parser_1aa7a01b70accd37cc8915ace92d915038" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const int &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const int &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="145" column="12" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="145" bodyend="150"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a4e7023a98f137d444e67a3d7f6da1510" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const bool &amp;defval)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const bool &amp;</type>
+          <declname>defval</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="152" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="152" bodyend="157"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a0e11f707b85444b0b063f3d91fcd527f" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>double</type>
+        <definition>static double cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const double &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const double &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="159" column="15" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="159" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ab303981da70bae91a7cd99343088982b" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>static float cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const float &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const float &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="166" column="14" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="166" bodyend="171"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ad6ee420c1a8c0a843fab719e1e5570de" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>long double</type>
+        <definition>static long double cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const long double &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const long double &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="173" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="173" bodyend="178"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aec7d3aefcb5c0942f4460511b65a31b5" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned int</type>
+        <definition>static unsigned int cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const unsigned int &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const unsigned int &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="180" column="21" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="180" bodyend="185"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a36a2c3c6c4d5ebd872e3fdee29f7cdc9" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned long</type>
+        <definition>static unsigned long cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const unsigned long &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const unsigned long &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="187" column="22" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="187" bodyend="192"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aade2e1d2fad6ddaaf92b70f3184a968d" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned long long</type>
+        <definition>static unsigned long long cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const unsigned long long &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const unsigned long long &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="194" column="27" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="194" bodyend="199"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ac7a13ef5450d0f71b7f1bc0f7a930a54" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>long long</type>
+        <definition>static long long cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const long long &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const long long &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="201" column="18" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="201" bodyend="206"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a1c37b0d2c1340084b02f92cc49df18bc" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>long</type>
+        <definition>static long cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const long &amp;, int numberBase=0)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const long &amp;</type>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>numberBase</declname>
+          <defval>0</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="208" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="208" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a64d25289bbfcf8fa16448ed59432f52b" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const std::string &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="215" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="215" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a8264090a8ddcd09b58d930085ff944e2" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; T &gt;</type>
+        <definition>static std::vector&lt; T &gt; cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const std::vector&lt; T &gt; &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; T &gt; &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="223" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="223" bodyend="234"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aff25b1cdca07cf63131d7ab793543fbe" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>static T cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const NumericalBase&lt; T &gt; &amp;wrapper)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classcli_1_1NumericalBase" kindref="compound">NumericalBase</ref>&lt; T &gt; &amp;</type>
+          <declname>wrapper</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="236" column="22" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="236" bodyend="238"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a4a74c608884eff7cb525e45b2aa91a6e" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>base</declname>
+            <defname>base</defname>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>static T cli::Parser::parse</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;elements, const NumericalBase&lt; T, base &gt; &amp;wrapper)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::parse</qualifiedname>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>elements</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classcli_1_1NumericalBase" kindref="compound">NumericalBase</ref>&lt; T, base &gt; &amp;</type>
+          <declname>wrapper</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Specialization for number wrapped into numerical base <parameterlist kind="templateparam"><parameteritem>
+<parameternamelist>
+<parametername>T</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>base type of the argument </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>numerical base </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>elements</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>wrapper</parametername>
+</parameternamelist>
+<parameterdescription>
+<para></para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>parsed number </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="246" column="24" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="246" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a956673fbe3725273152df3434ba00698" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>std::string</type>
+        <definition>static std::string cli::Parser::stringify</definition>
+        <argsstring>(const T &amp;value)</argsstring>
+        <name>stringify</name>
+        <qualifiedname>cli::Parser::stringify</qualifiedname>
+        <param>
+          <type>const T &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="251" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="251" bodyend="253"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a292d4ebcd95b8890b17413e093041c1d" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+          <param>
+            <type>int</type>
+            <declname>base</declname>
+            <defname>base</defname>
+          </param>
+        </templateparamlist>
+        <type>std::string</type>
+        <definition>static std::string cli::Parser::stringify</definition>
+        <argsstring>(const NumericalBase&lt; T, base &gt; &amp;wrapper)</argsstring>
+        <name>stringify</name>
+        <qualifiedname>cli::Parser::stringify</qualifiedname>
+        <param>
+          <type>const <ref refid="classcli_1_1NumericalBase" kindref="compound">NumericalBase</ref>&lt; T, base &gt; &amp;</type>
+          <declname>wrapper</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="256" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="256" bodyend="258"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ac1296a633447b04075430651fe8fc1e0" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>std::string</type>
+        <definition>static std::string cli::Parser::stringify</definition>
+        <argsstring>(const std::vector&lt; T &gt; &amp;values)</argsstring>
+        <name>stringify</name>
+        <qualifiedname>cli::Parser::stringify</qualifiedname>
+        <param>
+          <type>const std::vector&lt; T &gt; &amp;</type>
+          <declname>values</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="261" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="261" bodyend="271"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a3354117e05b5adca0f9c469b925f0c28" prot="private" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>static std::string cli::Parser::stringify</definition>
+        <argsstring>(const std::string &amp;str)</argsstring>
+        <name>stringify</name>
+        <qualifiedname>cli::Parser::stringify</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>str</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="273" column="20" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="273" bodyend="275"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcli_1_1Parser_1a4b2651ce28d71029675ff6f80c05cbc7" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>(int argc, const char **argv)</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="278" column="10" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="278" bodyend="280"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1af9d1b127e0f01af22d6bd751a79789fc" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>(int argc, char **argv)</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="282" column="10" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="282" bodyend="284"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1adeb476ce5a5685ae43177b442d830257" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>(int argc, const char **argv, std::string generalProgramDescriptionForHelpText)</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>generalProgramDescriptionForHelpText</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="287" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="287" bodyend="290"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1af93fad273a99df145a615969b91bb9bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>(int argc, char **argv, std::string generalProgramDescriptionForHelpText)</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>generalProgramDescriptionForHelpText</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="292" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="292" bodyend="295"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a58eaedff750e55ff28388f7a78fc1225" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>()</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="298" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="298" bodyend="298"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aeca9c6ff69d4164f3559557374e5f960" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::Parser</definition>
+        <argsstring>(std::string generalProgramDescriptionForHelpText)</argsstring>
+        <name>Parser</name>
+        <qualifiedname>cli::Parser::Parser</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>generalProgramDescriptionForHelpText</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="300" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="300" bodyend="301"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a10630094ec0db44086be55c99e06b61f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::~Parser</definition>
+        <argsstring>()</argsstring>
+        <name>~Parser</name>
+        <qualifiedname>cli::Parser::~Parser</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="304" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="304" bodyend="308"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a245be97da6004895fff2cbfb659a8b65" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::init</definition>
+        <argsstring>(int argc, char **argv)</argsstring>
+        <name>init</name>
+        <qualifiedname>cli::Parser::init</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="311" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="311" bodyend="318"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a7cf56bc176f67f049c3301d4308eefa0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::init</definition>
+        <argsstring>(int argc, const char **argv)</argsstring>
+        <name>init</name>
+        <qualifiedname>cli::Parser::init</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>argc</declname>
+        </param>
+        <param>
+          <type>const char **</type>
+          <declname>argv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="320" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="320" bodyend="327"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1abcdc6eeb22b86620b0c4cce12bbe590a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::has_help</definition>
+        <argsstring>() const</argsstring>
+        <name>has_help</name>
+        <qualifiedname>cli::Parser::has_help</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="330" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="330" bodyend="338"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ad56b5b6e2ee7be4a1514e551615f4888" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::enable_help</definition>
+        <argsstring>()</argsstring>
+        <name>enable_help</name>
+        <qualifiedname>cli::Parser::enable_help</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="340" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="340" bodyend="349"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ace97fc2349810f614cac6f00397212d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::disable_help</definition>
+        <argsstring>()</argsstring>
+        <name>disable_help</name>
+        <qualifiedname>cli::Parser::disable_help</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="351" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="351" bodyend="359"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ab1838c5dc9937c7275012d1d803b9549" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void cli::Parser::set_default</definition>
+        <argsstring>(bool is_required, const std::string &amp;description=&quot;&quot;, T defaultValue=T())</argsstring>
+        <name>set_default</name>
+        <qualifiedname>cli::Parser::set_default</qualifiedname>
+        <param>
+          <type>bool</type>
+          <declname>is_required</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>defaultValue</declname>
+          <defval>T()</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="362" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="362" bodyend="366"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a8eeb4fea96787b2c5f073db0960508b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void cli::Parser::set_required</definition>
+        <argsstring>(const std::string &amp;name, const std::string &amp;alternative, const std::string &amp;description=&quot;&quot;, bool dominant=false)</argsstring>
+        <name>set_required</name>
+        <qualifiedname>cli::Parser::set_required</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>alternative</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>dominant</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="369" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="369" bodyend="372"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a9fa95b466a0240d21859e00332eb8500" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void cli::Parser::set_optional</definition>
+        <argsstring>(const std::string &amp;name, const std::string &amp;alternative, T defaultValue, const std::string &amp;description=&quot;&quot;, bool dominant=false)</argsstring>
+        <name>set_optional</name>
+        <qualifiedname>cli::Parser::set_optional</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>alternative</declname>
+        </param>
+        <param>
+          <type>T</type>
+          <declname>defaultValue</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>dominant</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="375" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="375" bodyend="379"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1afbd8dd563f9af6474c0202e595abd0e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void cli::Parser::set_callback</definition>
+        <argsstring>(const std::string &amp;name, const std::string &amp;alternative, std::function&lt; T(CallbackArgs &amp;)&gt; callback, const std::string &amp;description=&quot;&quot;, bool dominant=false)</argsstring>
+        <name>set_callback</name>
+        <qualifiedname>cli::Parser::set_callback</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>alternative</declname>
+        </param>
+        <param>
+          <type>std::function&lt; T(<ref refid="structcli_1_1CallbackArgs" kindref="compound">CallbackArgs</ref> &amp;)&gt;</type>
+          <declname>callback</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+          <defval>&quot;&quot;</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>dominant</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="382" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="382" bodyend="386"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aa16c85a042b26c6ee895cd6b5fcf1f62" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::run_and_exit_if_error</definition>
+        <argsstring>()</argsstring>
+        <name>run_and_exit_if_error</name>
+        <qualifiedname>cli::Parser::run_and_exit_if_error</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="388" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="388" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a064a6325e34bee99c926d3f55e63a974" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::run</definition>
+        <argsstring>()</argsstring>
+        <name>run</name>
+        <qualifiedname>cli::Parser::run</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="394" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="394" bodyend="396"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a975ce1340603cbcdf4114cae601de6f0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::run</definition>
+        <argsstring>(std::ostream &amp;output)</argsstring>
+        <name>run</name>
+        <qualifiedname>cli::Parser::run</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>output</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="398" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="398" bodyend="400"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ae8b9885d50e8f8fe3218ec502400d1ce" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::doesArgumentExist</definition>
+        <argsstring>(std::string name, std::string altName)</argsstring>
+        <name>doesArgumentExist</name>
+        <qualifiedname>cli::Parser::doesArgumentExist</qualifiedname>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>altName</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="402" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="402" bodyend="413"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a6d9b168d9ee10fbda7059a852f5e0dca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::doesHelpExist</definition>
+        <argsstring>()</argsstring>
+        <name>doesHelpExist</name>
+        <qualifiedname>cli::Parser::doesHelpExist</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="415" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="415" bodyend="418"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a3ad93c0c665d10be15bda2cbf34f4cb3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool cli::Parser::run</definition>
+        <argsstring>(std::ostream &amp;output, std::ostream &amp;error)</argsstring>
+        <name>run</name>
+        <qualifiedname>cli::Parser::run</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>output</declname>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+          <declname>error</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="420" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="420" bodyend="474"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1acb45fcf1aabe43de27b8e04997d3e4ac" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T cli::Parser::get</definition>
+        <argsstring>(const std::string &amp;name) const</argsstring>
+        <name>get</name>
+        <qualifiedname>cli::Parser::get</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="477" column="3" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="477" bodyend="491"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a3b9ea5011e80d7b9ff4126340228a3bb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T cli::Parser::get_default</definition>
+        <argsstring>()</argsstring>
+        <name>get_default</name>
+        <qualifiedname>cli::Parser::get_default</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="494" column="3" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="494" bodyend="496"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ab04755869e2b733c8cddff7770d5c49a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T cli::Parser::get_if</definition>
+        <argsstring>(const std::string &amp;name, std::function&lt; T(T)&gt; callback) const</argsstring>
+        <name>get_if</name>
+        <qualifiedname>cli::Parser::get_if</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>std::function&lt; T(T)&gt;</type>
+          <declname>callback</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="499" column="3" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="499" bodyend="502"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a3d0c3f3a396418a2559fbb5eec36fc1f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int cli::Parser::requirements</definition>
+        <argsstring>() const</argsstring>
+        <name>requirements</name>
+        <qualifiedname>cli::Parser::requirements</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="504" column="5" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="504" bodyend="514"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ab9de2cccb9b25f2341b724bf86a9a937" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int cli::Parser::commands</definition>
+        <argsstring>() const</argsstring>
+        <name>commands</name>
+        <qualifiedname>cli::Parser::commands</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="516" column="5" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="516" bodyend="518"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aa1ca553b427b2b20f279e8bca3212fd0" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string &amp; cli::Parser::app_name</definition>
+        <argsstring>() const</argsstring>
+        <name>app_name</name>
+        <qualifiedname>cli::Parser::app_name</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="520" column="26" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="520" bodyend="522"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classcli_1_1Parser_1aea2f8211bf2dec8b14288072eb2ba6a9" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>CmdBase *</type>
+        <definition>CmdBase * cli::Parser::find</definition>
+        <argsstring>(const std::string &amp;name)</argsstring>
+        <name>find</name>
+        <qualifiedname>cli::Parser::find</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="525" column="9" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="525" bodyend="533"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aa2b02aec579b7d73428b640d1266d826" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>CmdBase *</type>
+        <definition>CmdBase * cli::Parser::find_default</definition>
+        <argsstring>()</argsstring>
+        <name>find_default</name>
+        <qualifiedname>cli::Parser::find_default</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="535" column="9" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="535" bodyend="543"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ac4a215fb3e3e872b7be7c36710fde482" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::usage</definition>
+        <argsstring>() const</argsstring>
+        <name>usage</name>
+        <qualifiedname>cli::Parser::usage</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="545" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="545" bodyend="567"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1aeaa3b673df8f0b75c00a46d8f3410f9f" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::print_help</definition>
+        <argsstring>(std::stringstream &amp;ss) const</argsstring>
+        <name>print_help</name>
+        <qualifiedname>cli::Parser::print_help</qualifiedname>
+        <param>
+          <type>std::stringstream &amp;</type>
+          <declname>ss</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="569" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="569" bodyend="573"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a27ce5403f5bfca98b73ab011c17f6b72" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::howto_required</definition>
+        <argsstring>(CmdBase *command) const</argsstring>
+        <name>howto_required</name>
+        <qualifiedname>cli::Parser::howto_required</qualifiedname>
+        <param>
+          <type>CmdBase *</type>
+          <declname>command</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="575" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="575" bodyend="581"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a638d278f17f18c73796c4f70c5e982ce" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::howto_use</definition>
+        <argsstring>(CmdBase *command) const</argsstring>
+        <name>howto_use</name>
+        <qualifiedname>cli::Parser::howto_use</qualifiedname>
+        <param>
+          <type>CmdBase *</type>
+          <declname>command</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="583" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="583" bodyend="589"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1ad24240813fe42edd89357ea3f3a28a51" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string cli::Parser::no_default</definition>
+        <argsstring>() const</argsstring>
+        <name>no_default</name>
+        <qualifiedname>cli::Parser::no_default</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="591" column="13" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="591" bodyend="597"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1adf8d01d65679e7d0d11e4ae90e88ea7b" prot="protected" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const std::string &amp;</type>
+        <definition>const std::string &amp; cli::Parser::get_general_help_text</definition>
+        <argsstring>() const</argsstring>
+        <name>get_general_help_text</name>
+        <qualifiedname>cli::Parser::get_general_help_text</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="599" column="19" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="599" bodyend="601"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1a50c06026b2cdabebeda972894306aea8" prot="protected" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void cli::Parser::set_general_help_text</definition>
+        <argsstring>(const std::string &amp;generalHelpText)</argsstring>
+        <name>set_general_help_text</name>
+        <qualifiedname>cli::Parser::set_general_help_text</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>generalHelpText</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="603" column="6" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="603" bodyend="605"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="42" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="42" bodyend="611"/>
+    <listofallmembers>
+      <member refid="classcli_1_1Parser_1acab7ec6c510341295d7ab1b6d83e9583" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>_appname</name></member>
+      <member refid="classcli_1_1Parser_1ad20bd3b643e6b2a9df47643fd160902c" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>_arguments</name></member>
+      <member refid="classcli_1_1Parser_1aff74d0f864e11c4e8823d73f63938d23" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>_commands</name></member>
+      <member refid="classcli_1_1Parser_1ae2ebaa25bc167470d609b1a7ebb80ca4" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>_general_help_text</name></member>
+      <member refid="classcli_1_1Parser_1aa1ca553b427b2b20f279e8bca3212fd0" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>app_name</name></member>
+      <member refid="classcli_1_1Parser_1ab9de2cccb9b25f2341b724bf86a9a937" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>commands</name></member>
+      <member refid="classcli_1_1Parser_1ace97fc2349810f614cac6f00397212d2" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>disable_help</name></member>
+      <member refid="classcli_1_1Parser_1ae8b9885d50e8f8fe3218ec502400d1ce" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>doesArgumentExist</name></member>
+      <member refid="classcli_1_1Parser_1a6d9b168d9ee10fbda7059a852f5e0dca" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>doesHelpExist</name></member>
+      <member refid="classcli_1_1Parser_1ad56b5b6e2ee7be4a1514e551615f4888" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>enable_help</name></member>
+      <member refid="classcli_1_1Parser_1aea2f8211bf2dec8b14288072eb2ba6a9" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>find</name></member>
+      <member refid="classcli_1_1Parser_1aa2b02aec579b7d73428b640d1266d826" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>find_default</name></member>
+      <member refid="classcli_1_1Parser_1acb45fcf1aabe43de27b8e04997d3e4ac" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>get</name></member>
+      <member refid="classcli_1_1Parser_1a3b9ea5011e80d7b9ff4126340228a3bb" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>get_default</name></member>
+      <member refid="classcli_1_1Parser_1adf8d01d65679e7d0d11e4ae90e88ea7b" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>get_general_help_text</name></member>
+      <member refid="classcli_1_1Parser_1ab04755869e2b733c8cddff7770d5c49a" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>get_if</name></member>
+      <member refid="classcli_1_1Parser_1abcdc6eeb22b86620b0c4cce12bbe590a" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>has_help</name></member>
+      <member refid="classcli_1_1Parser_1a27ce5403f5bfca98b73ab011c17f6b72" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>howto_required</name></member>
+      <member refid="classcli_1_1Parser_1a638d278f17f18c73796c4f70c5e982ce" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>howto_use</name></member>
+      <member refid="classcli_1_1Parser_1a245be97da6004895fff2cbfb659a8b65" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>init</name></member>
+      <member refid="classcli_1_1Parser_1a7cf56bc176f67f049c3301d4308eefa0" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>init</name></member>
+      <member refid="classcli_1_1Parser_1ad24240813fe42edd89357ea3f3a28a51" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>no_default</name></member>
+      <member refid="classcli_1_1Parser_1aa7a01b70accd37cc8915ace92d915038" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a4e7023a98f137d444e67a3d7f6da1510" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a0e11f707b85444b0b063f3d91fcd527f" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1ab303981da70bae91a7cd99343088982b" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1ad6ee420c1a8c0a843fab719e1e5570de" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1aec7d3aefcb5c0942f4460511b65a31b5" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a36a2c3c6c4d5ebd872e3fdee29f7cdc9" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1aade2e1d2fad6ddaaf92b70f3184a968d" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1ac7a13ef5450d0f71b7f1bc0f7a930a54" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a1c37b0d2c1340084b02f92cc49df18bc" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a64d25289bbfcf8fa16448ed59432f52b" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a8264090a8ddcd09b58d930085ff944e2" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1aff25b1cdca07cf63131d7ab793543fbe" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a4a74c608884eff7cb525e45b2aa91a6e" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1a4b2651ce28d71029675ff6f80c05cbc7" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1af9d1b127e0f01af22d6bd751a79789fc" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1adeb476ce5a5685ae43177b442d830257" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1af93fad273a99df145a615969b91bb9bc" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1a58eaedff750e55ff28388f7a78fc1225" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1aeca9c6ff69d4164f3559557374e5f960" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>Parser</name></member>
+      <member refid="classcli_1_1Parser_1aeaa3b673df8f0b75c00a46d8f3410f9f" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>print_help</name></member>
+      <member refid="classcli_1_1Parser_1a3d0c3f3a396418a2559fbb5eec36fc1f" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>requirements</name></member>
+      <member refid="classcli_1_1Parser_1a064a6325e34bee99c926d3f55e63a974" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>run</name></member>
+      <member refid="classcli_1_1Parser_1a975ce1340603cbcdf4114cae601de6f0" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>run</name></member>
+      <member refid="classcli_1_1Parser_1a3ad93c0c665d10be15bda2cbf34f4cb3" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>run</name></member>
+      <member refid="classcli_1_1Parser_1aa16c85a042b26c6ee895cd6b5fcf1f62" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>run_and_exit_if_error</name></member>
+      <member refid="classcli_1_1Parser_1afbd8dd563f9af6474c0202e595abd0e4" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>set_callback</name></member>
+      <member refid="classcli_1_1Parser_1ab1838c5dc9937c7275012d1d803b9549" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>set_default</name></member>
+      <member refid="classcli_1_1Parser_1a50c06026b2cdabebeda972894306aea8" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>set_general_help_text</name></member>
+      <member refid="classcli_1_1Parser_1a9fa95b466a0240d21859e00332eb8500" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>set_optional</name></member>
+      <member refid="classcli_1_1Parser_1a8eeb4fea96787b2c5f073db0960508b6" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>set_required</name></member>
+      <member refid="classcli_1_1Parser_1a956673fbe3725273152df3434ba00698" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>stringify</name></member>
+      <member refid="classcli_1_1Parser_1a292d4ebcd95b8890b17413e093041c1d" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>stringify</name></member>
+      <member refid="classcli_1_1Parser_1ac1296a633447b04075430651fe8fc1e0" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>stringify</name></member>
+      <member refid="classcli_1_1Parser_1a3354117e05b5adca0f9c469b925f0c28" prot="private" virt="non-virtual"><scope>cli::Parser</scope><name>stringify</name></member>
+      <member refid="classcli_1_1Parser_1ac4a215fb3e3e872b7be7c36710fde482" prot="protected" virt="non-virtual"><scope>cli::Parser</scope><name>usage</name></member>
+      <member refid="classcli_1_1Parser_1a10630094ec0db44086be55c99e06b61f" prot="public" virt="non-virtual"><scope>cli::Parser</scope><name>~Parser</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

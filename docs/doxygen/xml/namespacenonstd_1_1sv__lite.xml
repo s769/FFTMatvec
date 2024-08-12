@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacenonstd_1_1sv__lite" kind="namespace" language="C++">
+    <compoundname>nonstd::sv_lite</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="table_8hpp_1ae47d462c701ad1d52fc1f70f43661ab0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class CharT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+        </templateparamlist>
+        <type>std::basic_string&lt; CharT, Traits &gt;</type>
+        <definition>std::basic_string&lt; CharT, Traits &gt; nonstd::sv_lite::to_string</definition>
+        <argsstring>(basic_string_view&lt; CharT, Traits &gt; v)</argsstring>
+        <name>to_string</name>
+        <qualifiedname>nonstd::sv_lite::to_string</qualifiedname>
+        <param>
+          <type>basic_string_view&lt; CharT, Traits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="5502" column="1" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="5502" bodyend="5505"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a0abd5315fae0fb8dea3674db6ce59465" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class CharT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+          <param>
+            <type>class Allocator</type>
+          </param>
+        </templateparamlist>
+        <type>std::basic_string&lt; CharT, Traits, Allocator &gt;</type>
+        <definition>std::basic_string&lt; CharT, Traits, Allocator &gt; nonstd::sv_lite::to_string</definition>
+        <argsstring>(basic_string_view&lt; CharT, Traits &gt; v, Allocator const &amp;a)</argsstring>
+        <name>to_string</name>
+        <qualifiedname>nonstd::sv_lite::to_string</qualifiedname>
+        <param>
+          <type>basic_string_view&lt; CharT, Traits &gt;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type>Allocator const &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="5509" column="1" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="5509" bodyend="5512"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a3050fe3a9bb25e8fa18566426943a358" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class CharT</type>
+          </param>
+          <param>
+            <type>class Traits</type>
+          </param>
+          <param>
+            <type>class Allocator</type>
+          </param>
+        </templateparamlist>
+        <type>basic_string_view&lt; CharT, Traits &gt;</type>
+        <definition>basic_string_view&lt; CharT, Traits &gt; nonstd::sv_lite::to_string_view</definition>
+        <argsstring>(std::basic_string&lt; CharT, Traits, Allocator &gt; const &amp;s)</argsstring>
+        <name>to_string_view</name>
+        <qualifiedname>nonstd::sv_lite::to_string_view</qualifiedname>
+        <param>
+          <type>std::basic_string&lt; CharT, Traits, Allocator &gt; const &amp;</type>
+          <declname>s</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="5518" column="1" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="5518" bodyend="5521"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="5485" column="1"/>
+  </compounddef>
+</doxygen>

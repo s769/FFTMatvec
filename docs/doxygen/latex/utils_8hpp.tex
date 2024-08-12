@@ -1,0 +1,42 @@
+\hypertarget{utils_8hpp}{}\doxysection{/home/srvenkat/matvec-\/test/src/utils.hpp File Reference}
+\label{utils_8hpp}\index{/home/srvenkat/matvec-\/test/src/utils.hpp@{/home/srvenkat/matvec-\/test/src/utils.hpp}}
+
+
+Contains utility functions for the project.  
+
+
+{\ttfamily \#include \char`\"{}shared.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}table.\+hpp\char`\"{}}\newline
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceUtils}{Utils}}
+\begin{DoxyCompactList}\small\item\em Namespace containing utility functions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{namespaceUtils_a7f1ae45e1fa6c658c451fd26c361c66f}{Utils\+::get\+Host\+Hash}} (const char $\ast$string)
+\begin{DoxyCompactList}\small\item\em Get the host hash. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_abe2d56751904f51d670f0ead1a510a28}{Utils\+::get\+Host\+Name}} (char $\ast$hostname, int maxlen)
+\begin{DoxyCompactList}\small\item\em Get the host name. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_adc2f304acec8ac21939f8ccd69324cd3}{Utils\+::\+Pad\+Vector}} (const double $\ast$const d\+\_\+in, double $\ast$const d\+\_\+pad, const unsigned int num\+\_\+cols, const unsigned int size, cuda\+Stream\+\_\+t s)
+\begin{DoxyCompactList}\small\item\em Pads each block of a vector to twice the length with zeros. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a9d0ccfc29aa0ef4861f810002058a8ff}{Utils\+::\+Unpad\+Repad\+Vector}} (const double $\ast$const d\+\_\+in, double $\ast$const d\+\_\+out, const unsigned int num\+\_\+cols, const unsigned int size, const bool unpad, cuda\+Stream\+\_\+t s)
+\begin{DoxyCompactList}\small\item\em Unpads or repads a vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_afc7acb2b6248e999e44b69df4d5968ee}{Utils\+::print\+Vec}} (double $\ast$vec, int len, int unpad\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints the elements of a vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_ae04d65fb199f9ea094484826841cde2b}{Utils\+::print\+Vec\+Complex}} (Complex $\ast$vec, int len, int unpad\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints a complex vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a0a7bd8883afe67961fad599b27a385a4}{Utils\+::print\+Vec\+MPI}} (double $\ast$vec, int len, int unpad\+\_\+size, int rank, int world\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints a vector using MPI. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a2eb3dd7a1eabb25acfc1fcae3780d9f5}{Utils\+::print\+Times}} (int reps=1, bool table=true)
+\begin{DoxyCompactList}\small\item\em Print the times for the different parts of the code. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a2087376d30e113031da868ee9e6da68d}{Utils\+::make\+Table}} (std\+::vector$<$ std\+::string $>$ col\+\_\+names, std\+::vector$<$ long double $>$ mean, std\+::vector$<$ long double $>$ min, std\+::vector$<$ long double $>$ max)
+\begin{DoxyCompactList}\small\item\em Make a table of timing data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a0dfdccf48b9c5cae7b29109a80d7b495}{Utils\+::print\+Raw}} (long double $\ast$mean\+\_\+times, long double $\ast$min\+\_\+times, long double $\ast$max\+\_\+times, long double $\ast$mean\+\_\+times\+\_\+f, long double $\ast$min\+\_\+times\+\_\+f, long double $\ast$max\+\_\+times\+\_\+f, long double $\ast$mean\+\_\+times\+\_\+fs, long double $\ast$min\+\_\+times\+\_\+fs, long double $\ast$max\+\_\+times\+\_\+fs, int times\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Print the raw timing data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Contains utility functions for the project. 
+

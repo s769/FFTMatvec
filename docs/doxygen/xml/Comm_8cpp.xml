@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="Comm_8cpp" kind="file" language="C++">
+    <compoundname>Comm.cpp</compoundname>
+    <includes refid="Comm_8hpp" local="yes">Comm.hpp</includes>
+    <incdepgraph>
+      <node id="1">
+        <label>/home/srvenkat/matvec-test/src/Comm.cpp</label>
+        <link refid="Comm_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Comm.hpp</label>
+        <link refid="Comm_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>profiler.hpp</label>
+        <link refid="profiler_8hpp_source"/>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>shared.hpp</label>
+        <link refid="shared_8hpp"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>table.hpp</label>
+        <link refid="table_8hpp_source"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>utils.hpp</label>
+        <link refid="utils_8hpp"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>algorithm</label>
+      </node>
+      <node id="22">
+        <label>array</label>
+      </node>
+      <node id="9">
+        <label>assert.h</label>
+      </node>
+      <node id="29">
+        <label>cassert</label>
+      </node>
+      <node id="40">
+        <label>cctype</label>
+      </node>
+      <node id="35">
+        <label>clocale</label>
+      </node>
+      <node id="25">
+        <label>cstddef</label>
+      </node>
+      <node id="34">
+        <label>cstdint</label>
+      </node>
+      <node id="33">
+        <label>cstdio</label>
+      </node>
+      <node id="37">
+        <label>cstdlib</label>
+      </node>
+      <node id="13">
+        <label>cublas_v2.h</label>
+      </node>
+      <node id="8">
+        <label>cuda_runtime.h</label>
+      </node>
+      <node id="7">
+        <label>cufft.h</label>
+      </node>
+      <node id="21">
+        <label>fstream</label>
+      </node>
+      <node id="42">
+        <label>functional</label>
+      </node>
+      <node id="20">
+        <label>iomanip</label>
+      </node>
+      <node id="5">
+        <label>iostream</label>
+      </node>
+      <node id="31">
+        <label>iterator</label>
+      </node>
+      <node id="26">
+        <label>limits</label>
+      </node>
+      <node id="36">
+        <label>locale</label>
+      </node>
+      <node id="39">
+        <label>memory</label>
+      </node>
+      <node id="16">
+        <label>mpi.h</label>
+      </node>
+      <node id="18">
+        <label>nccl.h</label>
+      </node>
+      <node id="27">
+        <label>new</label>
+      </node>
+      <node id="12">
+        <label>omp.h</label>
+      </node>
+      <node id="43">
+        <label>optional</label>
+      </node>
+      <node id="32">
+        <label>ostream</label>
+      </node>
+      <node id="41">
+        <label>sstream</label>
+      </node>
+      <node id="4">
+        <label>stdio.h</label>
+      </node>
+      <node id="6">
+        <label>stdlib.h</label>
+      </node>
+      <node id="14">
+        <label>string</label>
+      </node>
+      <node id="11">
+        <label>sys/time.h</label>
+      </node>
+      <node id="10">
+        <label>time.h</label>
+      </node>
+      <node id="17">
+        <label>unistd.h</label>
+      </node>
+      <node id="28">
+        <label>utility</label>
+      </node>
+      <node id="15">
+        <label>vector</label>
+      </node>
+      <node id="38">
+        <label>wchar.h</label>
+      </node>
+    </incdepgraph>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Comm_8hpp" kindref="compound">Comm.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/><sp/><sp/><sp/>Constructor<sp/>for<sp/>Comm<sp/>class</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/><sp/><sp/>@param<sp/>comm<sp/>MPI_Comm<sp/>object<sp/>for<sp/>the<sp/>global<sp/>communicator</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/><sp/><sp/>@param<sp/>proc_rows<sp/>Number<sp/>of<sp/>rows<sp/>in<sp/>the<sp/>processor<sp/>grid</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/><sp/><sp/><sp/>@param<sp/>proc_cols<sp/>Number<sp/>of<sp/>columns<sp/>in<sp/>the<sp/>processor<sp/>grid</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"></highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/><sp/><sp/>Initializes<sp/>the<sp/>global<sp/>communicator<sp/>and<sp/>creates<sp/>row<sp/>and<sp/>column<sp/>communicators</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/><sp/><sp/>for<sp/>the<sp/>processor<sp/>grid.<sp/>Also<sp/>creates<sp/>CUDA<sp/>streams<sp/>for<sp/>each<sp/>processor<sp/>and<sp/>GPU<sp/>communicators<sp/>(NCCL).</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"></highlight></codeline>
+<codeline lineno="12"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><ref refid="classComm_1ae7abb867cfc83cd076821f60901782a2" kindref="member">Comm::Comm</ref>(MPI_Comm<sp/>comm,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>proc_rows,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>proc_cols)<sp/>:<sp/>global_comm(comm),<sp/>proc_rows(proc_rows),<sp/>proc_cols(proc_cols)</highlight></codeline>
+<codeline lineno="14"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>local_rank<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/>global_comm<sp/>=<sp/>comm;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_rank(global_comm,<sp/>&amp;world_rank);</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_size(global_comm,<sp/>&amp;world_size);</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>row_color<sp/>=<sp/>world_rank<sp/>%<sp/>proc_rows;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Comm_split(global_comm,<sp/>row_color,<sp/>world_rank,<sp/>&amp;row_comm));</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>row_group_rank,<sp/>row_group_size;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_rank(row_comm,<sp/>&amp;row_group_rank);</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_size(row_comm,<sp/>&amp;row_group_size);</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/>hostHashs[world_size];</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>hostname[1024];</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespaceUtils_1abe2d56751904f51d670f0ead1a510a28" kindref="member">Utils::getHostName</ref>(hostname,<sp/>1024);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/>hostHashs[world_rank]<sp/>=<sp/><ref refid="namespaceUtils_1a7f1ae45e1fa6c658c451fd26c361c66f" kindref="member">Utils::getHostHash</ref>(hostname);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Allgather(MPI_IN_PLACE,<sp/>0,<sp/>MPI_DATATYPE_NULL,<sp/>hostHashs,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(uint64_t),<sp/>MPI_BYTE,<sp/>global_comm));</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>p<sp/>=<sp/>0;<sp/>p<sp/>&lt;<sp/>world_size;<sp/>p++)</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(p<sp/>==<sp/>world_rank)</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(hostHashs[p]<sp/>==<sp/>hostHashs[world_rank])</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>local_rank++;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>ncclUniqueId<sp/>row_id;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(row_group_rank<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ncclGetUniqueId(&amp;row_id);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Bcast((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)&amp;row_id,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(row_id),<sp/>MPI_BYTE,<sp/>0,<sp/>row_comm));</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>picking<sp/>a<sp/>GPU<sp/>based<sp/>on<sp/>local_rank,<sp/>make<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/>device<sp/>=<sp/>local_rank;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>gpuErrchk(cudaSetDevice(local_rank));</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/>gpuErrchk(cudaStreamCreate(&amp;s));</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>NCCLCHECK(ncclCommInitRank(&amp;gpu_row_comm,<sp/>row_group_size,<sp/>row_id,<sp/>row_group_rank));</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/>col_color<sp/>=<sp/>world_rank<sp/>/<sp/>proc_rows;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>col_group_rank,<sp/>col_group_size;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/>ncclUniqueId<sp/>col_id;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Comm_split(global_comm,<sp/>col_color,<sp/>world_rank,<sp/>&amp;col_comm));</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_rank(col_comm,<sp/>&amp;col_group_rank);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/>MPI_Comm_size(col_comm,<sp/>&amp;col_group_size);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(col_group_rank<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ncclGetUniqueId(&amp;col_id);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Bcast((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)&amp;col_id,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(col_id),<sp/>MPI_BYTE,<sp/>0,<sp/>col_comm));</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/>NCCLCHECK(ncclCommInitRank(&amp;gpu_col_comm,<sp/>col_group_size,<sp/>col_id,<sp/>col_group_rank));</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/>cublasSafeCall(cublasCreate(&amp;(cublasHandle)));</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>cublasSafeCall(cublasSetStream(cublasHandle,<sp/>s));</highlight></codeline>
+<codeline lineno="71"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/>Destructor<sp/>for<sp/>Comm<sp/>class</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"></highlight></codeline>
+<codeline lineno="77"><highlight class="comment"><sp/><sp/><sp/><sp/>Frees<sp/>the<sp/>row<sp/>and<sp/>column<sp/>communicators<sp/>and<sp/>destroys<sp/>the<sp/>NCCL<sp/>communicators.</highlight></codeline>
+<codeline lineno="78"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><ref refid="classComm_1a00134417af6aae9bf911d3ec7b8c049b" kindref="member">Comm::~Comm</ref>()</highlight></codeline>
+<codeline lineno="80"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Comm_free(&amp;row_comm));</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/>MPICHECK(MPI_Comm_free(&amp;col_comm));</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>NCCLCHECK(ncclCommDestroy(gpu_row_comm));</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>NCCLCHECK(ncclCommDestroy(gpu_col_comm));</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>cublasSafeCall(cublasDestroy(cublasHandle));</highlight></codeline>
+<codeline lineno="86"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"></highlight></codeline>
+<codeline lineno="90"><highlight class="comment">*/</highlight></codeline>
+    </programlisting>
+    <location file="/home/srvenkat/matvec-test/src/Comm.cpp"/>
+  </compounddef>
+</doxygen>

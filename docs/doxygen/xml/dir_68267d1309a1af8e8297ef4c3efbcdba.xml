@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="dir_68267d1309a1af8e8297ef4c3efbcdba" kind="dir">
+    <compoundname>/home/srvenkat/matvec-test/src</compoundname>
+    <innerfile refid="cmdparser_8hpp">cmdparser.hpp</innerfile>
+    <innerfile refid="Comm_8cpp">Comm.cpp</innerfile>
+    <innerfile refid="Comm_8hpp">Comm.hpp</innerfile>
+    <innerfile refid="main_8cpp">main.cpp</innerfile>
+    <innerfile refid="Matrix_8cpp">Matrix.cpp</innerfile>
+    <innerfile refid="Matrix_8hpp">Matrix.hpp</innerfile>
+    <innerfile refid="matvec_8cpp">matvec.cpp</innerfile>
+    <innerfile refid="matvec_8hpp">matvec.hpp</innerfile>
+    <innerfile refid="profiler_8cpp">profiler.cpp</innerfile>
+    <innerfile refid="profiler_8hpp">profiler.hpp</innerfile>
+    <innerfile refid="shared_8hpp">shared.hpp</innerfile>
+    <innerfile refid="table_8hpp">table.hpp</innerfile>
+    <innerfile refid="tester_8cpp">tester.cpp</innerfile>
+    <innerfile refid="tester_8hpp">tester.hpp</innerfile>
+    <innerfile refid="utils_8hpp">utils.hpp</innerfile>
+    <innerfile refid="Vector_8cpp">Vector.cpp</innerfile>
+    <innerfile refid="Vector_8hpp">Vector.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/"/>
+  </compounddef>
+</doxygen>

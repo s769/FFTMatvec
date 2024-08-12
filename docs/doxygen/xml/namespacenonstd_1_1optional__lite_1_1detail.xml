@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacenonstd_1_1optional__lite_1_1detail" kind="namespace" language="C++">
+    <compoundname>nonstd::optional_lite::detail</compoundname>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1alignment__logic" prot="public">nonstd::optional_lite::detail::alignment_logic</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1alignment__of" prot="public">nonstd::optional_lite::detail::alignment_of</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1alignment__of__hack" prot="public">nonstd::optional_lite::detail::alignment_of_hack</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1nulltype" prot="public">nonstd::optional_lite::detail::nulltype</innerclass>
+    <innerclass refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t" prot="public">nonstd::optional_lite::detail::storage_t</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1struct__t" prot="public">nonstd::optional_lite::detail::struct_t</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1type__of__size" prot="public">nonstd::optional_lite::detail::type_of_size</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1type__of__size_3_01nulltype_00_01N_01_4" prot="public">nonstd::optional_lite::detail::type_of_size&lt; nulltype, N &gt;</innerclass>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1typelist" prot="public">nonstd::optional_lite::detail::typelist</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="table_8hpp_1aeb48690a3a8b6264ddf598f99dd61fbe" prot="public" static="no">
+        <type><ref refid="structnonstd_1_1optional__lite_1_1detail_1_1nulltype" kindref="compound">nulltype</ref></type>
+        <definition>typedef nulltype nonstd::optional_lite::detail::alignment_types</definition>
+        <argsstring></argsstring>
+        <name>alignment_types</name>
+        <qualifiedname>nonstd::optional_lite::detail::alignment_types</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3127" column="15" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3127" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="table_8hpp_1aa77120c8d345699822f198943b336d95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(char)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>char</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3116" column="9"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1af8439a0b7210345c7f40665737d92bf0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(short)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>short</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3116" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1abce0bfa5fe27f7b29d90f5e860b4885f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(int)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>int</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3116" column="49"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a800aabafee784a22d0de48a0e69e4e2b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(long)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>long</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3117" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1aafe28ce029917b3485d96b53395c07eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(float)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3117" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a75980006cfbf327121f007941a79489d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(double)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3117" column="45"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1adfef19e3e7317868a2c5a1f9920b1007" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(long double)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>long double</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3118" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a2823c5d4d222f44ae2ff38f1869aa523" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(char *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>char *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3120" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a02fcac81e4dd8c1f5bf384fdd723f6a1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(short *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>short *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3120" column="26"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ad64e5aa6d3d7cd282041e02d6b22164c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(int *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>int *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3120" column="47"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1aabfb8800383f12e4a3611c659299c356" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(long *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>long *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3121" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ab71944505de9161bd34d14db6b8f21c5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(float *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>float *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3121" column="26"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a478abbc4c89d5091451cebce0d37b86f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(double *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>double *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3121" column="47"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a235948262c5c4a0119610a008deb109d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(long double *)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>long double *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3122" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1abce616fd70ccdc735f4c654d4c28a012" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(Unknown(*)(Unknown))</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>Unknown(*)(Unknown)</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3124" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a009e940ece7b9a21f29ed031723029d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(Unknown *Unknown::*)</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>Unknown *Unknown::*</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3124" column="26"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a25ab89679e144acdcd3b08ff56dbc5c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::optional_ALIGN_TYPE</definition>
+        <argsstring>(Unknown(Unknown::*)(Unknown))</argsstring>
+        <name>optional_ALIGN_TYPE</name>
+        <qualifiedname>nonstd::optional_lite::detail::optional_ALIGN_TYPE</qualifiedname>
+        <param>
+          <type>Unknown(Unknown::*)(Unknown)</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3125" column="5"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3008" column="1"/>
+  </compounddef>
+</doxygen>

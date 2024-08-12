@@ -1,0 +1,279 @@
+\hypertarget{namespaceUtils}{}\doxysection{Utils Namespace Reference}
+\label{namespaceUtils}\index{Utils@{Utils}}
+
+
+Namespace containing utility functions.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{namespaceUtils_a7f1ae45e1fa6c658c451fd26c361c66f}{get\+Host\+Hash}} (const char $\ast$string)
+\begin{DoxyCompactList}\small\item\em Get the host hash. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_abe2d56751904f51d670f0ead1a510a28}{get\+Host\+Name}} (char $\ast$hostname, int maxlen)
+\begin{DoxyCompactList}\small\item\em Get the host name. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_adc2f304acec8ac21939f8ccd69324cd3}{Pad\+Vector}} (const double $\ast$const d\+\_\+in, double $\ast$const d\+\_\+pad, const unsigned int num\+\_\+cols, const unsigned int size, cuda\+Stream\+\_\+t s)
+\begin{DoxyCompactList}\small\item\em Pads each block of a vector to twice the length with zeros. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a9d0ccfc29aa0ef4861f810002058a8ff}{Unpad\+Repad\+Vector}} (const double $\ast$const d\+\_\+in, double $\ast$const d\+\_\+out, const unsigned int num\+\_\+cols, const unsigned int size, const bool unpad, cuda\+Stream\+\_\+t s)
+\begin{DoxyCompactList}\small\item\em Unpads or repads a vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_afc7acb2b6248e999e44b69df4d5968ee}{print\+Vec}} (double $\ast$vec, int len, int unpad\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints the elements of a vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_ae04d65fb199f9ea094484826841cde2b}{print\+Vec\+Complex}} (Complex $\ast$vec, int len, int unpad\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints a complex vector. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a0a7bd8883afe67961fad599b27a385a4}{print\+Vec\+MPI}} (double $\ast$vec, int len, int unpad\+\_\+size, int rank, int world\+\_\+size, std\+::string name=\char`\"{}Vector\char`\"{})
+\begin{DoxyCompactList}\small\item\em Prints a vector using MPI. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a2eb3dd7a1eabb25acfc1fcae3780d9f5}{print\+Times}} (int reps=1, bool table=true)
+\begin{DoxyCompactList}\small\item\em Print the times for the different parts of the code. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a2087376d30e113031da868ee9e6da68d}{make\+Table}} (std\+::vector$<$ std\+::string $>$ col\+\_\+names, std\+::vector$<$ long double $>$ mean, std\+::vector$<$ long double $>$ min, std\+::vector$<$ long double $>$ max)
+\begin{DoxyCompactList}\small\item\em Make a table of timing data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceUtils_a0dfdccf48b9c5cae7b29109a80d7b495}{print\+Raw}} (long double $\ast$mean\+\_\+times, long double $\ast$min\+\_\+times, long double $\ast$max\+\_\+times, long double $\ast$mean\+\_\+times\+\_\+f, long double $\ast$min\+\_\+times\+\_\+f, long double $\ast$max\+\_\+times\+\_\+f, long double $\ast$mean\+\_\+times\+\_\+fs, long double $\ast$min\+\_\+times\+\_\+fs, long double $\ast$max\+\_\+times\+\_\+fs, int times\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Print the raw timing data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Namespace containing utility functions. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceUtils_a7f1ae45e1fa6c658c451fd26c361c66f}\label{namespaceUtils_a7f1ae45e1fa6c658c451fd26c361c66f}} 
+\index{Utils@{Utils}!getHostHash@{getHostHash}}
+\index{getHostHash@{getHostHash}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{getHostHash()}{getHostHash()}}
+{\footnotesize\ttfamily uint64\+\_\+t Utils\+::get\+Host\+Hash (\begin{DoxyParamCaption}\item[{const char $\ast$}]{string }\end{DoxyParamCaption})}
+
+
+
+Get the host hash. 
+
+This function returns the hash of the host name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em string} & The host name. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The hash of the host name. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceUtils_abe2d56751904f51d670f0ead1a510a28}\label{namespaceUtils_abe2d56751904f51d670f0ead1a510a28}} 
+\index{Utils@{Utils}!getHostName@{getHostName}}
+\index{getHostName@{getHostName}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{getHostName()}{getHostName()}}
+{\footnotesize\ttfamily void Utils\+::get\+Host\+Name (\begin{DoxyParamCaption}\item[{char $\ast$}]{hostname,  }\item[{int}]{maxlen }\end{DoxyParamCaption})}
+
+
+
+Get the host name. 
+
+This function gets the host name and stores it in the provided buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em hostname} & The buffer to store the host name. \\
+\hline
+{\em maxlen} & The maximum length of the buffer. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_a2087376d30e113031da868ee9e6da68d}\label{namespaceUtils_a2087376d30e113031da868ee9e6da68d}} 
+\index{Utils@{Utils}!makeTable@{makeTable}}
+\index{makeTable@{makeTable}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{makeTable()}{makeTable()}}
+{\footnotesize\ttfamily void Utils\+::make\+Table (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{col\+\_\+names,  }\item[{std\+::vector$<$ long double $>$}]{mean,  }\item[{std\+::vector$<$ long double $>$}]{min,  }\item[{std\+::vector$<$ long double $>$}]{max }\end{DoxyParamCaption})}
+
+
+
+Make a table of timing data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em col\+\_\+names} & The names of the columns (first entry is the title). \\
+\hline
+{\em mean} & The mean times. \\
+\hline
+{\em min} & The minimum times. \\
+\hline
+{\em max} & The maximum times. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_adc2f304acec8ac21939f8ccd69324cd3}\label{namespaceUtils_adc2f304acec8ac21939f8ccd69324cd3}} 
+\index{Utils@{Utils}!PadVector@{PadVector}}
+\index{PadVector@{PadVector}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{PadVector()}{PadVector()}}
+{\footnotesize\ttfamily void Utils\+::\+Pad\+Vector (\begin{DoxyParamCaption}\item[{const double $\ast$const}]{d\+\_\+in,  }\item[{double $\ast$const}]{d\+\_\+pad,  }\item[{const unsigned int}]{num\+\_\+cols,  }\item[{const unsigned int}]{size,  }\item[{cuda\+Stream\+\_\+t}]{s }\end{DoxyParamCaption})}
+
+
+
+Pads each block of a vector to twice the length with zeros. 
+
+This function takes an input vector {\ttfamily d\+\_\+in} and pads each block of the vector to twice the length with zeros. The padded vector is stored in the output vector {\ttfamily d\+\_\+pad}. The number of columns in each block is specified by {\ttfamily num\+\_\+cols}. The total size of the vector is specified by {\ttfamily size}. The padding operation is performed asynchronously on the CUDA stream {\ttfamily s}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em d\+\_\+in} & Pointer to the input vector. \\
+\hline
+{\em d\+\_\+pad} & Pointer to the output padded vector. \\
+\hline
+{\em num\+\_\+cols} & Number of columns in each block. \\
+\hline
+{\em size} & Total size of the vector. \\
+\hline
+{\em s} & CUDA stream for asynchronous execution. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_a0dfdccf48b9c5cae7b29109a80d7b495}\label{namespaceUtils_a0dfdccf48b9c5cae7b29109a80d7b495}} 
+\index{Utils@{Utils}!printRaw@{printRaw}}
+\index{printRaw@{printRaw}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{printRaw()}{printRaw()}}
+{\footnotesize\ttfamily void Utils\+::print\+Raw (\begin{DoxyParamCaption}\item[{long double $\ast$}]{mean\+\_\+times,  }\item[{long double $\ast$}]{min\+\_\+times,  }\item[{long double $\ast$}]{max\+\_\+times,  }\item[{long double $\ast$}]{mean\+\_\+times\+\_\+f,  }\item[{long double $\ast$}]{min\+\_\+times\+\_\+f,  }\item[{long double $\ast$}]{max\+\_\+times\+\_\+f,  }\item[{long double $\ast$}]{mean\+\_\+times\+\_\+fs,  }\item[{long double $\ast$}]{min\+\_\+times\+\_\+fs,  }\item[{long double $\ast$}]{max\+\_\+times\+\_\+fs,  }\item[{int}]{times\+\_\+len }\end{DoxyParamCaption})}
+
+
+
+Print the raw timing data. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mean\+\_\+times} & The mean times. \\
+\hline
+{\em min\+\_\+times} & The minimum times. \\
+\hline
+{\em max\+\_\+times} & The maximum times. \\
+\hline
+{\em mean\+\_\+times\+\_\+f} & The mean times for the forward FFT. \\
+\hline
+{\em min\+\_\+times\+\_\+f} & The minimum times for the forward FFT. \\
+\hline
+{\em max\+\_\+times\+\_\+f} & The maximum times for the forward FFT. \\
+\hline
+{\em mean\+\_\+times\+\_\+fs} & The mean times for the forward FFT in TOSI format. \\
+\hline
+{\em min\+\_\+times\+\_\+fs} & The minimum times for the forward FFT in TOSI format. \\
+\hline
+{\em max\+\_\+times\+\_\+fs} & The maximum times for the forward FFT in TOSI format. \\
+\hline
+{\em times\+\_\+len} & The number of timing segments. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_a2eb3dd7a1eabb25acfc1fcae3780d9f5}\label{namespaceUtils_a2eb3dd7a1eabb25acfc1fcae3780d9f5}} 
+\index{Utils@{Utils}!printTimes@{printTimes}}
+\index{printTimes@{printTimes}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{printTimes()}{printTimes()}}
+{\footnotesize\ttfamily void Utils\+::print\+Times (\begin{DoxyParamCaption}\item[{int}]{reps = {\ttfamily 1},  }\item[{bool}]{table = {\ttfamily true} }\end{DoxyParamCaption})}
+
+
+
+Print the times for the different parts of the code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em reps} & The number of repetitions of the code. \\
+\hline
+{\em table} & Flag indicating whether to print the times in a table or print raw values. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_afc7acb2b6248e999e44b69df4d5968ee}\label{namespaceUtils_afc7acb2b6248e999e44b69df4d5968ee}} 
+\index{Utils@{Utils}!printVec@{printVec}}
+\index{printVec@{printVec}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{printVec()}{printVec()}}
+{\footnotesize\ttfamily void Utils\+::print\+Vec (\begin{DoxyParamCaption}\item[{double $\ast$}]{vec,  }\item[{int}]{len,  }\item[{int}]{unpad\+\_\+size,  }\item[{std\+::string}]{name = {\ttfamily \char`\"{}Vector\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+Prints the elements of a vector. 
+
+This function prints the elements of a vector to the console.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vec} & Pointer to the vector. \\
+\hline
+{\em len} & The length of the vector. \\
+\hline
+{\em unpad\+\_\+size} & The size of the unpadded vector. \\
+\hline
+{\em name} & (Optional) The name of the vector. Defaults to \char`\"{}\+Vector\char`\"{}. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_ae04d65fb199f9ea094484826841cde2b}\label{namespaceUtils_ae04d65fb199f9ea094484826841cde2b}} 
+\index{Utils@{Utils}!printVecComplex@{printVecComplex}}
+\index{printVecComplex@{printVecComplex}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{printVecComplex()}{printVecComplex()}}
+{\footnotesize\ttfamily void Utils\+::print\+Vec\+Complex (\begin{DoxyParamCaption}\item[{Complex $\ast$}]{vec,  }\item[{int}]{len,  }\item[{int}]{unpad\+\_\+size,  }\item[{std\+::string}]{name = {\ttfamily \char`\"{}Vector\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+Prints a complex vector. 
+
+This function prints the elements of a complex vector to the console.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vec} & The complex vector to be printed. \\
+\hline
+{\em len} & The length of the vector. \\
+\hline
+{\em unpad\+\_\+size} & The size of the unpadded vector. \\
+\hline
+{\em name} & The name of the vector (optional). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_a0a7bd8883afe67961fad599b27a385a4}\label{namespaceUtils_a0a7bd8883afe67961fad599b27a385a4}} 
+\index{Utils@{Utils}!printVecMPI@{printVecMPI}}
+\index{printVecMPI@{printVecMPI}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{printVecMPI()}{printVecMPI()}}
+{\footnotesize\ttfamily void Utils\+::print\+Vec\+MPI (\begin{DoxyParamCaption}\item[{double $\ast$}]{vec,  }\item[{int}]{len,  }\item[{int}]{unpad\+\_\+size,  }\item[{int}]{rank,  }\item[{int}]{world\+\_\+size,  }\item[{std\+::string}]{name = {\ttfamily \char`\"{}Vector\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+Prints a vector using MPI. 
+
+This function prints the elements of a vector using MPI. It takes the following parameters\+:
+\begin{DoxyItemize}
+\item {\ttfamily vec}\+: A pointer to the vector to be printed.
+\item {\ttfamily len}\+: The length of the vector.
+\item {\ttfamily unpad\+\_\+size}\+: The size of the unpadded vector.
+\item {\ttfamily rank}\+: The rank of the current process.
+\item {\ttfamily world\+\_\+size}\+: The total number of processes.
+\item {\ttfamily name}\+: (Optional) The name of the vector (default is \char`\"{}\+Vector\char`\"{}).
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em vec} & A pointer to the vector to be printed. \\
+\hline
+{\em len} & The length of the vector. \\
+\hline
+{\em unpad\+\_\+size} & The size of the unpadded vector. \\
+\hline
+{\em rank} & The rank of the current process. \\
+\hline
+{\em world\+\_\+size} & The total number of processes. \\
+\hline
+{\em name} & (Optional) The name of the vector (default is \char`\"{}\+Vector\char`\"{}). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceUtils_a9d0ccfc29aa0ef4861f810002058a8ff}\label{namespaceUtils_a9d0ccfc29aa0ef4861f810002058a8ff}} 
+\index{Utils@{Utils}!UnpadRepadVector@{UnpadRepadVector}}
+\index{UnpadRepadVector@{UnpadRepadVector}!Utils@{Utils}}
+\doxysubsubsection{\texorpdfstring{UnpadRepadVector()}{UnpadRepadVector()}}
+{\footnotesize\ttfamily void Utils\+::\+Unpad\+Repad\+Vector (\begin{DoxyParamCaption}\item[{const double $\ast$const}]{d\+\_\+in,  }\item[{double $\ast$const}]{d\+\_\+out,  }\item[{const unsigned int}]{num\+\_\+cols,  }\item[{const unsigned int}]{size,  }\item[{const bool}]{unpad,  }\item[{cuda\+Stream\+\_\+t}]{s }\end{DoxyParamCaption})}
+
+
+
+Unpads or repads a vector. 
+
+This function either unpads each block of the vector back to the original length or resets the second half of each block to zeros.
+
+
+\begin{DoxyParams}{Parameters}
+{\em d\+\_\+in} & Pointer to the input vector. \\
+\hline
+{\em d\+\_\+out} & Pointer to the output vector. \\
+\hline
+{\em num\+\_\+cols} & The number of columns in the vector. \\
+\hline
+{\em size} & The size of the vector. \\
+\hline
+{\em unpad} & Flag indicating whether to unpad or repad the vector. If true, the vector will be unpadded. If false, the second half of each block will be reset to zeros. \\
+\hline
+{\em s} & The CUDA stream to use for the operation. \\
+\hline
+\end{DoxyParams}

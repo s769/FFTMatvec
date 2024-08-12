@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classenum__array" kind="class" language="C++" prot="public">
+    <compoundname>enum_array</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">std::array&lt; T, N &gt;</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename E</type>
+      </param>
+      <param>
+        <type>class T</type>
+      </param>
+      <param>
+        <type>std::size_t</type>
+        <declname>N</declname>
+        <defname>N</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classenum__array_1a9cb42cb40f9521dd1fa73b7741cb35df" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>T &amp;</type>
+        <definition>T &amp; enum_array&lt; E, T, N &gt;::operator[]</definition>
+        <argsstring>(E e)</argsstring>
+        <name>operator[]</name>
+        <qualifiedname>enum_array::operator[]</qualifiedname>
+        <param>
+          <type>E</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/shared.hpp" line="241" column="7" bodyfile="/home/srvenkat/matvec-test/src/shared.hpp" bodystart="241" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="classenum__array_1ad2e86bd60a4e3900b514a3f8db7ed70a" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const T &amp;</type>
+        <definition>const T &amp; enum_array&lt; E, T, N &gt;::operator[]</definition>
+        <argsstring>(E e) const</argsstring>
+        <name>operator[]</name>
+        <qualifiedname>enum_array::operator[]</qualifiedname>
+        <param>
+          <type>E</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/shared.hpp" line="246" column="13" bodyfile="/home/srvenkat/matvec-test/src/shared.hpp" bodystart="246" bodyend="249"/>
+      </memberdef>
+      <memberdef kind="function" id="classenum__array_1a89b64873948bb2c4d04e38543de466ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>T &amp;</type>
+        <definition>T &amp; enum_array&lt; E, T, N &gt;::operator[]</definition>
+        <argsstring>(int e)</argsstring>
+        <name>operator[]</name>
+        <qualifiedname>enum_array::operator[]</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/shared.hpp" line="251" column="7" bodyfile="/home/srvenkat/matvec-test/src/shared.hpp" bodystart="251" bodyend="254"/>
+      </memberdef>
+      <memberdef kind="function" id="classenum__array_1a9789dd73b0bdc1da1c7ac1f43c442a51" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>const T &amp;</type>
+        <definition>const T &amp; enum_array&lt; E, T, N &gt;::operator[]</definition>
+        <argsstring>(int e) const</argsstring>
+        <name>operator[]</name>
+        <qualifiedname>enum_array::operator[]</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>e</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/shared.hpp" line="256" column="13" bodyfile="/home/srvenkat/matvec-test/src/shared.hpp" bodystart="256" bodyend="259"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>enum_array&lt; E, T, N &gt;</label>
+        <link refid="classenum__array"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::array&lt; T, N &gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>enum_array&lt; E, T, N &gt;</label>
+        <link refid="classenum__array"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::array&lt; T, N &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srvenkat/matvec-test/src/shared.hpp" line="238" column="1" bodyfile="/home/srvenkat/matvec-test/src/shared.hpp" bodystart="239" bodyend="260"/>
+    <listofallmembers>
+      <member refid="classenum__array_1a9cb42cb40f9521dd1fa73b7741cb35df" prot="public" virt="non-virtual"><scope>enum_array</scope><name>operator[]</name></member>
+      <member refid="classenum__array_1ad2e86bd60a4e3900b514a3f8db7ed70a" prot="public" virt="non-virtual"><scope>enum_array</scope><name>operator[]</name></member>
+      <member refid="classenum__array_1a89b64873948bb2c4d04e38543de466ec" prot="public" virt="non-virtual"><scope>enum_array</scope><name>operator[]</name></member>
+      <member refid="classenum__array_1a9789dd73b0bdc1da1c7ac1f43c442a51" prot="public" virt="non-virtual"><scope>enum_array</scope><name>operator[]</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

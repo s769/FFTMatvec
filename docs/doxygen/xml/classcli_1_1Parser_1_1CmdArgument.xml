@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classcli_1_1Parser_1_1CmdArgument" kind="class" language="C++" prot="private" final="yes">
+    <compoundname>cli::Parser::CmdArgument</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">cli::Parser::CmdBase</basecompoundref>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classcli_1_1Parser_1_1CmdArgument_1a59add6c33fe4b954a014ee8ebb4d1ab4" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T cli::Parser::CmdArgument&lt; T &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>cli::Parser::CmdArgument::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="142" column="3" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="142" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcli_1_1Parser_1_1CmdArgument_1ae6b11e60f3ba248e19796d99b1324379" prot="public" static="no" const="no" explicit="yes" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::Parser::CmdArgument&lt; T &gt;::CmdArgument</definition>
+        <argsstring>(const std::string &amp;name, const std::string &amp;alternative, const std::string &amp;description, bool required, bool dominant)</argsstring>
+        <name>CmdArgument</name>
+        <qualifiedname>cli::Parser::CmdArgument::CmdArgument</qualifiedname>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>alternative</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>description</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>required</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>dominant</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="125" column="10" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="125" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1_1CmdArgument_1a181df49ec8bf7e949f09f60a7fadbf9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool cli::Parser::CmdArgument&lt; T &gt;::parse</definition>
+        <argsstring>(std::ostream &amp;, std::ostream &amp;)</argsstring>
+        <name>parse</name>
+        <qualifiedname>cli::Parser::CmdArgument::parse</qualifiedname>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <param>
+          <type>std::ostream &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="129" column="14" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="129" bodyend="136"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1Parser_1_1CmdArgument_1ab9ea9b0a5a77f1704140653008743780" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="virtual">
+        <type>std::string</type>
+        <definition>virtual std::string cli::Parser::CmdArgument&lt; T &gt;::print_value</definition>
+        <argsstring>() const</argsstring>
+        <name>print_value</name>
+        <qualifiedname>cli::Parser::CmdArgument::print_value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="138" column="21" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="138" bodyend="140"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>cli::Parser::CmdArgument&lt; T &gt;</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cli::Parser::CmdBase</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>cli::Parser::CmdArgument&lt; T &gt;</label>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cli::Parser::CmdBase</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="123" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="123" bodyend="143"/>
+    <listofallmembers>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a595db24d42b8931831f4654064fd3460" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>alternative</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1ad16645525ecc6ceedcddf3d70fe42af8" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>arguments</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdArgument_1ae6b11e60f3ba248e19796d99b1324379" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>CmdArgument</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a7a498d4a4684ad56a6c35b9763f33040" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>CmdBase</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a1bbf34c88f7ba4fcc9a1f7b04634f9e4" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>command</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a452edebb9a72bd65231e599b967d591d" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>description</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a94c24610a74a9a8423b6846b218ae6d0" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>dominant</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1ab90b60f926cc019afea201bc791987ad" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>handled</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a64bd7d226aed034aedd43426fdf82489" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>is</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a4b944418fa14c87b92e2ee612e0e9887" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>name</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdArgument_1a181df49ec8bf7e949f09f60a7fadbf9f" prot="public" virt="virtual"><scope>cli::Parser::CmdArgument</scope><name>parse</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdArgument_1ab9ea9b0a5a77f1704140653008743780" prot="public" virt="virtual"><scope>cli::Parser::CmdArgument</scope><name>print_value</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a4f9db6bec8951b4934c34d4766c9e195" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>required</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdArgument_1a59add6c33fe4b954a014ee8ebb4d1ab4" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>value</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1a7984617ffcdd1ca14cd0769f8c3217b8" prot="public" virt="non-virtual"><scope>cli::Parser::CmdArgument</scope><name>variadic</name></member>
+      <member refid="classcli_1_1Parser_1_1CmdBase_1aa2ff1261523cbecfc3b835866c457fa8" prot="public" virt="virtual"><scope>cli::Parser::CmdArgument</scope><name>~CmdBase</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="classcli_1_1NumericalBase" kind="class" language="C++" prot="public">
+    <compoundname>cli::NumericalBase</compoundname>
+    <includes refid="cmdparser_8hpp" local="no">cmdparser.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+      <param>
+        <type>int</type>
+        <declname>numericalBase</declname>
+        <defname>numericalBase</defname>
+        <defval>0</defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classcli_1_1NumericalBase_1a2684f59e6ddb7d9c84cd4779111d0919" prot="public" static="no" mutable="no">
+        <type>T</type>
+        <definition>T cli::NumericalBase&lt; T, numericalBase &gt;::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>cli::NumericalBase::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="33" column="15" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classcli_1_1NumericalBase_1a62b6d12525ff4a2eefc47dbbcc9136e9" prot="public" static="no" mutable="no">
+        <type>unsigned int</type>
+        <definition>unsigned int cli::NumericalBase&lt; T, numericalBase &gt;::base</definition>
+        <argsstring></argsstring>
+        <name>base</name>
+        <qualifiedname>cli::NumericalBase::base</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="34" column="15" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classcli_1_1NumericalBase_1acc8f7b6541443166b37d7b121897f53e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::NumericalBase&lt; T, numericalBase &gt;::NumericalBase</definition>
+        <argsstring>()</argsstring>
+        <name>NumericalBase</name>
+        <qualifiedname>cli::NumericalBase::NumericalBase</qualifiedname>
+        <briefdescription>
+<para>This constructor required for correct AgrumentCountChecker initialization. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="20" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="20" bodyend="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1NumericalBase_1a060c73cce8e1c134abe1c69e05513fe9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::NumericalBase&lt; T, numericalBase &gt;::NumericalBase</definition>
+        <argsstring>(T val)</argsstring>
+        <name>NumericalBase</name>
+        <qualifiedname>cli::NumericalBase::NumericalBase</qualifiedname>
+        <param>
+          <type>T</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>This constructor required for default value initialization <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>val</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>comes from default value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="24" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="24" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1NumericalBase_1ac8b7e8ef01c76544f5b1149ebf500028" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::NumericalBase&lt; T, numericalBase &gt;::operator T</definition>
+        <argsstring>() const</argsstring>
+        <name>operator T</name>
+        <qualifiedname>cli::NumericalBase::operator T</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="26" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="26" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classcli_1_1NumericalBase_1a83552be3248e539dd521af5ff6ae74c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>cli::NumericalBase&lt; T, numericalBase &gt;::operator T*</definition>
+        <argsstring>()</argsstring>
+        <name>operator T*</name>
+        <qualifiedname>cli::NumericalBase::operator T*</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="29" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="29" bodyend="31"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Class used to wrap integer types to specify desired numerical base for specific argument parsing. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="16" column="16" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="16" bodyend="35"/>
+    <listofallmembers>
+      <member refid="classcli_1_1NumericalBase_1a62b6d12525ff4a2eefc47dbbcc9136e9" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>base</name></member>
+      <member refid="classcli_1_1NumericalBase_1acc8f7b6541443166b37d7b121897f53e" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>NumericalBase</name></member>
+      <member refid="classcli_1_1NumericalBase_1a060c73cce8e1c134abe1c69e05513fe9" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>NumericalBase</name></member>
+      <member refid="classcli_1_1NumericalBase_1ac8b7e8ef01c76544f5b1149ebf500028" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>operator T</name></member>
+      <member refid="classcli_1_1NumericalBase_1a83552be3248e539dd521af5ff6ae74c5" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>operator T*</name></member>
+      <member refid="classcli_1_1NumericalBase_1a2684f59e6ddb7d9c84cd4779111d0919" prot="public" virt="non-virtual"><scope>cli::NumericalBase</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

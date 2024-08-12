@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structcli_1_1Parser_1_1ArgumentCountChecker_3_01cli_1_1NumericalBase_3_01T_01_4_01_4" kind="struct" language="C++" prot="private">
+    <compoundname>cli::Parser::ArgumentCountChecker&lt; cli::NumericalBase&lt; T &gt; &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structcli_1_1Parser_1_1ArgumentCountChecker_3_01cli_1_1NumericalBase_3_01T_01_4_01_4_1a7c9ff0a25000318a82496459259f96fd" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr bool</type>
+        <definition>constexpr bool cli::Parser::ArgumentCountChecker&lt; cli::NumericalBase&lt; T &gt; &gt;::Variadic</definition>
+        <argsstring></argsstring>
+        <name>Variadic</name>
+        <qualifiedname>cli::Parser::ArgumentCountChecker&lt; cli::NumericalBase&lt; T &gt; &gt;::Variadic</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="88" column="23" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="86" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="87" bodyend="89"/>
+    <listofallmembers>
+      <member refid="structcli_1_1Parser_1_1ArgumentCountChecker_3_01cli_1_1NumericalBase_3_01T_01_4_01_4_1a7c9ff0a25000318a82496459259f96fd" prot="public" virt="non-virtual"><scope>cli::Parser::ArgumentCountChecker&lt; cli::NumericalBase&lt; T &gt; &gt;</scope><name>Variadic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

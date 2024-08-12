@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structnonstd_1_1variants_1_1detail_1_1TypedVisitorUnwrapper" kind="struct" language="C++" prot="public">
+    <compoundname>nonstd::variants::detail::TypedVisitorUnwrapper</compoundname>
+    <templateparamlist>
+      <param>
+        <type>size_t</type>
+        <declname>NumVars</declname>
+        <defname>NumVars</defname>
+      </param>
+      <param>
+        <type>typename R</type>
+      </param>
+      <param>
+        <type>typename Visitor</type>
+      </param>
+      <param>
+        <type>typename <ref refid="structnonstd_1_1variants_1_1detail_1_1TX" kindref="compound">T1</ref></type>
+      </param>
+      <param>
+        <type>typename <ref refid="structnonstd_1_1variants_1_1detail_1_1TX" kindref="compound">T2</ref></type>
+        <defval><ref refid="structnonstd_1_1variants_1_1detail_1_1S0" kindref="compound">S0</ref></defval>
+      </param>
+      <param>
+        <type>typename <ref refid="structnonstd_1_1variants_1_1detail_1_1TX" kindref="compound">T3</ref></type>
+        <defval><ref refid="structnonstd_1_1variants_1_1detail_1_1S0" kindref="compound">S0</ref></defval>
+      </param>
+      <param>
+        <type>typename <ref refid="structnonstd_1_1variants_1_1detail_1_1TX" kindref="compound">T4</ref></type>
+        <defval><ref refid="structnonstd_1_1variants_1_1detail_1_1S0" kindref="compound">S0</ref></defval>
+      </param>
+      <param>
+        <type>typename <ref refid="structnonstd_1_1variants_1_1detail_1_1TX" kindref="compound">T5</ref></type>
+        <defval><ref refid="structnonstd_1_1variants_1_1detail_1_1S0" kindref="compound">S0</ref></defval>
+      </param>
+    </templateparamlist>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="2015" column="1" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="2015" bodyend="-1"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

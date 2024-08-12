@@ -1,0 +1,931 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="namespacenonstd_1_1optional__lite" kind="namespace" language="C++">
+    <compoundname>nonstd::optional_lite</compoundname>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1nullopt__t" prot="public">nonstd::optional_lite::nullopt_t</innerclass>
+    <innerclass refid="classnonstd_1_1optional__lite_1_1optional" prot="public">nonstd::optional_lite::optional</innerclass>
+    <innernamespace refid="namespacenonstd_1_1optional__lite_1_1detail">nonstd::optional_lite::detail</innernamespace>
+    <innernamespace refid="namespacenonstd_1_1optional__lite_1_1std11">nonstd::optional_lite::std11</innernamespace>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="table_8hpp_1a8caa94752d08b4630d211967646b6b46" prot="public" static="no" mutable="no">
+        <type>const <ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        <definition>const nullopt_t nonstd::optional_lite::nullopt((nullopt_t::init()))</definition>
+        <argsstring>((nullopt_t::init()))</argsstring>
+        <name>nullopt</name>
+        <qualifiedname>nonstd::optional_lite::nullopt</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3236" column="17"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="table_8hpp_1a6ae823a46b77ddd0a5c4ffa2edb22f18" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator==</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator==</name>
+        <qualifiedname>nonstd::optional_lite::operator==</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3739" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3739" bodyend="3741"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ab6a0a1a16d60b13c1c7ed7a8a19a49b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator!=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>nonstd::optional_lite::operator!=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3744" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3744" bodyend="3746"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a0d6c651d715dad3ffde296d23e6b1e44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3749" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3749" bodyend="3751"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a4114214b19ec1a855ea38ee5fb42e09c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator&gt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3754" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3754" bodyend="3756"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a476a2b04a09c94c7e4c715cd2fb0e81a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator&lt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3759" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3759" bodyend="3761"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1acb283390428e43b21c9b454fc40b546d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, optional&lt; U &gt; const &amp;y)</argsstring>
+        <name>operator&gt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; U &gt; const &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3764" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3764" bodyend="3766"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ac82ef8ca6d094960c9219464d8405a5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator==</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, nullopt_t) optional_noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>nonstd::optional_lite::operator==</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3771" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3771" bodyend="3774"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a7137565eb096568df7c062cf1b4da978" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator==</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;x) optional_noexcept</argsstring>
+        <name>operator==</name>
+        <qualifiedname>nonstd::optional_lite::operator==</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3777" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3777" bodyend="3780"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ae9695a873081abab4586b9275f70e12c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator!=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, nullopt_t) optional_noexcept</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>nonstd::optional_lite::operator!=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3783" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3783" bodyend="3786"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a5575493e98a9f89b90bc3a7cee61d199" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator!=</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;x) optional_noexcept</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>nonstd::optional_lite::operator!=</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3789" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3789" bodyend="3792"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a30f91c4b9fbff654df826fdef1aa2066" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;, nullopt_t) optional_noexcept</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3795" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3795" bodyend="3798"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a8eb50362ea4098e0bf26e47226010b91" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;x) optional_noexcept</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3801" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3801" bodyend="3804"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a2b1662bbc97a09bcb41000a2b0b2123e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, nullopt_t) optional_noexcept</argsstring>
+        <name>operator&lt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3807" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3807" bodyend="3810"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1adc3edef53f4efe47d06f48e7f7de0863" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;=</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;) optional_noexcept</argsstring>
+        <name>operator&lt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;=</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3813" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3813" bodyend="3816"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a84f0d95747435c8ce529c0754328807a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, nullopt_t) optional_noexcept</argsstring>
+        <name>operator&gt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3819" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3819" bodyend="3822"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ada56825548f431cd958b5e04ee8935d8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;) optional_noexcept</argsstring>
+        <name>operator&gt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3825" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3825" bodyend="3828"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ae0fd21aca46d8e5fecd084a1aabddd21" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;, nullopt_t) optional_noexcept</argsstring>
+        <name>operator&gt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+        </param>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3831" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3831" bodyend="3834"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a25613eb0bba501deaa5b092c3883cc39" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;=</definition>
+        <argsstring>(nullopt_t, optional&lt; T &gt; const &amp;x) optional_noexcept</argsstring>
+        <name>operator&gt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;=</qualifiedname>
+        <param>
+          <type><ref refid="structnonstd_1_1optional__lite_1_1nullopt__t" kindref="compound">nullopt_t</ref></type>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3837" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3837" bodyend="3840"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a8a891c032d7511f69950cc17c5c849b0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator==</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator==</name>
+        <qualifiedname>nonstd::optional_lite::operator==</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3845" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3845" bodyend="3847"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a4dc3e941471f86249318dd5b70646663" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator==</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator==</name>
+        <qualifiedname>nonstd::optional_lite::operator==</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3850" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3850" bodyend="3852"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a30951e7130620b5ff17ec1fbfb97f38b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator!=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>nonstd::optional_lite::operator!=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3855" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3855" bodyend="3857"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1aa7467f05b38f7a606f8a4681d85f9abd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator!=</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator!=</name>
+        <qualifiedname>nonstd::optional_lite::operator!=</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3860" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3860" bodyend="3862"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a8a4ab40f5cb0d66886220f7929af1797" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3865" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3865" bodyend="3867"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a5952ac1926363da5c0bf5ede26355301" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator&lt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3870" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3870" bodyend="3872"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a7a1df9bbdfce6cdff853e6066a60eea2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator&lt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3875" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3875" bodyend="3877"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a4bb88d1a667d289241046411396f60c8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&lt;=</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator&lt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&lt;=</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3880" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3880" bodyend="3882"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ad11f55ffa7f20d78ed4881bbb90af5f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator&gt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3885" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3885" bodyend="3887"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a36b3075353aa0c02fe9146551178fb82" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator&gt;</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3890" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3890" bodyend="3892"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a402990e47e1921d0a6d76ccf776de33e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;=</definition>
+        <argsstring>(optional&lt; T &gt; const &amp;x, U const &amp;v)</argsstring>
+        <name>operator&gt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;=</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3895" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3895" bodyend="3897"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a401d0fd558f88c2eccdb8df7b502fa7f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_constexpr bool</type>
+        <definition>optional_constexpr bool nonstd::optional_lite::operator&gt;=</definition>
+        <argsstring>(U const &amp;v, optional&lt; T &gt; const &amp;x)</argsstring>
+        <name>operator&gt;=</name>
+        <qualifiedname>nonstd::optional_lite::operator&gt;=</qualifiedname>
+        <param>
+          <type>U const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; const &amp;</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3900" column="32" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3900" bodyend="3902"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1ab1410153235f5900a1006bce2bf4f140" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void nonstd::optional_lite::swap</definition>
+        <argsstring>(optional&lt; T &gt; &amp;x, optional&lt; T &gt; &amp;y)</argsstring>
+        <name>swap</name>
+        <qualifiedname>nonstd::optional_lite::swap</qualifiedname>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; &amp;</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt; &amp;</type>
+          <declname>y</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3912" column="6" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3912" bodyend="3918"/>
+      </memberdef>
+      <memberdef kind="function" id="table_8hpp_1a9509073e9af119424975ca9507381f49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="classnonstd_1_1optional__lite_1_1optional" kindref="compound">optional</ref>&lt; T &gt;</type>
+        <definition>optional&lt; T &gt; nonstd::optional_lite::make_optional</definition>
+        <argsstring>(T const &amp;value)</argsstring>
+        <name>make_optional</name>
+        <qualifiedname>nonstd::optional_lite::make_optional</qualifiedname>
+        <param>
+          <type>T const &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3939" column="22" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3939" bodyend="3939"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="2913" column="1"/>
+  </compounddef>
+</doxygen>

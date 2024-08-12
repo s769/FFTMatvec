@@ -1,0 +1,74 @@
+\hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t}{}\doxysection{nonstd\+::optional\+\_\+lite\+::detail\+::storage\+\_\+t\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Union Template Reference}
+\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t}\index{nonstd::optional\_lite::detail::storage\_t$<$ T $>$@{nonstd::optional\_lite::detail::storage\_t$<$ T $>$}}
+
+
+C++03 constructed union to hold value.  
+
+
+
+
+{\ttfamily \#include $<$table.\+hpp$>$}
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structnonstd_1_1optional__lite_1_1detail_1_1storage__t_1_1aligned__storage__t}{aligned\+\_\+storage\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a0224db97b7cc3fb687679165fc71b70e}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a0224db97b7cc3fb687679165fc71b70e}} 
+typedef T {\bfseries value\+\_\+type}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_afab300a66c2083a0772fe2123321319d}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_afab300a66c2083a0772fe2123321319d}} 
+void {\bfseries construct\+\_\+value} (value\+\_\+type const \&v)
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_abb783e6f7a547920e69441cf1ae6785a}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_abb783e6f7a547920e69441cf1ae6785a}} 
+void {\bfseries destruct\+\_\+value} ()
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a232bf1c2ba2d729cc613ed060eac11e4}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a232bf1c2ba2d729cc613ed060eac11e4}} 
+optional\+\_\+nodiscard value\+\_\+type const $\ast$ {\bfseries value\+\_\+ptr} () const
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a530d227843304940c16f654d4b72bd06}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a530d227843304940c16f654d4b72bd06}} 
+value\+\_\+type $\ast$ {\bfseries value\+\_\+ptr} ()
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_af7bccad98692f18f6ce74966c0e67a68}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_af7bccad98692f18f6ce74966c0e67a68}} 
+optional\+\_\+nodiscard value\+\_\+type const \& {\bfseries value} () const optional\+\_\+ref\+\_\+qual
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_aede16ee733e93f502169c8725bd2b854}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_aede16ee733e93f502169c8725bd2b854}} 
+value\+\_\+type \& {\bfseries value} () optional\+\_\+ref\+\_\+qual
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ad642ee5232a0b9304ca58c96f02cc213}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ad642ee5232a0b9304ca58c96f02cc213}} 
+typedef {\bfseries optional\+\_\+\+ALIGN\+\_\+\+AS} (value\+\_\+type) align\+\_\+as\+\_\+type
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a5fecf68774b3df671df04d8aa2cf48c4}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a5fecf68774b3df671df04d8aa2cf48c4}} 
+optional\+\_\+nodiscard void $\ast$ {\bfseries ptr} () optional\+\_\+noexcept
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a0602a0f40b0fad5edac88f5686be0cb5}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a0602a0f40b0fad5edac88f5686be0cb5}} 
+optional\+\_\+nodiscard void const $\ast$ {\bfseries ptr} () const optional\+\_\+noexcept
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ae22b696f36c40458afaa6c9bd96d5693}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ae22b696f36c40458afaa6c9bd96d5693}} 
+{\footnotesize template$<$typename U $>$ }\\optional\+\_\+nodiscard U $\ast$ {\bfseries as} ()
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a7d6c68d1513dd18b24680dcae2133dd3}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_a7d6c68d1513dd18b24680dcae2133dd3}} 
+{\footnotesize template$<$typename U $>$ }\\optional\+\_\+nodiscard U const $\ast$ {\bfseries as} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ab076166b39226e1b9212089354f67d24}\label{unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_ab076166b39226e1b9212089354f67d24}} 
+\mbox{\hyperlink{structnonstd_1_1optional__lite_1_1detail_1_1storage__t_1_1aligned__storage__t}{aligned\+\_\+storage\+\_\+t}} {\bfseries data}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+union nonstd\+::optional\+\_\+lite\+::detail\+::storage\+\_\+t$<$ T $>$}
+C++03 constructed union to hold value. 
+
+The documentation for this union was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/srvenkat/matvec-\/test/src/table.\+hpp\end{DoxyCompactItemize}

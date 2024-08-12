@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t" kind="union" language="C++" prot="public">
+    <compoundname>nonstd::optional_lite::detail::storage_t</compoundname>
+    <includes refid="table_8hpp" local="no">table.hpp</includes>
+    <innerclass refid="structnonstd_1_1optional__lite_1_1detail_1_1storage__t_1_1aligned__storage__t" prot="public">nonstd::optional_lite::detail::storage_t::aligned_storage_t</innerclass>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a0224db97b7cc3fb687679165fc71b70e" prot="public" static="no">
+        <type>T</type>
+        <definition>typedef T nonstd::optional_lite::detail::storage_t&lt; T &gt;::value_type</definition>
+        <argsstring></argsstring>
+        <name>value_type</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::value_type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3139" column="13" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3139" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ab076166b39226e1b9212089354f67d24" prot="public" static="no" mutable="no">
+        <type><ref refid="structnonstd_1_1optional__lite_1_1detail_1_1storage__t_1_1aligned__storage__t" kindref="compound">aligned_storage_t</ref></type>
+        <definition>aligned_storage_t nonstd::optional_lite::detail::storage_t&lt; T &gt;::data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3206" column="21" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3206" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a8a2cfcbee5187f6a4d5f5eb3e0f359bd" prot="public" static="no" const="yes" explicit="no" inline="yes" refqual="lvalue" virt="non-virtual">
+        <type></type>
+        <definition>nonstd::optional_lite::detail::storage_t&lt; T &gt;::storage_t</definition>
+        <argsstring>() optional_is_default explicit storage_t(value_type const &amp;v)</argsstring>
+        <name>storage_t</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::storage_t</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3141" column="3" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3141" bodyend="3145"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1afab300a66c2083a0772fe2123321319d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void nonstd::optional_lite::detail::storage_t&lt; T &gt;::construct_value</definition>
+        <argsstring>(value_type const &amp;v)</argsstring>
+        <name>construct_value</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::construct_value</qualifiedname>
+        <param>
+          <type>value_type const &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3147" column="8" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3147" bodyend="3147"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1abb783e6f7a547920e69441cf1ae6785a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void nonstd::optional_lite::detail::storage_t&lt; T &gt;::destruct_value</definition>
+        <argsstring>()</argsstring>
+        <name>destruct_value</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::destruct_value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3165" column="8" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3165" bodyend="3165"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a232bf1c2ba2d729cc613ed060eac11e4" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>optional_nodiscard value_type const *</type>
+        <definition>optional_nodiscard value_type const  * nonstd::optional_lite::detail::storage_t&lt; T &gt;::value_ptr</definition>
+        <argsstring>() const</argsstring>
+        <name>value_ptr</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::value_ptr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3167" column="39" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3167" bodyend="3167"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a530d227843304940c16f654d4b72bd06" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type *</type>
+        <definition>value_type * nonstd::optional_lite::detail::storage_t&lt; T &gt;::value_ptr</definition>
+        <argsstring>()</argsstring>
+        <name>value_ptr</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::value_ptr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3169" column="14" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3169" bodyend="3169"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1af7bccad98692f18f6ce74966c0e67a68" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>optional_nodiscard value_type const &amp;</type>
+        <definition>optional_nodiscard value_type const  &amp; nonstd::optional_lite::detail::storage_t&lt; T &gt;::value</definition>
+        <argsstring>() const optional_ref_qual</argsstring>
+        <name>value</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3171" column="39" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3171" bodyend="3171"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1aede16ee733e93f502169c8725bd2b854" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>value_type &amp;</type>
+        <definition>value_type &amp; nonstd::optional_lite::detail::storage_t&lt; T &gt;::value</definition>
+        <argsstring>() optional_ref_qual</argsstring>
+        <name>value</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3173" column="14" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3173" bodyend="3173"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ad642ee5232a0b9304ca58c96f02cc213" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>typedef</type>
+        <definition>typedef nonstd::optional_lite::detail::storage_t&lt; T &gt;::optional_ALIGN_AS</definition>
+        <argsstring>(value_type) align_as_type</argsstring>
+        <name>optional_ALIGN_AS</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::optional_ALIGN_AS</qualifiedname>
+        <param>
+          <type>value_type</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3201" column="11"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a5fecf68774b3df671df04d8aa2cf48c4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>optional_nodiscard void *</type>
+        <definition>optional_nodiscard void * nonstd::optional_lite::detail::storage_t&lt; T &gt;::ptr</definition>
+        <argsstring>() optional_noexcept</argsstring>
+        <name>ptr</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::ptr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3212" column="27" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3212" bodyend="3212"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a0602a0f40b0fad5edac88f5686be0cb5" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>optional_nodiscard void const *</type>
+        <definition>optional_nodiscard void const  * nonstd::optional_lite::detail::storage_t&lt; T &gt;::ptr</definition>
+        <argsstring>() const optional_noexcept</argsstring>
+        <name>ptr</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::ptr</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3214" column="33" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3214" bodyend="3214"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ae22b696f36c40458afaa6c9bd96d5693" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_nodiscard U *</type>
+        <definition>optional_nodiscard U * nonstd::optional_lite::detail::storage_t&lt; T &gt;::as</definition>
+        <argsstring>()</argsstring>
+        <name>as</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::as</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3216" column="36" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3216" bodyend="3216"/>
+      </memberdef>
+      <memberdef kind="function" id="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a7d6c68d1513dd18b24680dcae2133dd3" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename U</type>
+          </param>
+        </templateparamlist>
+        <type>optional_nodiscard U const *</type>
+        <definition>optional_nodiscard U const  * nonstd::optional_lite::detail::storage_t&lt; T &gt;::as</definition>
+        <argsstring>() const</argsstring>
+        <name>as</name>
+        <qualifiedname>nonstd::optional_lite::detail::storage_t::as</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3218" column="42" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3218" bodyend="3220"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>C++03 constructed union to hold value. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>nonstd::optional_lite::detail::storage_t&lt; T &gt;::aligned_storage_t</label>
+        <link refid="structnonstd_1_1optional__lite_1_1detail_1_1storage__t_1_1aligned__storage__t"/>
+      </node>
+      <node id="1">
+        <label>nonstd::optional_lite::detail::storage_t&lt; T &gt;</label>
+        <link refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>data</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="3135" column="12" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="3135" bodyend="3221"/>
+    <listofallmembers>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ae22b696f36c40458afaa6c9bd96d5693" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>as</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a7d6c68d1513dd18b24680dcae2133dd3" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>as</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1afab300a66c2083a0772fe2123321319d" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>construct_value</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ab076166b39226e1b9212089354f67d24" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>data</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1abb783e6f7a547920e69441cf1ae6785a" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>destruct_value</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1ad642ee5232a0b9304ca58c96f02cc213" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>optional_ALIGN_AS</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a5fecf68774b3df671df04d8aa2cf48c4" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>ptr</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a0602a0f40b0fad5edac88f5686be0cb5" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>ptr</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a8a2cfcbee5187f6a4d5f5eb3e0f359bd" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>storage_t</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1af7bccad98692f18f6ce74966c0e67a68" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>value</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1aede16ee733e93f502169c8725bd2b854" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>value</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a232bf1c2ba2d729cc613ed060eac11e4" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>value_ptr</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a530d227843304940c16f654d4b72bd06" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>value_ptr</name></member>
+      <member refid="unionnonstd_1_1optional__lite_1_1detail_1_1storage__t_1a0224db97b7cc3fb687679165fc71b70e" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::detail::storage_t</scope><name>value_type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

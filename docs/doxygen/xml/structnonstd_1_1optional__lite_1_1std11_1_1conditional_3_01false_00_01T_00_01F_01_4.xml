@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structnonstd_1_1optional__lite_1_1std11_1_1conditional_3_01false_00_01T_00_01F_01_4" kind="struct" language="C++" prot="public">
+    <compoundname>nonstd::optional_lite::std11::conditional&lt; false, T, F &gt;</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+      <param>
+        <type>typename F</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structnonstd_1_1optional__lite_1_1std11_1_1conditional_3_01false_00_01T_00_01F_01_4_1ac963dc3aec6e3a01c70cd02470baf737" prot="public" static="no">
+        <type>F</type>
+        <definition>typedef F nonstd::optional_lite::std11::conditional&lt; false, T, F &gt;::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>nonstd::optional_lite::std11::conditional&lt; false, T, F &gt;::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/table.hpp" line="2927" column="43" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="2927" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/table.hpp" line="2927" column="14" bodyfile="/home/srvenkat/matvec-test/src/table.hpp" bodystart="2927" bodyend="2927"/>
+    <listofallmembers>
+      <member refid="structnonstd_1_1optional__lite_1_1std11_1_1conditional_3_01false_00_01T_00_01F_01_4_1ac963dc3aec6e3a01c70cd02470baf737" prot="public" virt="non-virtual"><scope>nonstd::optional_lite::std11::conditional&lt; false, T, F &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

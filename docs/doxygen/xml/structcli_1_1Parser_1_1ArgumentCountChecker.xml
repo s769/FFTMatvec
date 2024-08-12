@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.6" xml:lang="en-US">
+  <compounddef id="structcli_1_1Parser_1_1ArgumentCountChecker" kind="struct" language="C++" prot="private">
+    <compoundname>cli::Parser::ArgumentCountChecker</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structcli_1_1Parser_1_1ArgumentCountChecker_1a956742b1d8a47f013e9f4372e96e1949" prot="public" static="yes" constexpr="yes" mutable="no">
+        <type>constexpr bool</type>
+        <definition>constexpr bool cli::Parser::ArgumentCountChecker&lt; T &gt;::Variadic</definition>
+        <argsstring></argsstring>
+        <name>Variadic</name>
+        <qualifiedname>cli::Parser::ArgumentCountChecker::Variadic</qualifiedname>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="82" column="23" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/srvenkat/matvec-test/src/cmdparser.hpp" line="80" column="1" bodyfile="/home/srvenkat/matvec-test/src/cmdparser.hpp" bodystart="81" bodyend="83"/>
+    <listofallmembers>
+      <member refid="structcli_1_1Parser_1_1ArgumentCountChecker_1a956742b1d8a47f013e9f4372e96e1949" prot="public" virt="non-virtual"><scope>cli::Parser::ArgumentCountChecker</scope><name>Variadic</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
