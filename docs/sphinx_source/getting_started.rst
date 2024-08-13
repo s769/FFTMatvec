@@ -18,7 +18,7 @@ First, clone the repository:
 
 .. code:: bash
 
-   git clone https://github.com/s769/matvec-test.git
+   git clone https://github.com/s769/FFTMatvec.git
    cd matvec-test
 
 Initialize and build the ``cutranspose`` submodule:

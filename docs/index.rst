@@ -11,7 +11,7 @@ Henneking S, Ghattas O. Fast and Scalable FFT-Based GPU-Accelerated
 Algorithms for Hessian Actions Arising in Linear Inverse Problems
 Governed by Autonomous Dynamical Systems. arXiv preprint
 `arXiv:2407.13066 <https://arxiv.org/abs/2407.13066>`__. 2024 Jul 18. The source code is 
-`here <https://github.com/s769/matvec-test>`__.
+`here <https://github.com/s769/FFTMatvec>`__.
 
 
 .. toctree::

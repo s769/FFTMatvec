@@ -14,7 +14,7 @@ To build the code, the following dependencies are required:
 
 First, clone the repository:
 ```bash
-git clone https://github.com/s769/matvec-test.git
+git clone https://github.com/s769/FFTMatvec.git
 cd matvec-test
 ```
 
