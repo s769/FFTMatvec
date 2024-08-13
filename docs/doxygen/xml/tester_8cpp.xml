@@ -150,7 +150,7 @@
       </node>
       <node id="2">
         <label>tester.hpp</label>
-        <link refid="tester_8hpp_source"/>
+        <link refid="tester_8hpp"/>
         <childnode refid="3" relation="include">
         </childnode>
         <childnode refid="45" relation="include">
@@ -363,7 +363,7 @@
     </detaileddescription>
     <programlisting>
 <codeline lineno="1"><highlight class="normal"></highlight></codeline>
-<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;tester.hpp&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="tester_8hpp" kindref="compound">tester.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="3"><highlight class="normal"></highlight></codeline>
 <codeline lineno="4"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>doubleEquality(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>b,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>tol)</highlight></codeline>
 <codeline lineno="5"><highlight class="normal">{</highlight></codeline>
@@ -399,7 +399,7 @@
 <codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
 <codeline lineno="36"><highlight class="normal">}</highlight></codeline>
 <codeline lineno="37"><highlight class="normal"></highlight></codeline>
-<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>Tester::checkOnesMatvec(<ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm,<sp/><ref refid="classMatrix" kindref="compound">Matrix</ref>&amp;<sp/>mat,<sp/><ref refid="classVector" kindref="compound">Vector</ref>&amp;<sp/>vec,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conj,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full)</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="tester_8hpp_1a19a2d669265a1a281d29e844da3fdd22" kindref="member">Tester::checkOnesMatvec</ref>(<ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm,<sp/><ref refid="classMatrix" kindref="compound">Matrix</ref>&amp;<sp/>mat,<sp/><ref refid="classVector" kindref="compound">Vector</ref>&amp;<sp/>vec,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conj,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full)</highlight></codeline>
 <codeline lineno="39"><highlight class="normal">{</highlight></codeline>
 <codeline lineno="40"><highlight class="normal"></highlight></codeline>
 <codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>proc_rows<sp/>=<sp/>comm.<ref refid="classComm_1aac93d385a703988ee17fa2abb53fd86c" kindref="member">get_proc_rows</ref>();</highlight></codeline>

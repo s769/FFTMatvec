@@ -1,0 +1,74 @@
+.TH "/home/srvenkat/matvec-test/src/utils.hpp" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+/home/srvenkat/matvec-test/src/utils.hpp \- Contains utility functions for the project\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'shared\&.hpp'\fP
+.br
+\fC#include 'table\&.hpp'\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBUtils\fP"
+.br
+.RI "Namespace containing utility functions\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "uint64_t \fBUtils::getHostHash\fP (const char *string)"
+.br
+.RI "Get the host hash\&. "
+.ti -1c
+.RI "void \fBUtils::getHostName\fP (char *hostname, int maxlen)"
+.br
+.RI "Get the host name\&. "
+.ti -1c
+.RI "void \fBUtils::PadVector\fP (const double *const d_in, double *const d_pad, const unsigned int num_cols, const unsigned int size, cudaStream_t s)"
+.br
+.RI "Pads each block of a vector to twice the length with zeros\&. "
+.ti -1c
+.RI "void \fBUtils::UnpadRepadVector\fP (const double *const d_in, double *const d_out, const unsigned int num_cols, const unsigned int size, const bool unpad, cudaStream_t s)"
+.br
+.RI "Unpads or repads a vector\&. "
+.ti -1c
+.RI "void \fBUtils::printVec\fP (double *vec, int len, int unpad_size, std::string name='Vector')"
+.br
+.RI "Prints the elements of a vector\&. "
+.ti -1c
+.RI "void \fBUtils::printVecComplex\fP (Complex *vec, int len, int unpad_size, std::string name='Vector')"
+.br
+.RI "Prints a complex vector\&. "
+.ti -1c
+.RI "void \fBUtils::printVecMPI\fP (double *vec, int len, int unpad_size, int rank, int world_size, std::string name='Vector')"
+.br
+.RI "Prints a vector using MPI\&. "
+.ti -1c
+.RI "void \fBUtils::printTimes\fP (int reps=1, bool table=true)"
+.br
+.RI "Print the times for the different parts of the code\&. "
+.ti -1c
+.RI "void \fBUtils::makeTable\fP (std::vector< std::string > col_names, std::vector< long double > mean, std::vector< long double > min, std::vector< long double > max)"
+.br
+.RI "Make a table of timing data\&. "
+.ti -1c
+.RI "void \fBUtils::printRaw\fP (long double *mean_times, long double *min_times, long double *max_times, long double *mean_times_f, long double *min_times_f, long double *max_times_f, long double *mean_times_fs, long double *min_times_fs, long double *max_times_fs, int times_len)"
+.br
+.RI "Print the raw timing data\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Contains utility functions for the project\&. 
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

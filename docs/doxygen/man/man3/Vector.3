@@ -1,0 +1,285 @@
+.TH "Vector" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Vector \- Represents a vector\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <Vector\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBVector\fP (\fBComm\fP &comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col)"
+.br
+.RI "Constructor for the \fBVector\fP class\&. "
+.ti -1c
+.RI "\fBVector\fP (\fBVector\fP &vec, bool deep_copy=false)"
+.br
+.RI "Copy constructor for the \fBVector\fP class\&. "
+.ti -1c
+.RI "\fB~Vector\fP ()"
+.br
+.RI "Destructor for the \fBVector\fP class\&. "
+.ti -1c
+.RI "void \fBinit_vec\fP ()"
+.br
+.RI "Initializes the vector\&. "
+.ti -1c
+.RI "void \fBinit_vec_from_file\fP (std::string filename)"
+.br
+.RI "Initializes the vector from a file\&. "
+.ti -1c
+.RI "void \fBinit_vec_ones\fP ()"
+.br
+.RI "Initializes the vector with all ones\&. "
+.ti -1c
+.RI "void \fBinit_vec_zeros\fP ()"
+.br
+.RI "Initializes the vector with all zeros\&. "
+.ti -1c
+.RI "void \fBvec_axpy\fP (double alpha, \fBVector\fP &x, \fBVector\fP &y)"
+.br
+.RI "Performs the operation y = alpha * x + y\&. "
+.ti -1c
+.RI "void \fBvec_waxpy\fP (double alpha, \fBVector\fP &x, \fBVector\fP &y, \fBVector\fP &w)"
+.br
+.RI "Performs the operation w = alpha * x + y\&. "
+.ti -1c
+.RI "void \fBvec_scale\fP (double alpha)"
+.br
+.RI "Scales the vector by a scalar value\&. "
+.ti -1c
+.RI "bool \fBon_grid\fP ()"
+.br
+.RI "Checks if the vector is on the grid\&. "
+.ti -1c
+.RI "void \fBprint\fP (std::string name='')"
+.br
+.RI "Prints the vector\&. "
+.ti -1c
+.RI "double * \fBget_d_vec\fP ()"
+.br
+.RI "Gets the pointer to the vector data\&. "
+.ti -1c
+.RI "unsigned int \fBget_num_blocks\fP ()"
+.br
+.RI "Gets the number of blocks\&. "
+.ti -1c
+.RI "unsigned int \fBget_block_size\fP ()"
+.br
+.RI "Gets the size of each block\&. "
+.ti -1c
+.RI "\fBComm\fP & \fBget_comm\fP ()"
+.br
+.RI "Gets the communication object\&. "
+.ti -1c
+.RI "std::string \fBget_row_or_col\fP ()"
+.br
+.RI "Gets the row or column descriptor\&. "
+.ti -1c
+.RI "bool \fBis_initialized\fP ()"
+.br
+.RI "Checks if the vector is initialized\&. "
+.ti -1c
+.RI "void \fBset_d_vec\fP (double *d_vec)"
+.br
+.RI "Sets the pointer to the vector data\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a vector\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Vector::Vector (\fBComm\fP & comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col)"
+
+.PP
+Constructor for the \fBVector\fP class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcomm\fP The \fBComm\fP object\&. 
+.br
+\fInum_blocks\fP The number of blocks\&. 
+.br
+\fIblock_size\fP The size of each block\&. 
+.br
+\fIrow_or_col\fP Indicates whether the vector is row or column\&. 
+.RE
+.PP
+
+.SS "Vector::Vector (\fBVector\fP & vec, bool deep_copy = \fCfalse\fP)"
+
+.PP
+Copy constructor for the \fBVector\fP class\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIvec\fP The \fBVector\fP object to be copied\&. 
+.br
+\fIdeep_copy\fP Flag indicating whether to perform a deep copy\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "unsigned int Vector::get_block_size ()\fC [inline]\fP"
+
+.PP
+Gets the size of each block\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The size of each block\&. 
+.RE
+.PP
+
+.SS "\fBComm\fP & Vector::get_comm ()\fC [inline]\fP"
+
+.PP
+Gets the communication object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The communication object\&. 
+.RE
+.PP
+
+.SS "double * Vector::get_d_vec ()\fC [inline]\fP"
+
+.PP
+Gets the pointer to the vector data\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The pointer to the vector data\&. 
+.RE
+.PP
+
+.SS "unsigned int Vector::get_num_blocks ()\fC [inline]\fP"
+
+.PP
+Gets the number of blocks\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The number of blocks\&. 
+.RE
+.PP
+
+.SS "std::string Vector::get_row_or_col ()\fC [inline]\fP"
+
+.PP
+Gets the row or column descriptor\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The row or column descriptor\&. 
+.RE
+.PP
+
+.SS "void Vector::init_vec_from_file (std::string filename)"
+
+.PP
+Initializes the vector from a file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP The name of the file\&. 
+.RE
+.PP
+
+.SS "bool Vector::is_initialized ()\fC [inline]\fP"
+
+.PP
+Checks if the vector is initialized\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the vector is initialized, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool Vector::on_grid ()\fC [inline]\fP"
+
+.PP
+Checks if the vector is on the grid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the vector is on the grid, false otherwise\&. 
+.RE
+.PP
+
+.SS "void Vector::print (std::string name = \fC''\fP)"
+
+.PP
+Prints the vector\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP The name of the vector\&. 
+.RE
+.PP
+
+.SS "void Vector::set_d_vec (double * d_vec)\fC [inline]\fP"
+
+.PP
+Sets the pointer to the vector data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fId_vec\fP The pointer to the vector data\&. 
+.RE
+.PP
+
+.SS "void Vector::vec_axpy (double alpha, \fBVector\fP & x, \fBVector\fP & y)"
+
+.PP
+Performs the operation y = alpha * x + y\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIalpha\fP The scalar value\&. 
+.br
+\fIx\fP The \fBVector\fP object x\&. 
+.br
+\fIy\fP The \fBVector\fP object y\&. 
+.RE
+.PP
+
+.SS "void Vector::vec_scale (double alpha)"
+
+.PP
+Scales the vector by a scalar value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIalpha\fP The scalar value\&. 
+.RE
+.PP
+
+.SS "void Vector::vec_waxpy (double alpha, \fBVector\fP & x, \fBVector\fP & y, \fBVector\fP & w)"
+
+.PP
+Performs the operation w = alpha * x + y\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIalpha\fP The scalar value\&. 
+.br
+\fIx\fP The \fBVector\fP object x\&. 
+.br
+\fIy\fP The \fBVector\fP object y\&. 
+.br
+\fIw\fP The \fBVector\fP object w\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

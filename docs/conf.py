@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'FFT Matvec'
+project = 'FFTMatvec'
 copyright = '2024, Sreeram Venkat, Milinda Fernando, Stefan Henneking, Omar Ghattas'
 author = 'Sreeram Venkat, Milinda Fernando, Stefan Henneking, Omar Ghattas'
 release = '0.1.0'
@@ -14,7 +14,7 @@ release = '0.1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [ "breathe" ]
+extensions = ["breathe"]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -28,5 +28,9 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 
 
-# Breathe Configuration
+# -- Breathe Configuration ---------------------------------------------------
+
 breathe_default_project = "FFTMatvec"
+breathe_projects = {
+    "FFTMatvec": "doxygen/xml"
+}

@@ -281,25 +281,28 @@
     </incdepgraph>
     <innernamespace refid="namespaceTester">Tester</innernamespace>
     <briefdescription>
+<para>Header file for the Tester namespace. </para>
     </briefdescription>
     <detaileddescription>
+<para>This file contains the declaration of the Tester namespace, which provides functions for testing matrix-vector multiplication. </para>
     </detaileddescription>
     <programlisting>
-<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__TESTER_HPP__</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__TESTER_HPP__</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="3"><highlight class="normal"></highlight></codeline>
-<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Comm_8hpp" kindref="compound">Comm.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Matrix_8hpp" kindref="compound">Matrix.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Vector_8hpp" kindref="compound">Vector.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
-<codeline lineno="7"><highlight class="normal"></highlight></codeline>
-<codeline lineno="8"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Tester<sp/>{</highlight></codeline>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>__TESTER_HPP__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__TESTER_HPP__</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="9"><highlight class="normal"></highlight></codeline>
-<codeline lineno="10"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>checkOnesMatvec(<ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm,<sp/><ref refid="classMatrix" kindref="compound">Matrix</ref>&amp;<sp/>mat,<sp/><ref refid="classVector" kindref="compound">Vector</ref>&amp;<sp/>out,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conj,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full);</highlight></codeline>
-<codeline lineno="11"><highlight class="normal"></highlight></codeline>
-<codeline lineno="12"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Comm_8hpp" kindref="compound">Comm.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Matrix_8hpp" kindref="compound">Matrix.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="Vector_8hpp" kindref="compound">Vector.hpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
 <codeline lineno="13"><highlight class="normal"></highlight></codeline>
-<codeline lineno="14"><highlight class="normal"></highlight></codeline>
-<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>__TESTER_HPP__</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">Tester<sp/>{</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="tester_8hpp_1a19a2d669265a1a281d29e844da3fdd22" kindref="member">checkOnesMatvec</ref>(<ref refid="classComm" kindref="compound">Comm</ref>&amp;<sp/>comm,<sp/><ref refid="classMatrix" kindref="compound">Matrix</ref>&amp;<sp/>mat,<sp/><ref refid="classVector" kindref="compound">Vector</ref>&amp;<sp/>out,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>conj,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>full);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">//<sp/>__TESTER_HPP__</highlight></codeline>
     </programlisting>
     <location file="/home/srvenkat/matvec-test/src/tester.hpp"/>
   </compounddef>

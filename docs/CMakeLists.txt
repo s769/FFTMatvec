@@ -1,7 +1,7 @@
 find_package(Doxygen REQUIRED)
 
 # Find all the public headers
-file(GLOB_RECURSE PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h ${PROJECT_SOURCE_DIR}/include/*.hpp ${PROJECT_SOURCE_DIR}/include/*.cuh) 
 
 
 set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR}/src)
@@ -30,22 +30,29 @@ find_package(Sphinx REQUIRED)
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_SOURCE_DIR}/sphinx)
 
-add_custom_target(OUTPUT ${SPHINX_INDEX_FILE}
+# add_custom_target(Sphinx ALL
+#                   COMMAND
+#                   ${SPHINX_EXECUTABLE} -b html
+#                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
+#                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#                   COMMENT "Generating documentation with Sphinx")
+
+
+add_custom_target(Sphinx ALL
                   COMMAND
                   ${SPHINX_EXECUTABLE} -b html
-                  -Dbreathe_projects.FFTMatvecc=${DOXYGEN_OUTPUT_DIR}/xml
                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                   DEPENDS
                   ${CMAKE_CURRENT_SOURCE_DIR}/index.rst
                   ${DOXYGEN_INDEX_FILE}
-                  MAIN_DEPENDENCY ${SPHINX_SOURCE}/conf.py
+                  ${SPHINX_SOURCE}/conf.py
                   COMMENT "Generating documentation with Sphinx")
 
-# Nice named target so we can run the job easily
-add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
+# # Nice named target so we can run the job easily
+# add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
 
-# Add an install target to install the docs
+# # Add an install target to install the docs
 include(GNUInstallDirs)
 install(DIRECTORY ${SPHINX_BUILD}
 DESTINATION ${CMAKE_INSTALL_DOCDIR})

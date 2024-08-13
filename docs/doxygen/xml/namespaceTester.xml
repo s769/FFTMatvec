@@ -30,18 +30,62 @@
           <declname>full</declname>
         </param>
         <briefdescription>
+<para>Checks the results of a matrix-vector multiplication with a ones matrix and ones vectors. </para>
         </briefdescription>
         <detaileddescription>
+<para>This function takes a communication object, a matrix, a vector, and two boolean flags as input. It performs a matrix-vector multiplication with a ones matrix and ones vectors and checks the results. The boolean flag <computeroutput>conj</computeroutput> indicates whether the matrix should be conjugated during the multiplication. The boolean flag <computeroutput>full</computeroutput> indicates whether the full matrix should be used for the multiplication.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>comm</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The communication object. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>mat</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The matrix for the multiplication. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The output vector. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>conj</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating whether the matrix should be conjugated. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>full</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Flag indicating whether the full matrix should be used (F*F/FF* vs F/F*). </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="/home/srvenkat/matvec-test/src/tester.hpp" line="10" column="6" bodyfile="/home/srvenkat/matvec-test/src/tester.cpp" bodystart="38" bodyend="86" declfile="/home/srvenkat/matvec-test/src/tester.hpp" declline="10" declcolumn="6"/>
+        <location file="/home/srvenkat/matvec-test/src/tester.hpp" line="30" column="6" bodyfile="/home/srvenkat/matvec-test/src/tester.cpp" bodystart="38" bodyend="86" declfile="/home/srvenkat/matvec-test/src/tester.hpp" declline="30" declcolumn="6"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="/home/srvenkat/matvec-test/src/tester.hpp" line="8" column="1"/>
+    <location file="/home/srvenkat/matvec-test/src/tester.hpp" line="14" column="1"/>
   </compounddef>
 </doxygen>

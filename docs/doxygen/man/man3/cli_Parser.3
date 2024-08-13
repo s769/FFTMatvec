@@ -1,0 +1,125 @@
+.TH "cli::Parser" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cli::Parser
+.SH SYNOPSIS
+.br
+.PP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBParser\fP (int argc, const char **argv)"
+.br
+.ti -1c
+.RI "\fBParser\fP (int argc, char **argv)"
+.br
+.ti -1c
+.RI "\fBParser\fP (int argc, const char **argv, std::string generalProgramDescriptionForHelpText)"
+.br
+.ti -1c
+.RI "\fBParser\fP (int argc, char **argv, std::string generalProgramDescriptionForHelpText)"
+.br
+.ti -1c
+.RI "\fBParser\fP (std::string generalProgramDescriptionForHelpText)"
+.br
+.ti -1c
+.RI "void \fBinit\fP (int argc, char **argv)"
+.br
+.ti -1c
+.RI "void \fBinit\fP (int argc, const char **argv)"
+.br
+.ti -1c
+.RI "bool \fBhas_help\fP () const"
+.br
+.ti -1c
+.RI "void \fBenable_help\fP ()"
+.br
+.ti -1c
+.RI "void \fBdisable_help\fP ()"
+.br
+.ti -1c
+.RI "template<typename T > void \fBset_default\fP (bool is_required, const std::string &description='', T defaultValue=T())"
+.br
+.ti -1c
+.RI "template<typename T > void \fBset_required\fP (const std::string &name, const std::string &alternative, const std::string &description='', bool dominant=false)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBset_optional\fP (const std::string &name, const std::string &alternative, T defaultValue, const std::string &description='', bool dominant=false)"
+.br
+.ti -1c
+.RI "template<typename T > void \fBset_callback\fP (const std::string &name, const std::string &alternative, std::function< T(\fBCallbackArgs\fP &)> callback, const std::string &description='', bool dominant=false)"
+.br
+.ti -1c
+.RI "void \fBrun_and_exit_if_error\fP ()"
+.br
+.ti -1c
+.RI "bool \fBrun\fP ()"
+.br
+.ti -1c
+.RI "bool \fBrun\fP (std::ostream &output)"
+.br
+.ti -1c
+.RI "bool \fBdoesArgumentExist\fP (std::string name, std::string altName)"
+.br
+.ti -1c
+.RI "bool \fBdoesHelpExist\fP ()"
+.br
+.ti -1c
+.RI "bool \fBrun\fP (std::ostream &output, std::ostream &error)"
+.br
+.ti -1c
+.RI "template<typename T > T \fBget\fP (const std::string &name) const"
+.br
+.ti -1c
+.RI "template<typename T > T \fBget_default\fP ()"
+.br
+.ti -1c
+.RI "template<typename T > T \fBget_if\fP (const std::string &name, std::function< T(T)> callback) const"
+.br
+.ti -1c
+.RI "int \fBrequirements\fP () const"
+.br
+.ti -1c
+.RI "int \fBcommands\fP () const"
+.br
+.ti -1c
+.RI "const std::string & \fBapp_name\fP () const"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "CmdBase * \fBfind\fP (const std::string &name)"
+.br
+.ti -1c
+.RI "CmdBase * \fBfind_default\fP ()"
+.br
+.ti -1c
+.RI "std::string \fBusage\fP () const"
+.br
+.ti -1c
+.RI "void \fBprint_help\fP (std::stringstream &ss) const"
+.br
+.ti -1c
+.RI "std::string \fBhowto_required\fP (CmdBase *command) const"
+.br
+.ti -1c
+.RI "std::string \fBhowto_use\fP (CmdBase *command) const"
+.br
+.ti -1c
+.RI "std::string \fBno_default\fP () const"
+.br
+.ti -1c
+.RI "const std::string & \fBget_general_help_text\fP () const"
+.br
+.ti -1c
+.RI "void \fBset_general_help_text\fP (const std::string &generalHelpText)"
+.br
+.in -1c
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

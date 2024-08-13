@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.6"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: /home/srvenkat/matvec-test/src/tester.hpp Source File</title>
+<title>FFTMatvec: /home/srvenkat/matvec-test/src/tester.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,9 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">FFTMatvec<span id="projectnumber">&#160;0.1.0</span>
    </div>
+   <div id="projectbrief">FFT Based Matrix Vector Multiplication for Block Triangular Toeplitz Matrices</div>
   </td>
  </tr>
  </tbody>
@@ -76,27 +77,29 @@ $(function() {
   <div class="headertitle"><div class="title">tester.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef __TESTER_HPP__</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define __TESTER_HPP__</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Comm_8hpp.html">Comm.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="Matrix_8hpp.html">Matrix.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Vector_8hpp.html">Vector.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span>Tester {</div>
+<a href="tester_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#ifndef __TESTER_HPP__</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define __TESTER_HPP__</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keywordtype">void</span> checkOnesMatvec(<a class="code hl_class" href="classComm.html">Comm</a>&amp; comm, <a class="code hl_class" href="classMatrix.html">Matrix</a>&amp; mat, <a class="code hl_class" href="classVector.html">Vector</a>&amp; out, <span class="keywordtype">bool</span> conj, <span class="keywordtype">bool</span> full);</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>}</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="Comm_8hpp.html">Comm.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="Matrix_8hpp.html">Matrix.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="Vector_8hpp.html">Vector.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#endif </span><span class="comment">// __TESTER_HPP__</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span>Tester {</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keywordtype">void</span> <a class="code hl_function" href="tester_8hpp.html#a19a2d669265a1a281d29e844da3fdd22">checkOnesMatvec</a>(<a class="code hl_class" href="classComm.html">Comm</a>&amp; comm, <a class="code hl_class" href="classMatrix.html">Matrix</a>&amp; mat, <a class="code hl_class" href="classVector.html">Vector</a>&amp; out, <span class="keywordtype">bool</span> conj, <span class="keywordtype">bool</span> full);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>}</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif </span><span class="comment">// __TESTER_HPP__</span></div>
 <div class="ttc" id="aComm_8hpp_html"><div class="ttname"><a href="Comm_8hpp.html">Comm.hpp</a></div><div class="ttdoc">Header file for the Comm class.</div></div>
 <div class="ttc" id="aMatrix_8hpp_html"><div class="ttname"><a href="Matrix_8hpp.html">Matrix.hpp</a></div><div class="ttdoc">This file contains the declaration of the Matrix class.</div></div>
 <div class="ttc" id="aVector_8hpp_html"><div class="ttname"><a href="Vector_8hpp.html">Vector.hpp</a></div><div class="ttdoc">Header file for the Vector class.</div></div>
 <div class="ttc" id="aclassComm_html"><div class="ttname"><a href="classComm.html">Comm</a></div><div class="ttdoc">Class representing communication operations.</div><div class="ttdef"><b>Definition:</b> Comm.hpp:16</div></div>
 <div class="ttc" id="aclassMatrix_html"><div class="ttname"><a href="classMatrix.html">Matrix</a></div><div class="ttdoc">Represents a matrix and provides matrix operations.</div><div class="ttdef"><b>Definition:</b> Matrix.hpp:18</div></div>
 <div class="ttc" id="aclassVector_html"><div class="ttname"><a href="classVector.html">Vector</a></div><div class="ttdoc">Represents a vector.</div><div class="ttdef"><b>Definition:</b> Vector.hpp:16</div></div>
+<div class="ttc" id="atester_8hpp_html_a19a2d669265a1a281d29e844da3fdd22"><div class="ttname"><a href="tester_8hpp.html#a19a2d669265a1a281d29e844da3fdd22">Tester::checkOnesMatvec</a></div><div class="ttdeci">void checkOnesMatvec(Comm &amp;comm, Matrix &amp;mat, Vector &amp;out, bool conj, bool full)</div><div class="ttdoc">Checks the results of a matrix-vector multiplication with a ones matrix and ones vectors.</div><div class="ttdef"><b>Definition:</b> tester.cpp:38</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

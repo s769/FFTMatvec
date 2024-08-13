@@ -1,0 +1,48 @@
+\hypertarget{tester_8hpp}{}\doxysection{/home/srvenkat/matvec-\/test/src/tester.hpp File Reference}
+\label{tester_8hpp}\index{/home/srvenkat/matvec-\/test/src/tester.hpp@{/home/srvenkat/matvec-\/test/src/tester.hpp}}
+
+
+Header file for the Tester namespace.  
+
+
+{\ttfamily \#include \char`\"{}Comm.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Matrix.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Vector.\+hpp\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{tester_8hpp_a19a2d669265a1a281d29e844da3fdd22}{Tester\+::check\+Ones\+Matvec}} (\mbox{\hyperlink{classComm}{Comm}} \&comm, \mbox{\hyperlink{classMatrix}{Matrix}} \&mat, \mbox{\hyperlink{classVector}{Vector}} \&out, bool conj, bool full)
+\begin{DoxyCompactList}\small\item\em Checks the results of a matrix-\/vector multiplication with a ones matrix and ones vectors. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for the Tester namespace. 
+
+This file contains the declaration of the Tester namespace, which provides functions for testing matrix-\/vector multiplication. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{tester_8hpp_a19a2d669265a1a281d29e844da3fdd22}\label{tester_8hpp_a19a2d669265a1a281d29e844da3fdd22}} 
+\index{tester.hpp@{tester.hpp}!checkOnesMatvec@{checkOnesMatvec}}
+\index{checkOnesMatvec@{checkOnesMatvec}!tester.hpp@{tester.hpp}}
+\doxysubsubsection{\texorpdfstring{checkOnesMatvec()}{checkOnesMatvec()}}
+{\footnotesize\ttfamily void Tester\+::check\+Ones\+Matvec (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classComm}{Comm}} \&}]{comm,  }\item[{\mbox{\hyperlink{classMatrix}{Matrix}} \&}]{mat,  }\item[{\mbox{\hyperlink{classVector}{Vector}} \&}]{out,  }\item[{bool}]{conj,  }\item[{bool}]{full }\end{DoxyParamCaption})}
+
+
+
+Checks the results of a matrix-\/vector multiplication with a ones matrix and ones vectors. 
+
+This function takes a communication object, a matrix, a vector, and two boolean flags as input. It performs a matrix-\/vector multiplication with a ones matrix and ones vectors and checks the results. The boolean flag {\ttfamily conj} indicates whether the matrix should be conjugated during the multiplication. The boolean flag {\ttfamily full} indicates whether the full matrix should be used for the multiplication.
+
+
+\begin{DoxyParams}{Parameters}
+{\em comm} & The communication object. \\
+\hline
+{\em mat} & The matrix for the multiplication. \\
+\hline
+{\em out} & The output vector. \\
+\hline
+{\em conj} & Flag indicating whether the matrix should be conjugated. \\
+\hline
+{\em full} & Flag indicating whether the full matrix should be used (F$\ast$\+F/\+FF$\ast$ vs F/\+F$\ast$). \\
+\hline
+\end{DoxyParams}

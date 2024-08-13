@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Welcome to FFT Matvec’s documentation! &#8212; FFT Matvec 0.1.0 documentation</title>
+    <title>Welcome to FFTMatvec’s documentation! &#8212; FFTMatvec 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -33,8 +33,8 @@
 
           <div class="body" role="main">
             
-  <section id="welcome-to-fft-matvec-s-documentation">
-<h1>Welcome to FFT Matvec’s documentation!<a class="headerlink" href="#welcome-to-fft-matvec-s-documentation" title="Permalink to this heading">¶</a></h1>
+  <section id="welcome-to-fftmatvec-s-documentation">
+<h1>Welcome to FFTMatvec’s documentation!<a class="headerlink" href="#welcome-to-fftmatvec-s-documentation" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -46,6 +46,859 @@
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </section>
+<section id="docs">
+<h1>Docs<a class="headerlink" href="#docs" title="Permalink to this heading">¶</a></h1>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv44Comm">
+<span id="_CPPv34Comm"></span><span id="_CPPv24Comm"></span><span id="Comm"></span><span class="target" id="classComm"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Comm</span></span></span><a class="headerlink" href="#_CPPv44Comm" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class representing communication operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm4CommE8MPI_Commii">
+<span id="_CPPv3N4Comm4CommE8MPI_Commii"></span><span id="_CPPv2N4Comm4CommE8MPI_Commii"></span><span id="Comm::Comm__MPI_Comm.i.i"></span><span class="target" id="classComm_1ae7abb867cfc83cd076821f60901782a2"></span><span class="sig-name descname"><span class="n"><span class="pre">Comm</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">MPI_Comm</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">comm</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">proc_rows</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">proc_cols</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm4CommE8MPI_Commii" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructor for the <a class="reference internal" href="#classComm"><span class="std std-ref">Comm</span></a> class. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – The MPI communicator. </p></li>
+<li><p><strong>proc_rows</strong> – Number of process rows. </p></li>
+<li><p><strong>proc_cols</strong> – Number of process columns. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm4CommER4Comm">
+<span id="_CPPv3N4Comm4CommER4Comm"></span><span id="_CPPv2N4Comm4CommER4Comm"></span><span id="Comm::Comm__CommR"></span><span class="target" id="classComm_1a7c661070ca791f994c3d0c7dc5be9f8a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Comm</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N4Comm4CommER4Comm" title="Comm::Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">comm</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm4CommER4Comm" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for the <a class="reference internal" href="#classComm"><span class="std std-ref">Comm</span></a> class. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>comm</strong> – The <a class="reference internal" href="#classComm"><span class="std std-ref">Comm</span></a> object to be copied. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4CommD0Ev">
+<span id="_CPPv3N4CommD0Ev"></span><span id="_CPPv2N4CommD0Ev"></span><span id="Comm::~Comm"></span><span class="target" id="classComm_1a00134417af6aae9bf911d3ec7b8c049b"></span><span class="sig-name descname"><span class="n"><span class="pre">~Comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4CommD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor for the <a class="reference internal" href="#classComm"><span class="std std-ref">Comm</span></a> class. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm16get_gpu_row_commEv">
+<span id="_CPPv3N4Comm16get_gpu_row_commEv"></span><span id="_CPPv2N4Comm16get_gpu_row_commEv"></span><span id="Comm::get_gpu_row_comm"></span><span class="target" id="classComm_1a2170a74851ad06b4ea387b5114a2164c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">ncclComm_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_gpu_row_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm16get_gpu_row_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the NCCL communicator for GPU row communication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The NCCL communicator for GPU row communication. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm16get_gpu_col_commEv">
+<span id="_CPPv3N4Comm16get_gpu_col_commEv"></span><span id="_CPPv2N4Comm16get_gpu_col_commEv"></span><span id="Comm::get_gpu_col_comm"></span><span class="target" id="classComm_1a729e5f5243a1ae259a3711e882ac5431"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">ncclComm_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_gpu_col_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm16get_gpu_col_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the NCCL communicator for GPU column communication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The NCCL communicator for GPU column communication. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm10get_deviceEv">
+<span id="_CPPv3N4Comm10get_deviceEv"></span><span id="_CPPv2N4Comm10get_deviceEv"></span><span id="Comm::get_device"></span><span class="target" id="classComm_1a638a2b980344476d11b02dcc39c389ff"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_device</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm10get_deviceEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the GPU device ID. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The GPU device ID. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm10get_streamEv">
+<span id="_CPPv3N4Comm10get_streamEv"></span><span id="_CPPv2N4Comm10get_streamEv"></span><span id="Comm::get_stream"></span><span class="target" id="classComm_1a437d58a124a2b5d8ebc48bbcf197b835"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cudaStream_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_stream</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm10get_streamEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the CUDA stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The CUDA stream. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm12get_row_commEv">
+<span id="_CPPv3N4Comm12get_row_commEv"></span><span id="_CPPv2N4Comm12get_row_commEv"></span><span id="Comm::get_row_comm"></span><span class="target" id="classComm_1a47823fb9cdcb6b08090483868932342a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Comm</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_row_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm12get_row_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the MPI communicator for row communication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The MPI communicator for row communication. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm12get_col_commEv">
+<span id="_CPPv3N4Comm12get_col_commEv"></span><span id="_CPPv2N4Comm12get_col_commEv"></span><span id="Comm::get_col_comm"></span><span class="target" id="classComm_1a63244bd7ffcfcc0363d4d320ad2a11a0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Comm</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_col_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm12get_col_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the MPI communicator for column communication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The MPI communicator for column communication. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm15get_global_commEv">
+<span id="_CPPv3N4Comm15get_global_commEv"></span><span id="_CPPv2N4Comm15get_global_commEv"></span><span id="Comm::get_global_comm"></span><span class="target" id="classComm_1a48906692869fdd7da314f4390e0ea3d1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">MPI_Comm</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_global_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm15get_global_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the global MPI communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The global MPI communicator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm13get_row_colorEv">
+<span id="_CPPv3N4Comm13get_row_colorEv"></span><span id="_CPPv2N4Comm13get_row_colorEv"></span><span id="Comm::get_row_color"></span><span class="target" id="classComm_1a905fd1890b9b3789df5fc285ff4d77ba"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_row_color</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm13get_row_colorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the color of the current process in the row communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The color of the current process in the row communicator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm13get_col_colorEv">
+<span id="_CPPv3N4Comm13get_col_colorEv"></span><span id="_CPPv2N4Comm13get_col_colorEv"></span><span id="Comm::get_col_color"></span><span class="target" id="classComm_1ac011085efdd47ebbf906710cd761aa8d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_col_color</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm13get_col_colorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the color of the current process in the column communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The color of the current process in the column communicator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm14get_world_rankEv">
+<span id="_CPPv3N4Comm14get_world_rankEv"></span><span id="_CPPv2N4Comm14get_world_rankEv"></span><span id="Comm::get_world_rank"></span><span class="target" id="classComm_1aa47c546440771ff80338d51bf41f13f7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_world_rank</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm14get_world_rankEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the rank of the current process in the global communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The rank of the current process in the global communicator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm14get_world_sizeEv">
+<span id="_CPPv3N4Comm14get_world_sizeEv"></span><span id="_CPPv2N4Comm14get_world_sizeEv"></span><span id="Comm::get_world_size"></span><span class="target" id="classComm_1a9e4deddf9821b5f5a3f42012215e5e2a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_world_size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm14get_world_sizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the total number of processes in the global communicator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The total number of processes in the global communicator. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm13get_proc_rowsEv">
+<span id="_CPPv3N4Comm13get_proc_rowsEv"></span><span id="_CPPv2N4Comm13get_proc_rowsEv"></span><span id="Comm::get_proc_rows"></span><span class="target" id="classComm_1aac93d385a703988ee17fa2abb53fd86c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_proc_rows</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm13get_proc_rowsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the number of process rows. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of process rows. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm13get_proc_colsEv">
+<span id="_CPPv3N4Comm13get_proc_colsEv"></span><span id="_CPPv2N4Comm13get_proc_colsEv"></span><span id="Comm::get_proc_cols"></span><span class="target" id="classComm_1ada605b13c437a9d8aac6e052835b7a2d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_proc_cols</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm13get_proc_colsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the number of process columns. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of process columns. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4Comm16get_cublasHandleEv">
+<span id="_CPPv3N4Comm16get_cublasHandleEv"></span><span id="_CPPv2N4Comm16get_cublasHandleEv"></span><span id="Comm::get_cublasHandle"></span><span class="target" id="classComm_1af49c51d6d8dbacf8110fafeb3244e05f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cublasHandle_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_cublasHandle</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Comm16get_cublasHandleEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the cuBLAS handle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cuBLAS handle. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv46Matrix">
+<span id="_CPPv36Matrix"></span><span id="_CPPv26Matrix"></span><span id="Matrix"></span><span class="target" id="classMatrix"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><a class="headerlink" href="#_CPPv46Matrix" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents a matrix and provides matrix operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix6MatrixER4Commjjjbb">
+<span id="_CPPv3N6Matrix6MatrixER4Commjjjbb"></span><span id="_CPPv2N6Matrix6MatrixER4Commjjjbb"></span><span id="Matrix::Matrix__CommR.unsigned-i.unsigned-i.unsigned-i.b.b"></span><span class="target" id="classMatrix_1afe7d1bcd790920eaa5542aa8f4fc3125"></span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">comm</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_rows</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">block_size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">conjugate</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix6MatrixER4Commjjjbb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructs a <a class="reference internal" href="#classMatrix"><span class="std std-ref">Matrix</span></a> object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – The communication object. </p></li>
+<li><p><strong>num_cols</strong> – The number of columns in the matrix. </p></li>
+<li><p><strong>num_rows</strong> – The number of rows in the matrix. </p></li>
+<li><p><strong>block_size</strong> – The block size of the matrix. </p></li>
+<li><p><strong>conjugate</strong> – Flag indicating if the matrix is conjugate. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6MatrixD0Ev">
+<span id="_CPPv3N6MatrixD0Ev"></span><span id="_CPPv2N6MatrixD0Ev"></span><span id="Matrix::~Matrix"></span><span class="target" id="classMatrix_1a9b1c3627f573d78a2f08623fdfef990f"></span><span class="sig-name descname"><span class="n"><span class="pre">~Matrix</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6MatrixD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroys the <a class="reference internal" href="#classMatrix"><span class="std std-ref">Matrix</span></a> object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix18init_mat_from_fileENSt6stringE">
+<span id="_CPPv3N6Matrix18init_mat_from_fileENSt6stringE"></span><span id="_CPPv2N6Matrix18init_mat_from_fileENSt6stringE"></span><span id="Matrix::init_mat_from_file__ss"></span><span class="target" id="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_mat_from_file</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix18init_mat_from_fileENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the matrix from a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the file. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix13init_mat_onesEv">
+<span id="_CPPv3N6Matrix13init_mat_onesEv"></span><span id="_CPPv2N6Matrix13init_mat_onesEv"></span><span id="Matrix::init_mat_ones"></span><span class="target" id="classMatrix_1ad283bb30fdf703e377d374a0627e4f5a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_mat_ones</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix13init_mat_onesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the matrix with ones. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix6matvecER6VectorR6Vectorb">
+<span id="_CPPv3N6Matrix6matvecER6VectorR6Vectorb"></span><span id="_CPPv2N6Matrix6matvecER6VectorR6Vectorb"></span><span id="Matrix::matvec__VectorR.VectorR.b"></span><span class="target" id="classMatrix_1ae783ee8f81d18bff66a3dd7584693200"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">matvec</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix6matvecER6VectorR6Vectorb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Performs matrix-vector multiplication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16transpose_matvecER6VectorR6Vectorb">
+<span id="_CPPv3N6Matrix16transpose_matvecER6VectorR6Vectorb"></span><span id="_CPPv2N6Matrix16transpose_matvecER6VectorR6Vectorb"></span><span id="Matrix::transpose_matvec__VectorR.VectorR.b"></span><span class="target" id="classMatrix_1a8bb582b3010c05408cbd53d1a3b45b2b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">transpose_matvec</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16transpose_matvecER6VectorR6Vectorb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Performs transpose matrix-vector multiplication. </p>
+<p>
+Perform transpose matrix-vector multiplication.</p>
+<p>
+This function performs transpose matrix-vector multiplication using the initialized matrix. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full.</p></li>
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Whether the matrix is of the form (FF^*\/F^*F) or just (F\/F^*).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_col_vec_unpadEv">
+<span id="_CPPv3N6Matrix17get_col_vec_unpadEv"></span><span id="_CPPv2N6Matrix17get_col_vec_unpadEv"></span><span id="Matrix::get_col_vec_unpad"></span><span class="target" id="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_unpad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_col_vec_unpadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the unpadded column vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix15get_col_vec_padEv">
+<span id="_CPPv3N6Matrix15get_col_vec_padEv"></span><span id="_CPPv2N6Matrix15get_col_vec_padEv"></span><span id="Matrix::get_col_vec_pad"></span><span class="target" id="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix15get_col_vec_padEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the padded column vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix15get_row_vec_padEv">
+<span id="_CPPv3N6Matrix15get_row_vec_padEv"></span><span id="_CPPv2N6Matrix15get_row_vec_padEv"></span><span id="Matrix::get_row_vec_pad"></span><span class="target" id="classMatrix_1aef7e1d0088466f052e691a2a0a21777a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix15get_row_vec_padEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the padded row vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_row_vec_unpadEv">
+<span id="_CPPv3N6Matrix17get_row_vec_unpadEv"></span><span id="_CPPv2N6Matrix17get_row_vec_unpadEv"></span><span id="Matrix::get_row_vec_unpad"></span><span class="target" id="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_unpad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_row_vec_unpadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the unpadded row vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix11get_res_padEv">
+<span id="_CPPv3N6Matrix11get_res_padEv"></span><span id="_CPPv2N6Matrix11get_res_padEv"></span><span id="Matrix::get_res_pad"></span><span class="target" id="classMatrix_1a698561569c4e2bf9aeea020b74e0b765"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_res_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix11get_res_padEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the padded result vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_col_vec_freqEv">
+<span id="_CPPv3N6Matrix16get_col_vec_freqEv"></span><span id="_CPPv2N6Matrix16get_col_vec_freqEv"></span><span id="Matrix::get_col_vec_freq"></span><span class="target" id="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_freq</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_col_vec_freqEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the column vector frequency. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_row_vec_freqEv">
+<span id="_CPPv3N6Matrix16get_row_vec_freqEv"></span><span id="_CPPv2N6Matrix16get_row_vec_freqEv"></span><span id="Matrix::get_row_vec_freq"></span><span class="target" id="classMatrix_1a77191e751f3bd43991c65a2cd4d73442"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_freq</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_row_vec_freqEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the row vector frequency. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_col_vec_freq_tosiEv">
+<span id="_CPPv3N6Matrix21get_col_vec_freq_tosiEv"></span><span id="_CPPv2N6Matrix21get_col_vec_freq_tosiEv"></span><span id="Matrix::get_col_vec_freq_tosi"></span><span class="target" id="classMatrix_1ab06aac90fc1e2d73000b8670083456a4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_col_vec_freq_tosiEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the column vector frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_row_vec_freq_tosiEv">
+<span id="_CPPv3N6Matrix21get_row_vec_freq_tosiEv"></span><span id="_CPPv2N6Matrix21get_row_vec_freq_tosiEv"></span><span id="Matrix::get_row_vec_freq_tosi"></span><span class="target" id="classMatrix_1a48e87cc905863eee0c878c5c134c083b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_row_vec_freq_tosiEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the row vector frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_mat_freq_tosiEv">
+<span id="_CPPv3N6Matrix17get_mat_freq_tosiEv"></span><span id="_CPPv2N6Matrix17get_mat_freq_tosiEv"></span><span id="Matrix::get_mat_freq_tosi"></span><span class="target" id="classMatrix_1aef078a629a60e268506fb93b5bc38017"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_mat_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_mat_freq_tosiEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the matrix frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix23get_mat_freq_tosi_otherEv">
+<span id="_CPPv3N6Matrix23get_mat_freq_tosi_otherEv"></span><span id="_CPPv2N6Matrix23get_mat_freq_tosi_otherEv"></span><span id="Matrix::get_mat_freq_tosi_other"></span><span class="target" id="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_mat_freq_tosi_other</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix23get_mat_freq_tosi_otherEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the other matrix frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_forward_planEv">
+<span id="_CPPv3N6Matrix16get_forward_planEv"></span><span id="_CPPv2N6Matrix16get_forward_planEv"></span><span id="Matrix::get_forward_plan"></span><span class="target" id="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_forward_plan</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_forward_planEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the forward plan for FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_inverse_planEv">
+<span id="_CPPv3N6Matrix16get_inverse_planEv"></span><span id="_CPPv2N6Matrix16get_inverse_planEv"></span><span id="Matrix::get_inverse_plan"></span><span class="target" id="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_inverse_plan</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_inverse_planEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the inverse plan for FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_forward_plan_conjEv">
+<span id="_CPPv3N6Matrix21get_forward_plan_conjEv"></span><span id="_CPPv2N6Matrix21get_forward_plan_conjEv"></span><span id="Matrix::get_forward_plan_conj"></span><span class="target" id="classMatrix_1a23dfad440fd74167ea41eab9ead758b7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_forward_plan_conj</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_forward_plan_conjEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the forward plan for conjugate FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_inverse_plan_conjEv">
+<span id="_CPPv3N6Matrix21get_inverse_plan_conjEv"></span><span id="_CPPv2N6Matrix21get_inverse_plan_conjEv"></span><span id="Matrix::get_inverse_plan_conj"></span><span class="target" id="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_inverse_plan_conj</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_inverse_plan_conjEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the inverse plan for conjugate FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix8get_commEv">
+<span id="_CPPv3N6Matrix8get_commEv"></span><span id="_CPPv2N6Matrix8get_commEv"></span><span id="Matrix::get_comm"></span><span class="target" id="classMatrix_1af926bc937be55312a3ae9722b6dab1aa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix8get_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns reference to the communication object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12get_num_colsEv">
+<span id="_CPPv3N6Matrix12get_num_colsEv"></span><span id="_CPPv2N6Matrix12get_num_colsEv"></span><span id="Matrix::get_num_cols"></span><span class="target" id="classMatrix_1a9109683a18135aea66065efff1991b7f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_cols</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12get_num_colsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the number of columns in the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12get_num_rowsEv">
+<span id="_CPPv3N6Matrix12get_num_rowsEv"></span><span id="_CPPv2N6Matrix12get_num_rowsEv"></span><span id="Matrix::get_num_rows"></span><span class="target" id="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_rows</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12get_num_rowsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the number of rows in the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix14get_block_sizeEv">
+<span id="_CPPv3N6Matrix14get_block_sizeEv"></span><span id="_CPPv2N6Matrix14get_block_sizeEv"></span><span id="Matrix::get_block_size"></span><span class="target" id="classMatrix_1ab7f659b541f79e9810ff197a17affee2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_block_size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix14get_block_sizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the block size of the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12is_conjugateEv">
+<span id="_CPPv3N6Matrix12is_conjugateEv"></span><span id="_CPPv2N6Matrix12is_conjugateEv"></span><span id="Matrix::is_conjugate"></span><span class="target" id="classMatrix_1a5fa5be1d8da5556aa66752f360162096"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_conjugate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12is_conjugateEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns true if the matrix is conjugate, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix7is_fullEv">
+<span id="_CPPv3N6Matrix7is_fullEv"></span><span id="_CPPv2N6Matrix7is_fullEv"></span><span id="Matrix::is_full"></span><span class="target" id="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_full</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix7is_fullEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns true if the matrix is full, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix14is_initializedEv">
+<span id="_CPPv3N6Matrix14is_initializedEv"></span><span id="_CPPv2N6Matrix14is_initializedEv"></span><span id="Matrix::is_initialized"></span><span class="target" id="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_initialized</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix14is_initializedEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns true if the matrix is initialized, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix27get_has_mat_freq_tosi_otherEv">
+<span id="_CPPv3N6Matrix27get_has_mat_freq_tosi_otherEv"></span><span id="_CPPv2N6Matrix27get_has_mat_freq_tosi_otherEv"></span><span id="Matrix::get_has_mat_freq_tosi_other"></span><span class="target" id="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_has_mat_freq_tosi_other</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix27get_has_mat_freq_tosi_otherEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns true if the other matrix frequency in TOSI format exists, false otherwise. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv46Vector">
+<span id="_CPPv36Vector"></span><span id="_CPPv26Vector"></span><span id="Vector"></span><span class="target" id="classVector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Vector</span></span></span><a class="headerlink" href="#_CPPv46Vector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents a vector. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector6VectorER4CommjjNSt6stringE">
+<span id="_CPPv3N6Vector6VectorER4CommjjNSt6stringE"></span><span id="_CPPv2N6Vector6VectorER4CommjjNSt6stringE"></span><span id="Vector::Vector__CommR.unsigned-i.unsigned-i.ss"></span><span class="target" id="classVector_1a4f1f744a132b611856ec38d0879735ee"></span><span class="sig-name descname"><span class="n"><span class="pre">Vector</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">comm</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_blocks</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">block_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">row_or_col</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector6VectorER4CommjjNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Constructor for the <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> class. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – The <a class="reference internal" href="#classComm"><span class="std std-ref">Comm</span></a> object. </p></li>
+<li><p><strong>num_blocks</strong> – The number of blocks. </p></li>
+<li><p><strong>block_size</strong> – The size of each block. </p></li>
+<li><p><strong>row_or_col</strong> – Indicates whether the vector is row or column. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector6VectorER6Vectorb">
+<span id="_CPPv3N6Vector6VectorER6Vectorb"></span><span id="_CPPv2N6Vector6VectorER6Vectorb"></span><span id="Vector::Vector__VectorR.b"></span><span class="target" id="classVector_1a51a2a096ceb7f6bffef8bba9530e46a1"></span><span class="sig-name descname"><span class="n"><span class="pre">Vector</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6Vector6VectorER6Vectorb" title="Vector::Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">deep_copy</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector6VectorER6Vectorb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy constructor for the <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> class. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object to be copied. </p></li>
+<li><p><strong>deep_copy</strong> – Flag indicating whether to perform a deep copy. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6VectorD0Ev">
+<span id="_CPPv3N6VectorD0Ev"></span><span id="_CPPv2N6VectorD0Ev"></span><span id="Vector::~Vector"></span><span class="target" id="classVector_1a2eb3c49587a4f12cade7895ccb73f6a0"></span><span class="sig-name descname"><span class="n"><span class="pre">~Vector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6VectorD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor for the <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> class. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector8init_vecEv">
+<span id="_CPPv3N6Vector8init_vecEv"></span><span id="_CPPv2N6Vector8init_vecEv"></span><span id="Vector::init_vec"></span><span class="target" id="classVector_1a6192670c16f9d5e6c08ce76fa5712aa4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_vec</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector8init_vecEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector18init_vec_from_fileENSt6stringE">
+<span id="_CPPv3N6Vector18init_vec_from_fileENSt6stringE"></span><span id="_CPPv2N6Vector18init_vec_from_fileENSt6stringE"></span><span id="Vector::init_vec_from_file__ss"></span><span class="target" id="classVector_1a62b90f069859290f1ea98050ae93334a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_vec_from_file</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector18init_vec_from_fileENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the vector from a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the file. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector13init_vec_onesEv">
+<span id="_CPPv3N6Vector13init_vec_onesEv"></span><span id="_CPPv2N6Vector13init_vec_onesEv"></span><span id="Vector::init_vec_ones"></span><span class="target" id="classVector_1a7fc017e5343529cfc7d89bb36cf5e586"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_vec_ones</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector13init_vec_onesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the vector with all ones. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector14init_vec_zerosEv">
+<span id="_CPPv3N6Vector14init_vec_zerosEv"></span><span id="_CPPv2N6Vector14init_vec_zerosEv"></span><span id="Vector::init_vec_zeros"></span><span class="target" id="classVector_1a97e896f5a16e1bc3d4a33f085d3e0b89"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_vec_zeros</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector14init_vec_zerosEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initializes the vector with all zeros. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector8vec_axpyEdR6VectorR6Vector">
+<span id="_CPPv3N6Vector8vec_axpyEdR6VectorR6Vector"></span><span id="_CPPv2N6Vector8vec_axpyEdR6VectorR6Vector"></span><span id="Vector::vec_axpy__double.VectorR.VectorR"></span><span class="target" id="classVector_1afd0b9b363b837569dfb6bbed463ea3b1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vec_axpy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">alpha</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector8vec_axpyEdR6VectorR6Vector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Performs the operation y = alpha * x + y. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alpha</strong> – The scalar value. </p></li>
+<li><p><strong>x</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object x. </p></li>
+<li><p><strong>y</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object y. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector9vec_waxpyEdR6VectorR6VectorR6Vector">
+<span id="_CPPv3N6Vector9vec_waxpyEdR6VectorR6VectorR6Vector"></span><span id="_CPPv2N6Vector9vec_waxpyEdR6VectorR6VectorR6Vector"></span><span id="Vector::vec_waxpy__double.VectorR.VectorR.VectorR"></span><span class="target" id="classVector_1aa9a0987371b81e03995274ad682298ad"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vec_waxpy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">alpha</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">w</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector9vec_waxpyEdR6VectorR6VectorR6Vector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Performs the operation w = alpha * x + y. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alpha</strong> – The scalar value. </p></li>
+<li><p><strong>x</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object x. </p></li>
+<li><p><strong>y</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object y. </p></li>
+<li><p><strong>w</strong> – The <a class="reference internal" href="#classVector"><span class="std std-ref">Vector</span></a> object w. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector9vec_scaleEd">
+<span id="_CPPv3N6Vector9vec_scaleEd"></span><span id="_CPPv2N6Vector9vec_scaleEd"></span><span id="Vector::vec_scale__double"></span><span class="target" id="classVector_1af057940792298f65df0ba48fa8155c68"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vec_scale</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">alpha</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector9vec_scaleEd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Scales the vector by a scalar value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alpha</strong> – The scalar value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector7on_gridEv">
+<span id="_CPPv3N6Vector7on_gridEv"></span><span id="_CPPv2N6Vector7on_gridEv"></span><span id="Vector::on_grid"></span><span class="target" id="classVector_1a79a0dc20b24093c5248e6a2a30993023"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">on_grid</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector7on_gridEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Checks if the vector is on the grid. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the vector is on the grid, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector5printENSt6stringE">
+<span id="_CPPv3N6Vector5printENSt6stringE"></span><span id="_CPPv2N6Vector5printENSt6stringE"></span><span id="Vector::print__ss"></span><span class="target" id="classVector_1a6f5df548f7253fa635c276f07a00bf2e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">print</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector5printENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the vector. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The name of the vector. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector9get_d_vecEv">
+<span id="_CPPv3N6Vector9get_d_vecEv"></span><span id="_CPPv2N6Vector9get_d_vecEv"></span><span id="Vector::get_d_vec"></span><span class="target" id="classVector_1aaf2e9af539bd2cdaf64240b5d1731019"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_d_vec</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector9get_d_vecEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the pointer to the vector data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The pointer to the vector data. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector14get_num_blocksEv">
+<span id="_CPPv3N6Vector14get_num_blocksEv"></span><span id="_CPPv2N6Vector14get_num_blocksEv"></span><span id="Vector::get_num_blocks"></span><span class="target" id="classVector_1ad1912a9699235dd70a6ee7c35b606d9b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_blocks</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector14get_num_blocksEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the number of blocks. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of blocks. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector14get_block_sizeEv">
+<span id="_CPPv3N6Vector14get_block_sizeEv"></span><span id="_CPPv2N6Vector14get_block_sizeEv"></span><span id="Vector::get_block_size"></span><span class="target" id="classVector_1ad4f1887d3d9635fc9f4c748e402625d1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_block_size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector14get_block_sizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the size of each block. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The size of each block. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector8get_commEv">
+<span id="_CPPv3N6Vector8get_commEv"></span><span id="_CPPv2N6Vector8get_commEv"></span><span id="Vector::get_comm"></span><span class="target" id="classVector_1afcf743b040db937eb9f6ee61663a711d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector8get_commEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the communication object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The communication object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector14get_row_or_colEv">
+<span id="_CPPv3N6Vector14get_row_or_colEv"></span><span id="_CPPv2N6Vector14get_row_or_colEv"></span><span id="Vector::get_row_or_col"></span><span class="target" id="classVector_1a5fd1c46353a60e3f51f779d45426d238"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_row_or_col</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector14get_row_or_colEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets the row or column descriptor. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The row or column descriptor. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector14is_initializedEv">
+<span id="_CPPv3N6Vector14is_initializedEv"></span><span id="_CPPv2N6Vector14is_initializedEv"></span><span id="Vector::is_initialized"></span><span class="target" id="classVector_1a2433c7f2688d13171ca070dd68c7677e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_initialized</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector14is_initializedEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Checks if the vector is initialized. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the vector is initialized, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Vector9set_d_vecEPd">
+<span id="_CPPv3N6Vector9set_d_vecEPd"></span><span id="_CPPv2N6Vector9set_d_vecEPd"></span><span id="Vector::set_d_vec__doubleP"></span><span class="target" id="classVector_1aa448ef20add67aaa56fde0a30eb746dd"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_d_vec</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">d_vec</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Vector9set_d_vecEPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets the pointer to the vector data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>d_vec</strong> – The pointer to the vector data. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv45Utils">
+<span id="_CPPv35Utils"></span><span id="_CPPv25Utils"></span><span id="Utils"></span><span class="target" id="namespaceUtils"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Utils</span></span></span><a class="headerlink" href="#_CPPv45Utils" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Namespace containing utility functions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11getHostHashEPKc">
+<span id="_CPPv3N5Utils11getHostHashEPKc"></span><span id="_CPPv2N5Utils11getHostHashEPKc"></span><span id="Utils::getHostHash__cCP"></span><span class="target" id="namespaceUtils_1a7f1ae45e1fa6c658c451fd26c361c66f"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHostHash</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11getHostHashEPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the host hash. </p>
+<p>This function returns the hash of the host name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> – The host name. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The hash of the host name. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11getHostNameEPci">
+<span id="_CPPv3N5Utils11getHostNameEPci"></span><span id="_CPPv2N5Utils11getHostNameEPci"></span><span id="Utils::getHostName__cP.i"></span><span class="target" id="namespaceUtils_1abe2d56751904f51d670f0ead1a510a28"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHostName</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">hostname</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11getHostNameEPci" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the host name. </p>
+<p>This function gets the host name and stores it in the provided buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> – The buffer to store the host name. </p></li>
+<li><p><strong>maxlen</strong> – The maximum length of the buffer. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t">
+<span id="_CPPv3N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t"></span><span id="_CPPv2N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t"></span><span id="Utils::PadVector__doubleCPC.doublePC.unsigned-iC.unsigned-iC.cudaStream_t"></span><span class="target" id="namespaceUtils_1adc2f304acec8ac21939f8ccd69324cd3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PadVector</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_in</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_pad</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">cudaStream_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pads each block of a vector to twice the length with zeros. </p>
+<p>This function takes an input vector <code class="docutils literal notranslate"><span class="pre">d_in</span></code> and pads each block of the vector to twice the length with zeros. The padded vector is stored in the output vector <code class="docutils literal notranslate"><span class="pre">d_pad</span></code>. The number of columns in each block is specified by <code class="docutils literal notranslate"><span class="pre">num_cols</span></code>. The total size of the vector is specified by <code class="docutils literal notranslate"><span class="pre">size</span></code>. The padding operation is performed asynchronously on the CUDA stream <code class="docutils literal notranslate"><span class="pre">s</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_in</strong> – Pointer to the input vector. </p></li>
+<li><p><strong>d_pad</strong> – Pointer to the output padded vector. </p></li>
+<li><p><strong>num_cols</strong> – Number of columns in each block. </p></li>
+<li><p><strong>size</strong> – Total size of the vector. </p></li>
+<li><p><strong>s</strong> – CUDA stream for asynchronous execution. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t">
+<span id="_CPPv3N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t"></span><span id="_CPPv2N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t"></span><span id="Utils::UnpadRepadVector__doubleCPC.doublePC.unsigned-iC.unsigned-iC.bC.cudaStream_t"></span><span class="target" id="namespaceUtils_1a9d0ccfc29aa0ef4861f810002058a8ff"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UnpadRepadVector</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_in</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_out</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad</span></span>, <span class="n"><span class="pre">cudaStream_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unpads or repads a vector. </p>
+<p>This function either unpads each block of the vector back to the original length or resets the second half of each block to zeros.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_in</strong> – Pointer to the input vector. </p></li>
+<li><p><strong>d_out</strong> – Pointer to the output vector. </p></li>
+<li><p><strong>num_cols</strong> – The number of columns in the vector. </p></li>
+<li><p><strong>size</strong> – The size of the vector. </p></li>
+<li><p><strong>unpad</strong> – Flag indicating whether to unpad or repad the vector. If true, the vector will be unpadded. If false, the second half of each block will be reset to zeros. </p></li>
+<li><p><strong>s</strong> – The CUDA stream to use for the operation. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils8printVecEPdiiNSt6stringE">
+<span id="_CPPv3N5Utils8printVecEPdiiNSt6stringE"></span><span id="_CPPv2N5Utils8printVecEPdiiNSt6stringE"></span><span id="Utils::printVec__doubleP.i.i.ss"></span><span class="target" id="namespaceUtils_1afc7acb2b6248e999e44b69df4d5968ee"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVec</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils8printVecEPdiiNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints the elements of a vector. </p>
+<p>This function prints the elements of a vector to the console.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – Pointer to the vector. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>name</strong> – (Optional) The name of the vector. Defaults to “Vector”. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils15printVecComplexEP7ComplexiiNSt6stringE">
+<span id="_CPPv3N5Utils15printVecComplexEP7ComplexiiNSt6stringE"></span><span id="_CPPv2N5Utils15printVecComplexEP7ComplexiiNSt6stringE"></span><span id="Utils::printVecComplex__ComplexP.i.i.ss"></span><span class="target" id="namespaceUtils_1ae04d65fb199f9ea094484826841cde2b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVecComplex</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils15printVecComplexEP7ComplexiiNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints a complex vector. </p>
+<p>This function prints the elements of a complex vector to the console.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – The complex vector to be printed. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>name</strong> – The name of the vector (optional). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11printVecMPIEPdiiiiNSt6stringE">
+<span id="_CPPv3N5Utils11printVecMPIEPdiiiiNSt6stringE"></span><span id="_CPPv2N5Utils11printVecMPIEPdiiiiNSt6stringE"></span><span id="Utils::printVecMPI__doubleP.i.i.i.i.ss"></span><span class="target" id="namespaceUtils_1a0a7bd8883afe67961fad599b27a385a4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVecMPI</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rank</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">world_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11printVecMPIEPdiiiiNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints a vector using MPI. </p>
+<p>This function prints the elements of a vector using MPI. It takes the following parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vec</span></code>: A pointer to the vector to be printed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unpad_size</span></code>: The size of the unpadded vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rank</span></code>: The rank of the current process.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">world_size</span></code>: The total number of processes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: (Optional) The name of the vector (default is “Vector”).</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – A pointer to the vector to be printed. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>rank</strong> – The rank of the current process. </p></li>
+<li><p><strong>world_size</strong> – The total number of processes. </p></li>
+<li><p><strong>name</strong> – (Optional) The name of the vector (default is “Vector”). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils10printTimesEib">
+<span id="_CPPv3N5Utils10printTimesEib"></span><span id="_CPPv2N5Utils10printTimesEib"></span><span id="Utils::printTimes__i.b"></span><span class="target" id="namespaceUtils_1a2eb3dd7a1eabb25acfc1fcae3780d9f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printTimes</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reps</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">table</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils10printTimesEib" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print the times for the different parts of the code. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> – The number of repetitions of the code. </p></li>
+<li><p><strong>table</strong> – Flag indicating whether to print the times in a table or print raw values. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE">
+<span id="_CPPv3N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE"></span><span id="_CPPv2N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE"></span><span id="Utils::makeTable__std::vector:ss:.std::vector:l-double:.std::vector:l-double:.std::vector:l-double:"></span><span class="target" id="namespaceUtils_1a2087376d30e113031da868ee9e6da68d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">makeTable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">col_names</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mean</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">min</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Make a table of timing data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col_names</strong> – The names of the columns (first entry is the title). </p></li>
+<li><p><strong>mean</strong> – The mean times. </p></li>
+<li><p><strong>min</strong> – The minimum times. </p></li>
+<li><p><strong>max</strong> – The maximum times. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils8printRawEPePePePePePePePePei">
+<span id="_CPPv3N5Utils8printRawEPePePePePePePePePei"></span><span id="_CPPv2N5Utils8printRawEPePePePePePePePePei"></span><span id="Utils::printRaw__l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.i"></span><span class="target" id="namespaceUtils_1a0dfdccf48b9c5cae7b29109a80d7b495"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printRaw</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times_fs</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times_fs</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times_fs</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">times_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils8printRawEPePePePePePePePePei" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Print the raw timing data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_times</strong> – The mean times. </p></li>
+<li><p><strong>min_times</strong> – The minimum times. </p></li>
+<li><p><strong>max_times</strong> – The maximum times. </p></li>
+<li><p><strong>mean_times_f</strong> – The mean times for the forward FFT. </p></li>
+<li><p><strong>min_times_f</strong> – The minimum times for the forward FFT. </p></li>
+<li><p><strong>max_times_f</strong> – The maximum times for the forward FFT. </p></li>
+<li><p><strong>mean_times_fs</strong> – The mean times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>min_times_fs</strong> – The minimum times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>max_times_fs</strong> – The maximum times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>times_len</strong> – The number of timing segments. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46Tester">
+<span id="_CPPv36Tester"></span><span id="_CPPv26Tester"></span><span id="Tester"></span><span class="target" id="namespaceTester"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Tester</span></span></span><a class="headerlink" href="#_CPPv46Tester" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Tester15checkOnesMatvecER4CommR6MatrixR6Vectorbb">
+<span id="_CPPv3N6Tester15checkOnesMatvecER4CommR6MatrixR6Vectorbb"></span><span id="_CPPv2N6Tester15checkOnesMatvecER4CommR6MatrixR6Vectorbb"></span><span id="Tester::checkOnesMatvec__CommR.MatrixR.VectorR.b.b"></span><span class="target" id="tester_8hpp_1a19a2d669265a1a281d29e844da3fdd22"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkOnesMatvec</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">comm</span></span>, <a class="reference internal" href="#_CPPv46Matrix" title="Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">mat</span></span>, <a class="reference internal" href="#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">out</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">conj</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Tester15checkOnesMatvecER4CommR6MatrixR6Vectorbb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Checks the results of a matrix-vector multiplication with a ones matrix and ones vectors. </p>
+<p>This function takes a communication object, a matrix, a vector, and two boolean flags as input. It performs a matrix-vector multiplication with a ones matrix and ones vectors and checks the results. The boolean flag <code class="docutils literal notranslate"><span class="pre">conj</span></code> indicates whether the matrix should be conjugated during the multiplication. The boolean flag <code class="docutils literal notranslate"><span class="pre">full</span></code> indicates whether the full matrix should be used for the multiplication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – The communication object. </p></li>
+<li><p><strong>mat</strong> – The matrix for the multiplication. </p></li>
+<li><p><strong>out</strong> – The output vector. </p></li>
+<li><p><strong>conj</strong> – Flag indicating whether the matrix should be conjugated. </p></li>
+<li><p><strong>full</strong> – Flag indicating whether the full matrix should be used (F*F/FF* vs F/F*). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
 
 
           </div>
@@ -54,7 +907,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">FFT Matvec</a></h1>
+<h1 class="logo"><a href="#">FFTMatvec</a></h1>
 
 
 

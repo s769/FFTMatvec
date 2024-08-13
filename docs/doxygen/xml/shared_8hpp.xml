@@ -180,7 +180,7 @@
       </node>
       <node id="4">
         <label>/home/srvenkat/matvec-test/src/tester.hpp</label>
-        <link refid="tester_8hpp_source"/>
+        <link refid="tester_8hpp"/>
       </node>
       <node id="7">
         <label>/home/srvenkat/matvec-test/src/utils.hpp</label>

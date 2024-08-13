@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "_aceghilmnoprstuv~",
   1: "acehimnoprstv",
   2: "nu",
-  3: "cmsuv",
+  3: "cmstuv",
   4: "_cgilmnopstuv~"
 };
 

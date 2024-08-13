@@ -1,0 +1,59 @@
+.TH "cli::NumericalBase< T, numericalBase >" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+cli::NumericalBase< T, numericalBase > \- Class used to wrap integer types to specify desired numerical base for specific argument parsing\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <cmdparser\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBNumericalBase\fP ()"
+.br
+.RI "This constructor required for correct AgrumentCountChecker initialization\&. "
+.ti -1c
+.RI "\fBNumericalBase\fP (T val)"
+.br
+.ti -1c
+.RI "\fBoperator T\fP () const"
+.br
+.ti -1c
+.RI "\fBoperator T*\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "T \fBvalue\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBbase\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T, int numericalBase = 0>
+.br
+class cli::NumericalBase< T, numericalBase >"Class used to wrap integer types to specify desired numerical base for specific argument parsing\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T , int numericalBase = 0> \fBcli::NumericalBase\fP< T, numericalBase >::NumericalBase (T val)\fC [inline]\fP"
+This constructor required for default value initialization 
+.PP
+\fBParameters\fP
+.RS 4
+\fIval\fP comes from default value 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

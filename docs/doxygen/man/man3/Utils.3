@@ -1,0 +1,257 @@
+.TH "Utils" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Utils \- Namespace containing utility functions\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "uint64_t \fBgetHostHash\fP (const char *string)"
+.br
+.RI "Get the host hash\&. "
+.ti -1c
+.RI "void \fBgetHostName\fP (char *hostname, int maxlen)"
+.br
+.RI "Get the host name\&. "
+.ti -1c
+.RI "void \fBPadVector\fP (const double *const d_in, double *const d_pad, const unsigned int num_cols, const unsigned int size, cudaStream_t s)"
+.br
+.RI "Pads each block of a vector to twice the length with zeros\&. "
+.ti -1c
+.RI "void \fBUnpadRepadVector\fP (const double *const d_in, double *const d_out, const unsigned int num_cols, const unsigned int size, const bool unpad, cudaStream_t s)"
+.br
+.RI "Unpads or repads a vector\&. "
+.ti -1c
+.RI "void \fBprintVec\fP (double *vec, int len, int unpad_size, std::string name='Vector')"
+.br
+.RI "Prints the elements of a vector\&. "
+.ti -1c
+.RI "void \fBprintVecComplex\fP (Complex *vec, int len, int unpad_size, std::string name='Vector')"
+.br
+.RI "Prints a complex vector\&. "
+.ti -1c
+.RI "void \fBprintVecMPI\fP (double *vec, int len, int unpad_size, int rank, int world_size, std::string name='Vector')"
+.br
+.RI "Prints a vector using MPI\&. "
+.ti -1c
+.RI "void \fBprintTimes\fP (int reps=1, bool table=true)"
+.br
+.RI "Print the times for the different parts of the code\&. "
+.ti -1c
+.RI "void \fBmakeTable\fP (std::vector< std::string > col_names, std::vector< long double > mean, std::vector< long double > min, std::vector< long double > max)"
+.br
+.RI "Make a table of timing data\&. "
+.ti -1c
+.RI "void \fBprintRaw\fP (long double *mean_times, long double *min_times, long double *max_times, long double *mean_times_f, long double *min_times_f, long double *max_times_f, long double *mean_times_fs, long double *min_times_fs, long double *max_times_fs, int times_len)"
+.br
+.RI "Print the raw timing data\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Namespace containing utility functions\&. 
+.SH "Function Documentation"
+.PP 
+.SS "uint64_t Utils::getHostHash (const char * string)"
+
+.PP
+Get the host hash\&. This function returns the hash of the host name\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstring\fP The host name\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The hash of the host name\&. 
+.RE
+.PP
+
+.SS "void Utils::getHostName (char * hostname, int maxlen)"
+
+.PP
+Get the host name\&. This function gets the host name and stores it in the provided buffer\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIhostname\fP The buffer to store the host name\&. 
+.br
+\fImaxlen\fP The maximum length of the buffer\&. 
+.RE
+.PP
+
+.SS "void Utils::makeTable (std::vector< std::string > col_names, std::vector< long double > mean, std::vector< long double > min, std::vector< long double > max)"
+
+.PP
+Make a table of timing data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcol_names\fP The names of the columns (first entry is the title)\&. 
+.br
+\fImean\fP The mean times\&. 
+.br
+\fImin\fP The minimum times\&. 
+.br
+\fImax\fP The maximum times\&. 
+.RE
+.PP
+
+.SS "void Utils::PadVector (const double *const d_in, double *const d_pad, const unsigned int num_cols, const unsigned int size, cudaStream_t s)"
+
+.PP
+Pads each block of a vector to twice the length with zeros\&. This function takes an input vector \fCd_in\fP and pads each block of the vector to twice the length with zeros\&. The padded vector is stored in the output vector \fCd_pad\fP\&. The number of columns in each block is specified by \fCnum_cols\fP\&. The total size of the vector is specified by \fCsize\fP\&. The padding operation is performed asynchronously on the CUDA stream \fCs\fP\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fId_in\fP Pointer to the input vector\&. 
+.br
+\fId_pad\fP Pointer to the output padded vector\&. 
+.br
+\fInum_cols\fP Number of columns in each block\&. 
+.br
+\fIsize\fP Total size of the vector\&. 
+.br
+\fIs\fP CUDA stream for asynchronous execution\&. 
+.RE
+.PP
+
+.SS "void Utils::printRaw (long double * mean_times, long double * min_times, long double * max_times, long double * mean_times_f, long double * min_times_f, long double * max_times_f, long double * mean_times_fs, long double * min_times_fs, long double * max_times_fs, int times_len)"
+
+.PP
+Print the raw timing data\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImean_times\fP The mean times\&. 
+.br
+\fImin_times\fP The minimum times\&. 
+.br
+\fImax_times\fP The maximum times\&. 
+.br
+\fImean_times_f\fP The mean times for the forward FFT\&. 
+.br
+\fImin_times_f\fP The minimum times for the forward FFT\&. 
+.br
+\fImax_times_f\fP The maximum times for the forward FFT\&. 
+.br
+\fImean_times_fs\fP The mean times for the forward FFT in TOSI format\&. 
+.br
+\fImin_times_fs\fP The minimum times for the forward FFT in TOSI format\&. 
+.br
+\fImax_times_fs\fP The maximum times for the forward FFT in TOSI format\&. 
+.br
+\fItimes_len\fP The number of timing segments\&. 
+.RE
+.PP
+
+.SS "void Utils::printTimes (int reps = \fC1\fP, bool table = \fCtrue\fP)"
+
+.PP
+Print the times for the different parts of the code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIreps\fP The number of repetitions of the code\&. 
+.br
+\fItable\fP Flag indicating whether to print the times in a table or print raw values\&. 
+.RE
+.PP
+
+.SS "void Utils::printVec (double * vec, int len, int unpad_size, std::string name = \fC'Vector'\fP)"
+
+.PP
+Prints the elements of a vector\&. This function prints the elements of a vector to the console\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIvec\fP Pointer to the vector\&. 
+.br
+\fIlen\fP The length of the vector\&. 
+.br
+\fIunpad_size\fP The size of the unpadded vector\&. 
+.br
+\fIname\fP (Optional) The name of the vector\&. Defaults to 'Vector'\&. 
+.RE
+.PP
+
+.SS "void Utils::printVecComplex (Complex * vec, int len, int unpad_size, std::string name = \fC'Vector'\fP)"
+
+.PP
+Prints a complex vector\&. This function prints the elements of a complex vector to the console\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIvec\fP The complex vector to be printed\&. 
+.br
+\fIlen\fP The length of the vector\&. 
+.br
+\fIunpad_size\fP The size of the unpadded vector\&. 
+.br
+\fIname\fP The name of the vector (optional)\&. 
+.RE
+.PP
+
+.SS "void Utils::printVecMPI (double * vec, int len, int unpad_size, int rank, int world_size, std::string name = \fC'Vector'\fP)"
+
+.PP
+Prints a vector using MPI\&. This function prints the elements of a vector using MPI\&. It takes the following parameters:
+.IP "\(bu" 2
+\fCvec\fP: A pointer to the vector to be printed\&.
+.IP "\(bu" 2
+\fClen\fP: The length of the vector\&.
+.IP "\(bu" 2
+\fCunpad_size\fP: The size of the unpadded vector\&.
+.IP "\(bu" 2
+\fCrank\fP: The rank of the current process\&.
+.IP "\(bu" 2
+\fCworld_size\fP: The total number of processes\&.
+.IP "\(bu" 2
+\fCname\fP: (Optional) The name of the vector (default is 'Vector')\&.
+.PP
+.PP
+\fBParameters\fP
+.RS 4
+\fIvec\fP A pointer to the vector to be printed\&. 
+.br
+\fIlen\fP The length of the vector\&. 
+.br
+\fIunpad_size\fP The size of the unpadded vector\&. 
+.br
+\fIrank\fP The rank of the current process\&. 
+.br
+\fIworld_size\fP The total number of processes\&. 
+.br
+\fIname\fP (Optional) The name of the vector (default is 'Vector')\&. 
+.RE
+.PP
+
+.SS "void Utils::UnpadRepadVector (const double *const d_in, double *const d_out, const unsigned int num_cols, const unsigned int size, const bool unpad, cudaStream_t s)"
+
+.PP
+Unpads or repads a vector\&. This function either unpads each block of the vector back to the original length or resets the second half of each block to zeros\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fId_in\fP Pointer to the input vector\&. 
+.br
+\fId_out\fP Pointer to the output vector\&. 
+.br
+\fInum_cols\fP The number of columns in the vector\&. 
+.br
+\fIsize\fP The size of the vector\&. 
+.br
+\fIunpad\fP Flag indicating whether to unpad or repad the vector\&. If true, the vector will be unpadded\&. If false, the second half of each block will be reset to zeros\&. 
+.br
+\fIs\fP The CUDA stream to use for the operation\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

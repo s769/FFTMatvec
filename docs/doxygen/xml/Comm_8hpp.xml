@@ -265,7 +265,7 @@
       </node>
       <node id="3">
         <label>/home/srvenkat/matvec-test/src/tester.hpp</label>
-        <link refid="tester_8hpp_source"/>
+        <link refid="tester_8hpp"/>
       </node>
     </invincdepgraph>
     <innerclass refid="classComm" prot="public">Comm</innerclass>

@@ -1,0 +1,53 @@
+.TH "/home/srvenkat/matvec-test/src/tester.hpp" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+/home/srvenkat/matvec-test/src/tester.hpp \- Header file for the Tester namespace\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'Comm\&.hpp'\fP
+.br
+\fC#include 'Matrix\&.hpp'\fP
+.br
+\fC#include 'Vector\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBTester::checkOnesMatvec\fP (\fBComm\fP &comm, \fBMatrix\fP &mat, \fBVector\fP &out, bool conj, bool full)"
+.br
+.RI "Checks the results of a matrix-vector multiplication with a ones matrix and ones vectors\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Header file for the Tester namespace\&. 
+
+This file contains the declaration of the Tester namespace, which provides functions for testing matrix-vector multiplication\&. 
+.SH "Function Documentation"
+.PP 
+.SS "void Tester::checkOnesMatvec (\fBComm\fP & comm, \fBMatrix\fP & mat, \fBVector\fP & out, bool conj, bool full)"
+
+.PP
+Checks the results of a matrix-vector multiplication with a ones matrix and ones vectors\&. This function takes a communication object, a matrix, a vector, and two boolean flags as input\&. It performs a matrix-vector multiplication with a ones matrix and ones vectors and checks the results\&. The boolean flag \fCconj\fP indicates whether the matrix should be conjugated during the multiplication\&. The boolean flag \fCfull\fP indicates whether the full matrix should be used for the multiplication\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcomm\fP The communication object\&. 
+.br
+\fImat\fP The matrix for the multiplication\&. 
+.br
+\fIout\fP The output vector\&. 
+.br
+\fIconj\fP Flag indicating whether the matrix should be conjugated\&. 
+.br
+\fIfull\fP Flag indicating whether the full matrix should be used (F*F/FF* vs F/F*)\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.

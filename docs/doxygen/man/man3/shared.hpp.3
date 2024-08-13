@@ -1,0 +1,241 @@
+.TH "/home/srvenkat/matvec-test/src/shared.hpp" 3 "Tue Aug 13 2024" "Version 0.1.0" "FFTMatvec" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+/home/srvenkat/matvec-test/src/shared.hpp \- Header file containing shared definitions and includes\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <iostream>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <cufft\&.h>\fP
+.br
+\fC#include <cuda_runtime\&.h>\fP
+.br
+\fC#include <assert\&.h>\fP
+.br
+\fC#include <time\&.h>\fP
+.br
+\fC#include <sys/time\&.h>\fP
+.br
+\fC#include <omp\&.h>\fP
+.br
+\fC#include <cublas_v2\&.h>\fP
+.br
+\fC#include <string>\fP
+.br
+\fC#include <vector>\fP
+.br
+\fC#include <mpi\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <nccl\&.h>\fP
+.br
+\fC#include 'profiler\&.hpp'\fP
+.br
+\fC#include <array>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBenum_array< E, T, N >\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_BLOCK_SIZE\fP   1024"
+.br
+.ti -1c
+.RI "#define \fBTIME_MPI\fP   1"
+.br
+.ti -1c
+.RI "#define \fBERR_CHK\fP   1"
+.br
+.ti -1c
+.RI "#define \fBFFT_64\fP   0"
+.br
+.ti -1c
+.RI "#define \fBROW_SETUP\fP   1"
+.br
+.ti -1c
+.RI "#define \fBgpuErrchk\fP(ans)"
+.br
+.ti -1c
+.RI "#define \fBcufftSafeCall\fP(err)   \fB__cufftSafeCall\fP(err, __FILE__, __LINE__)"
+.br
+.ti -1c
+.RI "#define \fBcublasSafeCall\fP(err)   \fB__cublasSafeCall\fP(err, __FILE__, __LINE__)"
+.br
+.ti -1c
+.RI "#define \fBMPICHECK\fP(cmd)"
+.br
+.ti -1c
+.RI "#define \fBNCCLCHECK\fP(cmd)"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef int \fBfft_int_t\fP"
+.br
+.ti -1c
+.RI "typedef double2 \fBComplex\fP"
+.br
+.ti -1c
+.RI "typedef Complex \fBdata_t\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum class \fBProfilerTimesFull\fP : unsigned int { \fBCOMM_INIT\fP = 0, \fBSETUP\fP, \fBFULL\fP }"
+.br
+.ti -1c
+.RI "enum class \fBProfilerTimes\fP : unsigned int { \fBBROADCAST\fP = 0, \fBPAD\fP, \fBFFT\fP, \fBTRANS1\fP, \fBSBGEMV\fP, \fBTRANS2\fP, \fBIFFT\fP, \fBUNPAD\fP, \fBNCCLC\fP, \fBTOT\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBgpuAssert\fP (cudaError_t code, const char *file, int line, bool abort=true)"
+.br
+.RI "Checks the CUDA error code and prints an error message if an error occurred\&. "
+.ti -1c
+.RI "void \fB__cufftSafeCall\fP (cufftResult err, const char *file, const int line)"
+.br
+.RI "Safely calls the cufft function and checks for errors\&. "
+.ti -1c
+.RI "void \fB__cublasSafeCall\fP (cublasStatus_t err, const char *file, const int line)"
+.br
+.RI "Safely calls the cuBLAS function and checks for errors\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBenum_array\fP< ProfilerTimesFull, \fBprofiler_t\fP, 3 > \fBt_list\fP"
+.br
+.ti -1c
+.RI "\fBenum_array\fP< ProfilerTimes, \fBprofiler_t\fP, 10 > \fBt_list_f\fP"
+.br
+.ti -1c
+.RI "\fBenum_array\fP< ProfilerTimes, \fBprofiler_t\fP, 10 > \fBt_list_fs\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Header file containing shared definitions and includes\&. 
+
+This file contains various definitions and includes that are commonly used across multiple source files\&. It includes standard C and C++ libraries, CUDA libraries, OpenMP, MPI, NCCL, and other necessary headers\&. It also defines various constants, types, and helper functions for error checking\&.
+.PP
+\fBNote\fP
+.RS 4
+This file should be included in all source files that require these shared definitions and includes\&. 
+.RE
+.PP
+
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define gpuErrchk(ans)"
+\fBValue:\fP.PP
+.nf
+    {                                         \\
+        gpuAssert((ans), __FILE__, __LINE__); \\
+    }
+.fi
+
+.SS "#define MPICHECK(cmd)"
+\fBValue:\fP.PP
+.nf
+    do                                               \\
+    {                                                \\
+        int e = cmd;                                 \\
+        if (e != MPI_SUCCESS)                        \\
+        {                                            \\
+            printf("Failed: MPI error %s:%d '%d'\\n", \\
+                   __FILE__, __LINE__, e);           \\
+            exit(EXIT_FAILURE);                      \\
+        }                                            \\
+    } while (0)
+.fi
+
+.SS "#define NCCLCHECK(cmd)"
+\fBValue:\fP.PP
+.nf
+    do                                                         \\
+    {                                                          \\
+        ncclResult_t r = cmd;                                  \\
+        if (r != ncclSuccess)                                  \\
+        {                                                      \\
+            printf("Failed, NCCL error %s:%d '%s'\\n",          \\
+                   __FILE__, __LINE__, ncclGetErrorString(r)); \\
+            exit(EXIT_FAILURE);                                \\
+        }                                                      \\
+    } while (0)
+.fi
+
+.SH "Function Documentation"
+.PP 
+.SS "void __cublasSafeCall (cublasStatus_t err, const char * file, const int line)\fC [inline]\fP"
+
+.PP
+Safely calls the cuBLAS function and checks for errors\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerr\fP The cuBLAS status code\&. 
+.br
+\fIfile\fP The file path where the function is called\&. 
+.br
+\fIline\fP The line number where the function is called\&. 
+.RE
+.PP
+
+.SS "void __cufftSafeCall (cufftResult err, const char * file, const int line)\fC [inline]\fP"
+
+.PP
+Safely calls the cufft function and checks for errors\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerr\fP The cufftResult error code\&. 
+.br
+\fIfile\fP The file path where the function is called\&. 
+.br
+\fIline\fP The line number where the function is called\&. 
+.RE
+.PP
+
+.SS "void gpuAssert (cudaError_t code, const char * file, int line, bool abort = \fCtrue\fP)\fC [inline]\fP"
+
+.PP
+Checks the CUDA error code and prints an error message if an error occurred\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP The CUDA error code to check\&. 
+.br
+\fIfile\fP The name of the file where the error occurred\&. 
+.br
+\fIline\fP The line number where the error occurred\&. 
+.br
+\fIabort\fP Flag indicating whether to abort the program if an error occurred (default: true)\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for FFTMatvec from the source code\&.
