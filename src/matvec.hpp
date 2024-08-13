@@ -13,6 +13,10 @@
 #include "utils.hpp"
 #include <cutranspose.h>
 
+/**
+ * @namespace Matvec
+ * @brief Namespace containing functions for matrix-vector operations.
+ */
 namespace Matvec {
 
     /**

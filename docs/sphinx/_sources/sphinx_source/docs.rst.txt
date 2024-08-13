@@ -7,6 +7,7 @@ API Documentation
    Comm
    Matrix
    Vector
+   Matvec
    Utils
    Tester
 
