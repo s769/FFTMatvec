@@ -4,7 +4,7 @@ This repository contains the code for the paper "Venkat S, Fernando M, Henneking
 
 ## Documentation
 
-The documentation for the code can be found [here](https://matvec-test.readthedocs.io/en/latest/).
+The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/).
 
 ## Installation
 
