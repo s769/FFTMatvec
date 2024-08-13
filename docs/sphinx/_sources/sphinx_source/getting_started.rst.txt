@@ -12,7 +12,7 @@ Installation
 To build the code, the following dependencies are required:
 
 -  CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU
--  NCCL
+-  `NCCL <https://github.com/NVIDIA/nccl>`__
 
 First, clone the repository:
 

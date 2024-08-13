@@ -61,8 +61,8 @@ public:
     void init_vec_zeros();
 
     /**
-     * @brief Checks if the vector is on the grid.
-     * @return True if the vector is on the grid, false otherwise.
+     * @brief Checks if the calling process has the vector data.
+     * @return True if the calling process has the vector data, false otherwise.
      */
     bool on_grid()
     {
@@ -116,8 +116,8 @@ public:
     std::string get_row_or_col() { return row_or_col; }
 
     /**
-     * @brief Checks if the vector is initialized.
-     * @return True if the vector is initialized, false otherwise.
+     * @brief Checks if the vector data is initialized.
+     * @return True if the vector data is initialized, false otherwise.
      */
     bool is_initialized() { return initialized; }
 

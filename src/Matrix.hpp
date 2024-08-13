@@ -19,8 +19,6 @@ class Matrix {
 
 private:
     Comm& comm; /**< Reference to the communication object. */
-    bool conjugate; /**< Flag indicating if the matrix is conjugate. */
-    bool full; /**< Flag indicating if the matrix is full. */
     Complex *mat_freq_tosi; /**< Pointer to the matrix frequency in TOSI format. */
     Complex *mat_freq_tosi_other=nullptr; /**< Pointer to the other matrix frequency in TOSI format. */
     unsigned int block_size; /**< The block size of the matrix. */
@@ -49,10 +47,8 @@ public:
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
      * @param block_size The block size of the matrix.
-     * @param conjugate Flag indicating if the matrix is conjugate.
-     * @param full Flag indicating if the matrix is full.
      */
-    Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full);
+    Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size);
 
     /**
      * @brief Destroys the Matrix object.
@@ -74,15 +70,15 @@ public:
      * @brief Performs matrix-vector multiplication.
      * @param x The input vector.
      * @param y The output vector.
-     * @param full Flag indicating if the matrix is full.
+     * @param full Flag indicating if the matvec is with the full matrix F*F or just F.
      */
     void matvec(Vector &x, Vector &y, bool full = false);
 
     /**
-     * @brief Performs transpose matrix-vector multiplication.
+     * @brief Performs conjugate transpose matrix-vector multiplication.
      * @param x The input vector.
      * @param y The output vector.
-     * @param full Flag indicating if the matrix is full.
+     * @param full Flag indicating if the matvec is with the full matrix FF* or just F*.
      */
     void transpose_matvec(Vector &x, Vector &y, bool full = false);
 
@@ -106,8 +102,6 @@ public:
     unsigned int get_num_cols() { return num_cols; } /**< Returns the number of columns in the matrix. */
     unsigned int get_num_rows() { return num_rows; } /**< Returns the number of rows in the matrix. */
     unsigned int get_block_size() { return block_size; } /**< Returns the block size of the matrix. */
-    bool is_conjugate() { return conjugate; } /**< Returns true if the matrix is conjugate, false otherwise. */
-    bool is_full() { return full; } /**< Returns true if the matrix is full, false otherwise. */
     bool is_initialized() { return initialized; } /**< Returns true if the matrix is initialized, false otherwise. */
     bool get_has_mat_freq_tosi_other() { return has_mat_freq_tosi_other; } /**< Returns true if the other matrix frequency in TOSI format exists, false otherwise. */
 

@@ -3,7 +3,7 @@
 #include "Matrix.hpp"
 
 
-Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size, bool conjugate, bool full) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size), conjugate(conjugate), full(full)
+Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size)
 {
     // Initialize the matrix data structures
 

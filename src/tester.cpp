@@ -1,11 +1,13 @@
 
 #include "tester.hpp"
 
+// Function to check if two double values are equal within a tolerance
 bool double_equality(double a, double b, double tol)
 {
     return (std::abs(a - b) <= tol * std::max(1.0, std::max(std::abs(a), std::abs(b))));
 }
 
+// Function to check if an element of the matrix-vector product with ones matrix and ones vector is correct
 void check_element(
     Comm& comm, double elem, int b, int j, int Nt, int Nm, int Nd, bool conj, bool full)
 {

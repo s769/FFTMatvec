@@ -11,6 +11,10 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
 
+/**
+ * @namespace Tester
+ * @brief Namespace containing functions for testing matrix-vector multiplication.
+ */
 namespace Tester {
 
 /**

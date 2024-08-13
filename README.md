@@ -2,11 +2,15 @@
 
 This repository contains the code for the paper "Venkat S, Fernando M, Henneking S, Ghattas O. Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18.
 
+## Documentation
+
+The documentation for the code can be found [here](https://matvec-test.readthedocs.io/en/latest/).
+
 ## Installation
 
 To build the code, the following dependencies are required:
 - CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU
-- NCCL
+- [NCCL](https://github.com/NVIDIA/nccl)
 
 First, clone the repository:
 ```bash

@@ -134,7 +134,7 @@ int main(int argc, char** argv)
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         t_list[ProfilerTimesFull::SETUP].start();
 #endif
-        Matrix F(comm, num_cols, num_rows, size, false, false);
+        Matrix F(comm, num_cols, num_rows, size);
 
         if (world_rank == 0)
             printf("Created Matrices\n");
