@@ -10,7 +10,7 @@
 */
 Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col) : comm(comm), num_blocks(num_blocks), block_size(block_size), row_or_col(row_or_col)
 {
-    // Initialize the vector data structures. If row_or_col is "row", then the vector is a row vector, otherwise it is a column vector.
+    // Initialize the vector data structures. If row_or_col is "col", then the vector is a row vector, otherwise it is a column vector.
     // For row vectors, initialize only on row_color == 0, and for column vectors, initialize only on col_color == 0.
     this->comm = comm;
     if (on_grid())
@@ -137,10 +137,10 @@ void Vector::print(std::string name)
         }
 
         int rank = comm.get_world_rank();
-        int group_rank = (row_or_col == "row") ? comm.get_col_color() : comm.get_row_color();
+        int group_rank = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
         if (group_rank == 0 && on_grid())
             printf("Vector %s: \n", name.c_str());
-        int num_ranks = (row_or_col == "row") ? comm.get_proc_cols() : comm.get_proc_rows();
+        int num_ranks = (row_or_col == "col") ? comm.get_proc_cols() : comm.get_proc_rows();
         for (int r = 0; r < num_ranks; r++)
         {
             if (group_rank == r && on_grid())

@@ -27,7 +27,7 @@ namespace Tester {
  * @param conj Flag indicating whether the matrix should be conjugated.
  * @param full Flag indicating whether the full matrix should be used (F*F/FF* vs F/F*).
  */
-void checkOnesMatvec(Comm& comm, Matrix& mat, Vector& out, bool conj, bool full);
+void check_ones_matvec(Comm& comm, Matrix& mat, Vector& out, bool conj, bool full);
 
 }
 

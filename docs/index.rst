@@ -3,12 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to FFTMatvec's documentation!
+Welcome to FFTMatvec's Documentation!
 =====================================
 
+This page contains the documentation for the code presented in "Venkat S, Fernando M,
+Henneking S, Ghattas O. Fast and Scalable FFT-Based GPU-Accelerated
+Algorithms for Hessian Actions Arising in Linear Inverse Problems
+Governed by Autonomous Dynamical Systems. arXiv preprint
+`arXiv:2407.13066 <https://arxiv.org/abs/2407.13066>`__. 2024 Jul 18. The source code is 
+`here <https://github.com/s769/matvec-test>`__.
+
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   
+   sphinx_source/getting_started
+   sphinx_source/docs
+   sphinx_source/LICENSE
+
+
+
+
 
 
 
@@ -16,37 +31,14 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 
 
 
-Docs
-====
 
-.. doxygenclass:: Comm
-   :project: FFTMatvec
-   :members:
-   :undoc-members:
 
-.. doxygenclass:: Matrix
-   :project: FFTMatvec
-   :members:
-   :undoc-members:
 
-.. doxygenclass:: Vector
-   :project: FFTMatvec
-   :members:
-   :undoc-members:
 
-.. doxygennamespace:: Utils
-   :project: FFTMatvec
-   :members:
-   :undoc-members:
 
-.. doxygennamespace:: Tester
-   :project: FFTMatvec
-   :members:
-   :undoc-members:
+
 

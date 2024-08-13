@@ -1,0 +1,4 @@
+Installation
+============
+
+This document describes how to install the software.

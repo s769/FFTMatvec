@@ -26,8 +26,8 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), pro
 
     uint64_t hostHashs[world_size];
     char hostname[1024];
-    Utils::getHostName(hostname, 1024);
-    hostHashs[world_rank] = Utils::getHostHash(hostname);
+    Utils::get_host_name(hostname, 1024);
+    hostHashs[world_rank] = Utils::get_host_hash(hostname);
     MPICHECK(MPI_Allgather(MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
     for (int p = 0; p < world_size; p++)
     {

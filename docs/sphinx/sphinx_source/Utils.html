@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Utils &mdash; FFTMatvec 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tester" href="Tester.html" />
+    <link rel="prev" title="Vector" href="Vector.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FFTMatvec
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="docs.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Comm.html">Comm</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Matrix.html">Matrix</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Vector.html">Vector</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Utils</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Tester.html">Tester</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">LICENSE</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FFTMatvec</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="docs.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sphinx_source/Utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils">
+<h1>Utils<a class="headerlink" href="#utils" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv45Utils">
+<span id="_CPPv35Utils"></span><span id="_CPPv25Utils"></span><span id="Utils"></span><span class="target" id="namespaceUtils"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Utils</span></span></span><a class="headerlink" href="#_CPPv45Utils" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Namespace containing utility functions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11getHostHashEPKc">
+<span id="_CPPv3N5Utils11getHostHashEPKc"></span><span id="_CPPv2N5Utils11getHostHashEPKc"></span><span id="Utils::getHostHash__cCP"></span><span class="target" id="namespaceUtils_1a7f1ae45e1fa6c658c451fd26c361c66f"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHostHash</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">string</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11getHostHashEPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the host hash. </p>
+<p>This function returns the hash of the host name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>string</strong> – The host name. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The hash of the host name. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11getHostNameEPci">
+<span id="_CPPv3N5Utils11getHostNameEPci"></span><span id="_CPPv2N5Utils11getHostNameEPci"></span><span id="Utils::getHostName__cP.i"></span><span class="target" id="namespaceUtils_1abe2d56751904f51d670f0ead1a510a28"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getHostName</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">hostname</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11getHostNameEPci" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the host name. </p>
+<p>This function gets the host name and stores it in the provided buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> – The buffer to store the host name. </p></li>
+<li><p><strong>maxlen</strong> – The maximum length of the buffer. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t">
+<span id="_CPPv3N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t"></span><span id="_CPPv2N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t"></span><span id="Utils::PadVector__doubleCPC.doublePC.unsigned-iC.unsigned-iC.cudaStream_t"></span><span class="target" id="namespaceUtils_1adc2f304acec8ac21939f8ccd69324cd3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PadVector</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_in</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_pad</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">cudaStream_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils9PadVectorEPCKdPCdKjKj12cudaStream_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Pads each block of a vector to twice the length with zeros. </p>
+<p>This function takes an input vector <code class="docutils literal notranslate"><span class="pre">d_in</span></code> and pads each block of the vector to twice the length with zeros. The padded vector is stored in the output vector <code class="docutils literal notranslate"><span class="pre">d_pad</span></code>. The number of columns in each block is specified by <code class="docutils literal notranslate"><span class="pre">num_cols</span></code>. The total size of the vector is specified by <code class="docutils literal notranslate"><span class="pre">size</span></code>. The padding operation is performed asynchronously on the CUDA stream <code class="docutils literal notranslate"><span class="pre">s</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_in</strong> – Pointer to the input vector. </p></li>
+<li><p><strong>d_pad</strong> – Pointer to the output padded vector. </p></li>
+<li><p><strong>num_cols</strong> – Number of columns in each block. </p></li>
+<li><p><strong>size</strong> – Total size of the vector. </p></li>
+<li><p><strong>s</strong> – CUDA stream for asynchronous execution. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t">
+<span id="_CPPv3N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t"></span><span id="_CPPv2N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t"></span><span id="Utils::UnpadRepadVector__doubleCPC.doublePC.unsigned-iC.unsigned-iC.bC.cudaStream_t"></span><span class="target" id="namespaceUtils_1a9d0ccfc29aa0ef4861f810002058a8ff"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UnpadRepadVector</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_in</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">d_out</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad</span></span>, <span class="n"><span class="pre">cudaStream_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils16UnpadRepadVectorEPCKdPCdKjKjKb12cudaStream_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unpads or repads a vector. </p>
+<p>This function either unpads each block of the vector back to the original length or resets the second half of each block to zeros.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_in</strong> – Pointer to the input vector. </p></li>
+<li><p><strong>d_out</strong> – Pointer to the output vector. </p></li>
+<li><p><strong>num_cols</strong> – The number of columns in the vector. </p></li>
+<li><p><strong>size</strong> – The size of the vector. </p></li>
+<li><p><strong>unpad</strong> – Flag indicating whether to unpad or repad the vector. If true, the vector will be unpadded. If false, the second half of each block will be reset to zeros. </p></li>
+<li><p><strong>s</strong> – The CUDA stream to use for the operation. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils8printVecEPdiiNSt6stringE">
+<span id="_CPPv3N5Utils8printVecEPdiiNSt6stringE"></span><span id="_CPPv2N5Utils8printVecEPdiiNSt6stringE"></span><span id="Utils::printVec__doubleP.i.i.ss"></span><span class="target" id="namespaceUtils_1afc7acb2b6248e999e44b69df4d5968ee"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVec</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils8printVecEPdiiNSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prints the elements of a vector. </p>
+<p>This function prints the elements of a vector to the console.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – Pointer to the vector. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>name</strong> – (Optional) The name of the vector. Defaults to “Vector”. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils15printVecComplexEP7ComplexiiNSt6stringE">
+<span id="_CPPv3N5Utils15printVecComplexEP7ComplexiiNSt6stringE"></span><span id="_CPPv2N5Utils15printVecComplexEP7ComplexiiNSt6stringE"></span><span id="Utils::printVecComplex__ComplexP.i.i.ss"></span><span class="target" id="namespaceUtils_1ae04d65fb199f9ea094484826841cde2b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVecComplex</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils15printVecComplexEP7ComplexiiNSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prints a complex vector. </p>
+<p>This function prints the elements of a complex vector to the console.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – The complex vector to be printed. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>name</strong> – The name of the vector (optional). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils11printVecMPIEPdiiiiNSt6stringE">
+<span id="_CPPv3N5Utils11printVecMPIEPdiiiiNSt6stringE"></span><span id="_CPPv2N5Utils11printVecMPIEPdiiiiNSt6stringE"></span><span id="Utils::printVecMPI__doubleP.i.i.i.i.ss"></span><span class="target" id="namespaceUtils_1a0a7bd8883afe67961fad599b27a385a4"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printVecMPI</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">vec</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">unpad_size</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rank</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">world_size</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;Vector&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils11printVecMPIEPdiiiiNSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Prints a vector using MPI. </p>
+<p>This function prints the elements of a vector using MPI. It takes the following parameters:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vec</span></code>: A pointer to the vector to be printed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unpad_size</span></code>: The size of the unpadded vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rank</span></code>: The rank of the current process.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">world_size</span></code>: The total number of processes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: (Optional) The name of the vector (default is “Vector”).</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> – A pointer to the vector to be printed. </p></li>
+<li><p><strong>len</strong> – The length of the vector. </p></li>
+<li><p><strong>unpad_size</strong> – The size of the unpadded vector. </p></li>
+<li><p><strong>rank</strong> – The rank of the current process. </p></li>
+<li><p><strong>world_size</strong> – The total number of processes. </p></li>
+<li><p><strong>name</strong> – (Optional) The name of the vector (default is “Vector”). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils10printTimesEib">
+<span id="_CPPv3N5Utils10printTimesEib"></span><span id="_CPPv2N5Utils10printTimesEib"></span><span id="Utils::printTimes__i.b"></span><span class="target" id="namespaceUtils_1a2eb3dd7a1eabb25acfc1fcae3780d9f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printTimes</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reps</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">table</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">true</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils10printTimesEib" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Print the times for the different parts of the code. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> – The number of repetitions of the code. </p></li>
+<li><p><strong>table</strong> – Flag indicating whether to print the times in a table or print raw values. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE">
+<span id="_CPPv3N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE"></span><span id="_CPPv2N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE"></span><span id="Utils::makeTable__std::vector:ss:.std::vector:l-double:.std::vector:l-double:.std::vector:l-double:"></span><span class="target" id="namespaceUtils_1a2087376d30e113031da868ee9e6da68d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">makeTable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">col_names</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">mean</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">min</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils9makeTableENSt6vectorINSt6stringEEENSt6vectorIeEENSt6vectorIeEENSt6vectorIeEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Make a table of timing data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>col_names</strong> – The names of the columns (first entry is the title). </p></li>
+<li><p><strong>mean</strong> – The mean times. </p></li>
+<li><p><strong>min</strong> – The minimum times. </p></li>
+<li><p><strong>max</strong> – The maximum times. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5Utils8printRawEPePePePePePePePePei">
+<span id="_CPPv3N5Utils8printRawEPePePePePePePePePei"></span><span id="_CPPv2N5Utils8printRawEPePePePePePePePePei"></span><span id="Utils::printRaw__l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.l-doubleP.i"></span><span class="target" id="namespaceUtils_1a0dfdccf48b9c5cae7b29109a80d7b495"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">printRaw</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times_f</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">mean_times_fs</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">min_times_fs</span></span>, <span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">max_times_fs</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">times_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5Utils8printRawEPePePePePePePePePei" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Print the raw timing data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_times</strong> – The mean times. </p></li>
+<li><p><strong>min_times</strong> – The minimum times. </p></li>
+<li><p><strong>max_times</strong> – The maximum times. </p></li>
+<li><p><strong>mean_times_f</strong> – The mean times for the forward FFT. </p></li>
+<li><p><strong>min_times_f</strong> – The minimum times for the forward FFT. </p></li>
+<li><p><strong>max_times_f</strong> – The maximum times for the forward FFT. </p></li>
+<li><p><strong>mean_times_fs</strong> – The mean times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>min_times_fs</strong> – The minimum times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>max_times_fs</strong> – The maximum times for the forward FFT in TOSI format. </p></li>
+<li><p><strong>times_len</strong> – The number of timing segments. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Vector.html" class="btn btn-neutral float-left" title="Vector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Tester.html" class="btn btn-neutral float-right" title="Tester" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Sreeram Venkat, Milinda Fernando, Stefan Henneking, Omar Ghattas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

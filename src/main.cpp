@@ -144,7 +144,7 @@ int main(int argc, char** argv)
         if (world_rank == 0)
             printf("Initialized Matrices\n");
 
-        Vector in_F(comm, num_cols, size, "row"), in_FS(comm, num_rows, size, "col");
+        Vector in_F(comm, num_cols, size, "col"), in_FS(comm, num_rows, size, "row");
         Vector out_F(in_FS), out_FS(in_F);
 
         if (world_rank == 0)
@@ -194,8 +194,8 @@ int main(int argc, char** argv)
         auto test = parser.get<bool>("t");
 
         if (test) {
-            Tester::checkOnesMatvec(comm, F, out_F, false, false);
-            Tester::checkOnesMatvec(comm, F, out_FS, true, false);
+            Tester::check_ones_matvec(comm, F, out_F, false, false);
+            Tester::check_ones_matvec(comm, F, out_FS, true, false);
         }
 
 
@@ -224,7 +224,7 @@ int main(int argc, char** argv)
                    "Matvecs):\n\n",
                 world_size, reps);
 
-        Utils::printTimes(reps, !print_raw);
+        Utils::print_times(reps, !print_raw);
     }
     MPICHECK(MPI_Finalize());
 

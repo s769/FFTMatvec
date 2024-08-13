@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrix &mdash; FFTMatvec 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Vector" href="Vector.html" />
+    <link rel="prev" title="Comm" href="Comm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FFTMatvec
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="docs.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Comm.html">Comm</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Matrix</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Vector.html">Vector</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Utils.html">Utils</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Tester.html">Tester</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">LICENSE</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FFTMatvec</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="docs.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Matrix</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sphinx_source/Matrix.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="matrix">
+<h1>Matrix<a class="headerlink" href="#matrix" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv46Matrix">
+<span id="_CPPv36Matrix"></span><span id="_CPPv26Matrix"></span><span id="Matrix"></span><span class="target" id="classMatrix"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><a class="headerlink" href="#_CPPv46Matrix" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Represents a matrix and provides matrix operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix6MatrixER4Commjjjbb">
+<span id="_CPPv3N6Matrix6MatrixER4Commjjjbb"></span><span id="_CPPv2N6Matrix6MatrixER4Commjjjbb"></span><span id="Matrix::Matrix__CommR.unsigned-i.unsigned-i.unsigned-i.b.b"></span><span class="target" id="classMatrix_1afe7d1bcd790920eaa5542aa8f4fc3125"></span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="Comm.html#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">comm</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_cols</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">num_rows</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">block_size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">conjugate</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix6MatrixER4Commjjjbb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Constructs a <a class="reference internal" href="#classMatrix"><span class="std std-ref">Matrix</span></a> object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – The communication object. </p></li>
+<li><p><strong>num_cols</strong> – The number of columns in the matrix. </p></li>
+<li><p><strong>num_rows</strong> – The number of rows in the matrix. </p></li>
+<li><p><strong>block_size</strong> – The block size of the matrix. </p></li>
+<li><p><strong>conjugate</strong> – Flag indicating if the matrix is conjugate. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6MatrixD0Ev">
+<span id="_CPPv3N6MatrixD0Ev"></span><span id="_CPPv2N6MatrixD0Ev"></span><span id="Matrix::~Matrix"></span><span class="target" id="classMatrix_1a9b1c3627f573d78a2f08623fdfef990f"></span><span class="sig-name descname"><span class="n"><span class="pre">~Matrix</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6MatrixD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Destroys the <a class="reference internal" href="#classMatrix"><span class="std std-ref">Matrix</span></a> object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix18init_mat_from_fileENSt6stringE">
+<span id="_CPPv3N6Matrix18init_mat_from_fileENSt6stringE"></span><span id="_CPPv2N6Matrix18init_mat_from_fileENSt6stringE"></span><span id="Matrix::init_mat_from_file__ss"></span><span class="target" id="classMatrix_1aaf2fe93345b8607f70bc7676c4c08ffd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_mat_from_file</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix18init_mat_from_fileENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initializes the matrix from a file. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the file. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix13init_mat_onesEv">
+<span id="_CPPv3N6Matrix13init_mat_onesEv"></span><span id="_CPPv2N6Matrix13init_mat_onesEv"></span><span id="Matrix::init_mat_ones"></span><span class="target" id="classMatrix_1ad283bb30fdf703e377d374a0627e4f5a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init_mat_ones</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix13init_mat_onesEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initializes the matrix with ones. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix6matvecER6VectorR6Vectorb">
+<span id="_CPPv3N6Matrix6matvecER6VectorR6Vectorb"></span><span id="_CPPv2N6Matrix6matvecER6VectorR6Vectorb"></span><span id="Matrix::matvec__VectorR.VectorR.b"></span><span class="target" id="classMatrix_1ae783ee8f81d18bff66a3dd7584693200"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">matvec</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="Vector.html#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="Vector.html#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix6matvecER6VectorR6Vectorb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Performs matrix-vector multiplication. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16transpose_matvecER6VectorR6Vectorb">
+<span id="_CPPv3N6Matrix16transpose_matvecER6VectorR6Vectorb"></span><span id="_CPPv2N6Matrix16transpose_matvecER6VectorR6Vectorb"></span><span id="Matrix::transpose_matvec__VectorR.VectorR.b"></span><span class="target" id="classMatrix_1a8bb582b3010c05408cbd53d1a3b45b2b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">transpose_matvec</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="Vector.html#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">x</span></span>, <a class="reference internal" href="Vector.html#_CPPv46Vector" title="Vector"><span class="n"><span class="pre">Vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">y</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">full</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16transpose_matvecER6VectorR6Vectorb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Performs transpose matrix-vector multiplication. </p>
+<p>
+Perform transpose matrix-vector multiplication.</p>
+<p>
+This function performs transpose matrix-vector multiplication using the initialized matrix. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Flag indicating if the matrix is full.</p></li>
+<li><p><strong>x</strong> – The input vector. </p></li>
+<li><p><strong>y</strong> – The output vector. </p></li>
+<li><p><strong>full</strong> – Whether the matrix is of the form (FF^*\/F^*F) or just (F\/F^*).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_col_vec_unpadEv">
+<span id="_CPPv3N6Matrix17get_col_vec_unpadEv"></span><span id="_CPPv2N6Matrix17get_col_vec_unpadEv"></span><span id="Matrix::get_col_vec_unpad"></span><span class="target" id="classMatrix_1a6baaf8b53694a96a5b4eaeb2e372aeae"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_unpad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_col_vec_unpadEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the unpadded column vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix15get_col_vec_padEv">
+<span id="_CPPv3N6Matrix15get_col_vec_padEv"></span><span id="_CPPv2N6Matrix15get_col_vec_padEv"></span><span id="Matrix::get_col_vec_pad"></span><span class="target" id="classMatrix_1aad324dd7141bed65107c027d7d6b8cfb"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix15get_col_vec_padEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the padded column vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix15get_row_vec_padEv">
+<span id="_CPPv3N6Matrix15get_row_vec_padEv"></span><span id="_CPPv2N6Matrix15get_row_vec_padEv"></span><span id="Matrix::get_row_vec_pad"></span><span class="target" id="classMatrix_1aef7e1d0088466f052e691a2a0a21777a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix15get_row_vec_padEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the padded row vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_row_vec_unpadEv">
+<span id="_CPPv3N6Matrix17get_row_vec_unpadEv"></span><span id="_CPPv2N6Matrix17get_row_vec_unpadEv"></span><span id="Matrix::get_row_vec_unpad"></span><span class="target" id="classMatrix_1a4ab67fb50e139f6d2160ac627f4f02f5"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_unpad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_row_vec_unpadEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the unpadded row vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix11get_res_padEv">
+<span id="_CPPv3N6Matrix11get_res_padEv"></span><span id="_CPPv2N6Matrix11get_res_padEv"></span><span id="Matrix::get_res_pad"></span><span class="target" id="classMatrix_1a698561569c4e2bf9aeea020b74e0b765"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_res_pad</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix11get_res_padEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the padded result vector. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_col_vec_freqEv">
+<span id="_CPPv3N6Matrix16get_col_vec_freqEv"></span><span id="_CPPv2N6Matrix16get_col_vec_freqEv"></span><span id="Matrix::get_col_vec_freq"></span><span class="target" id="classMatrix_1a2a44b1635a7dec0bc0f1fc9b8a3e178e"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_freq</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_col_vec_freqEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the column vector frequency. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_row_vec_freqEv">
+<span id="_CPPv3N6Matrix16get_row_vec_freqEv"></span><span id="_CPPv2N6Matrix16get_row_vec_freqEv"></span><span id="Matrix::get_row_vec_freq"></span><span class="target" id="classMatrix_1a77191e751f3bd43991c65a2cd4d73442"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_freq</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_row_vec_freqEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the row vector frequency. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_col_vec_freq_tosiEv">
+<span id="_CPPv3N6Matrix21get_col_vec_freq_tosiEv"></span><span id="_CPPv2N6Matrix21get_col_vec_freq_tosiEv"></span><span id="Matrix::get_col_vec_freq_tosi"></span><span class="target" id="classMatrix_1ab06aac90fc1e2d73000b8670083456a4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_col_vec_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_col_vec_freq_tosiEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the column vector frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_row_vec_freq_tosiEv">
+<span id="_CPPv3N6Matrix21get_row_vec_freq_tosiEv"></span><span id="_CPPv2N6Matrix21get_row_vec_freq_tosiEv"></span><span id="Matrix::get_row_vec_freq_tosi"></span><span class="target" id="classMatrix_1a48e87cc905863eee0c878c5c134c083b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_row_vec_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_row_vec_freq_tosiEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the row vector frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix17get_mat_freq_tosiEv">
+<span id="_CPPv3N6Matrix17get_mat_freq_tosiEv"></span><span id="_CPPv2N6Matrix17get_mat_freq_tosiEv"></span><span id="Matrix::get_mat_freq_tosi"></span><span class="target" id="classMatrix_1aef078a629a60e268506fb93b5bc38017"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_mat_freq_tosi</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix17get_mat_freq_tosiEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the matrix frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix23get_mat_freq_tosi_otherEv">
+<span id="_CPPv3N6Matrix23get_mat_freq_tosi_otherEv"></span><span id="_CPPv2N6Matrix23get_mat_freq_tosi_otherEv"></span><span id="Matrix::get_mat_freq_tosi_other"></span><span class="target" id="classMatrix_1a096f079cdf7d63a58b5cc03f41bcc7d3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">Complex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_mat_freq_tosi_other</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix23get_mat_freq_tosi_otherEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the other matrix frequency in TOSI format. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_forward_planEv">
+<span id="_CPPv3N6Matrix16get_forward_planEv"></span><span id="_CPPv2N6Matrix16get_forward_planEv"></span><span id="Matrix::get_forward_plan"></span><span class="target" id="classMatrix_1a6e9bf7d9e1d1a716c9a1ff0b76a8610d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_forward_plan</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_forward_planEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the forward plan for FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix16get_inverse_planEv">
+<span id="_CPPv3N6Matrix16get_inverse_planEv"></span><span id="_CPPv2N6Matrix16get_inverse_planEv"></span><span id="Matrix::get_inverse_plan"></span><span class="target" id="classMatrix_1a5414d2bdc0c25ba602e1aaed2fb56184"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_inverse_plan</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix16get_inverse_planEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the inverse plan for FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_forward_plan_conjEv">
+<span id="_CPPv3N6Matrix21get_forward_plan_conjEv"></span><span id="_CPPv2N6Matrix21get_forward_plan_conjEv"></span><span id="Matrix::get_forward_plan_conj"></span><span class="target" id="classMatrix_1a23dfad440fd74167ea41eab9ead758b7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_forward_plan_conj</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_forward_plan_conjEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the forward plan for conjugate FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix21get_inverse_plan_conjEv">
+<span id="_CPPv3N6Matrix21get_inverse_plan_conjEv"></span><span id="_CPPv2N6Matrix21get_inverse_plan_conjEv"></span><span id="Matrix::get_inverse_plan_conj"></span><span class="target" id="classMatrix_1ad27259527b6058c6bee624f66bf5bdfe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">cufftHandle</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_inverse_plan_conj</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix21get_inverse_plan_conjEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the inverse plan for conjugate FFT. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix8get_commEv">
+<span id="_CPPv3N6Matrix8get_commEv"></span><span id="_CPPv2N6Matrix8get_commEv"></span><span id="Matrix::get_comm"></span><span class="target" id="classMatrix_1af926bc937be55312a3ae9722b6dab1aa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="Comm.html#_CPPv44Comm" title="Comm"><span class="n"><span class="pre">Comm</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_comm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix8get_commEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns reference to the communication object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12get_num_colsEv">
+<span id="_CPPv3N6Matrix12get_num_colsEv"></span><span id="_CPPv2N6Matrix12get_num_colsEv"></span><span id="Matrix::get_num_cols"></span><span class="target" id="classMatrix_1a9109683a18135aea66065efff1991b7f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_cols</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12get_num_colsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the number of columns in the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12get_num_rowsEv">
+<span id="_CPPv3N6Matrix12get_num_rowsEv"></span><span id="_CPPv2N6Matrix12get_num_rowsEv"></span><span id="Matrix::get_num_rows"></span><span class="target" id="classMatrix_1a2669672a6fbb6d37d8ffe8ba197627a9"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_num_rows</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12get_num_rowsEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the number of rows in the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix14get_block_sizeEv">
+<span id="_CPPv3N6Matrix14get_block_sizeEv"></span><span id="_CPPv2N6Matrix14get_block_sizeEv"></span><span id="Matrix::get_block_size"></span><span class="target" id="classMatrix_1ab7f659b541f79e9810ff197a17affee2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_block_size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix14get_block_sizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns the block size of the matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix12is_conjugateEv">
+<span id="_CPPv3N6Matrix12is_conjugateEv"></span><span id="_CPPv2N6Matrix12is_conjugateEv"></span><span id="Matrix::is_conjugate"></span><span class="target" id="classMatrix_1a5fa5be1d8da5556aa66752f360162096"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_conjugate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix12is_conjugateEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns true if the matrix is conjugate, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix7is_fullEv">
+<span id="_CPPv3N6Matrix7is_fullEv"></span><span id="_CPPv2N6Matrix7is_fullEv"></span><span id="Matrix::is_full"></span><span class="target" id="classMatrix_1a0cae3010e3e3fa78cd1022b22097984c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_full</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix7is_fullEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns true if the matrix is full, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix14is_initializedEv">
+<span id="_CPPv3N6Matrix14is_initializedEv"></span><span id="_CPPv2N6Matrix14is_initializedEv"></span><span id="Matrix::is_initialized"></span><span class="target" id="classMatrix_1ab4ec38536c687c6ccc0d83fe6d55bbe2"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_initialized</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix14is_initializedEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns true if the matrix is initialized, false otherwise. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6Matrix27get_has_mat_freq_tosi_otherEv">
+<span id="_CPPv3N6Matrix27get_has_mat_freq_tosi_otherEv"></span><span id="_CPPv2N6Matrix27get_has_mat_freq_tosi_otherEv"></span><span id="Matrix::get_has_mat_freq_tosi_other"></span><span class="target" id="classMatrix_1af14e88c458d48d40b2e60bfe37ea7d98"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_has_mat_freq_tosi_other</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6Matrix27get_has_mat_freq_tosi_otherEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Returns true if the other matrix frequency in TOSI format exists, false otherwise. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Comm.html" class="btn btn-neutral float-left" title="Comm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Vector.html" class="btn btn-neutral float-right" title="Vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Sreeram Venkat, Milinda Fernando, Stefan Henneking, Omar Ghattas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,15 +1,15 @@
 
 #include "tester.hpp"
 
-bool doubleEquality(double a, double b, double tol)
+bool double_equality(double a, double b, double tol)
 {
     return (std::abs(a - b) <= tol * std::max(1.0, std::max(std::abs(a), std::abs(b))));
 }
 
-void checkElement(
+void check_element(
     Comm& comm, double elem, int b, int j, int Nt, int Nm, int Nd, bool conj, bool full)
 {
-    // use doubleEquality to check for equality
+    // use double_equality to check for equality
     double tol = 1e-6;
     double correct_elem;
     if (conj) {
@@ -25,17 +25,17 @@ void checkElement(
             correct_elem = (j + 1) * Nm;
         }
     }
-    if (!doubleEquality(elem, correct_elem, tol)) {
+    if (!double_equality(elem, correct_elem, tol)) {
         int row_color = comm.get_row_color();
         int col_color = comm.get_col_color();
-        std::cerr << "Error: checkElement: incorrect element in process (" << row_color << ", "
+        std::cerr << "Error: check_element: incorrect element in process (" << row_color << ", "
                   << col_color << ") block: " << b << ", t: " << j << std::endl;
         std::cerr << "Expected: " << correct_elem << ", got: " << elem << std::endl;
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 }
 
-void Tester::checkOnesMatvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, bool full)
+void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, bool full)
 {
 
     int proc_rows = comm.get_proc_rows();
@@ -59,7 +59,7 @@ void Tester::checkOnesMatvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, bo
 
         for (int i = 0; i < num_blocks; i++) {
             for (int j = 0; j < Nt; j++) {
-                checkElement(comm, h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
+                check_element(comm, h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
             }
         }
 

@@ -210,7 +210,7 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
     (*tl)[ProfilerTimes::UNPAD].start();
 #endif
 
-    Utils::UnpadRepadVector(out_vec_pad, out_vec, vec_out_len, block_size, unpad, s);
+    Utils::unpad_repad_vector(out_vec_pad, out_vec, vec_out_len, block_size, unpad, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -257,7 +257,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 #if TIME_MPI
     (*tl)[ProfilerTimes::PAD].start();
 #endif
-    Utils::PadVector(in_vec, in_vec_pad, vec_in_len, block_size, s);
+    Utils::pad_vector(in_vec, in_vec_pad, vec_in_len, block_size, s);
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
     (*tl)[ProfilerTimes::PAD].stop();

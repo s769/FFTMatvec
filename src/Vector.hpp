@@ -49,11 +49,6 @@ public:
      */
     void init_vec();
 
-    /**
-     * @brief Initializes the vector from a file.
-     * @param filename The name of the file.
-     */
-    void init_vec_from_file(std::string filename);
 
     /**
      * @brief Initializes the vector with all ones.
@@ -66,37 +61,14 @@ public:
     void init_vec_zeros();
 
     /**
-     * @brief Performs the operation y = alpha * x + y.
-     * @param alpha The scalar value.
-     * @param x The Vector object x.
-     * @param y The Vector object y.
-     */
-    void vec_axpy(double alpha, Vector& x, Vector& y);
-
-    /**
-     * @brief Performs the operation w = alpha * x + y.
-     * @param alpha The scalar value.
-     * @param x The Vector object x.
-     * @param y The Vector object y.
-     * @param w The Vector object w.
-     */
-    void vec_waxpy(double alpha, Vector& x, Vector& y, Vector& w);
-
-    /**
-     * @brief Scales the vector by a scalar value.
-     * @param alpha The scalar value.
-     */
-    void vec_scale(double alpha);
-
-    /**
      * @brief Checks if the vector is on the grid.
      * @return True if the vector is on the grid, false otherwise.
      */
     bool on_grid()
     {
-        if (row_or_col == "row") {
+        if (row_or_col == "col") {
             return comm.get_row_color() == 0;
-        } else if (row_or_col == "col") {
+        } else if (row_or_col == "row") {
             return comm.get_col_color() == 0;
         } else {
             fprintf(stderr, "Invalid grid descriptor: %s\n", row_or_col.c_str());

@@ -22,7 +22,7 @@ namespace Utils {
  * @param string The host name.
  * @return The hash of the host name.
  */
-uint64_t getHostHash(const char* string);
+uint64_t get_host_hash(const char* string);
 
 /**
  * @brief Get the host name.
@@ -32,7 +32,7 @@ uint64_t getHostHash(const char* string);
  * @param hostname The buffer to store the host name.
  * @param maxlen The maximum length of the buffer.
  */
-void getHostName(char* hostname, int maxlen);
+void get_host_name(char* hostname, int maxlen);
 
 /**
  * @brief Pads each block of a vector to twice the length with zeros.
@@ -48,7 +48,7 @@ void getHostName(char* hostname, int maxlen);
  * @param size      Total size of the vector.
  * @param s         CUDA stream for asynchronous execution.
  */
-void PadVector(const double* const d_in, double* const d_pad, const unsigned int num_cols,
+void pad_vector(const double* const d_in, double* const d_pad, const unsigned int num_cols,
     const unsigned int size, cudaStream_t s);
 
 /**
@@ -65,7 +65,7 @@ void PadVector(const double* const d_in, double* const d_pad, const unsigned int
  * unpadded. If false, the second half of each block will be reset to zeros.
  * @param s The CUDA stream to use for the operation.
  */
-void UnpadRepadVector(const double* const d_in, double* const d_out, const unsigned int num_cols,
+void unpad_repad_vector(const double* const d_in, double* const d_out, const unsigned int num_cols,
     const unsigned int size, const bool unpad, cudaStream_t s);
 
 /**
@@ -78,7 +78,7 @@ void UnpadRepadVector(const double* const d_in, double* const d_out, const unsig
  * @param unpad_size The size of the unpadded vector.
  * @param name (Optional) The name of the vector. Defaults to "Vector".
  */
-void printVec(double* vec, int len, int unpad_size, std::string name = "Vector");
+void print_vec(double* vec, int len, int unpad_size, std::string name = "Vector");
 
 /**
  * @brief Prints a complex vector.
@@ -90,7 +90,7 @@ void printVec(double* vec, int len, int unpad_size, std::string name = "Vector")
  * @param unpad_size The size of the unpadded vector.
  * @param name The name of the vector (optional).
  */
-void printVecComplex(Complex* vec, int len, int unpad_size, std::string name = "Vector");
+void print_vec_complex(Complex* vec, int len, int unpad_size, std::string name = "Vector");
 
 /**
  * @brief Prints a vector using MPI.
@@ -110,7 +110,7 @@ void printVecComplex(Complex* vec, int len, int unpad_size, std::string name = "
  * @param world_size The total number of processes.
  * @param name (Optional) The name of the vector (default is "Vector").
  */
-void printVecMPI(
+void print_vec_mpi(
     double* vec, int len, int unpad_size, int rank, int world_size, std::string name = "Vector");
 
 /**
@@ -118,7 +118,7 @@ void printVecMPI(
  * @param reps The number of repetitions of the code.
  * @param table Flag indicating whether to print the times in a table or print raw values.
  */
-void printTimes(int reps = 1, bool table = true);
+void print_times(int reps = 1, bool table = true);
 
 /**
  * @brief Make a table of timing data
@@ -127,7 +127,7 @@ void printTimes(int reps = 1, bool table = true);
  * @param min The minimum times.
  * @param max The maximum times.
  */
-void makeTable(std::vector<std::string> col_names, std::vector<long double> mean,
+void make_table(std::vector<std::string> col_names, std::vector<long double> mean,
     std::vector<long double> min, std::vector<long double> max);
 
 /**
@@ -143,7 +143,7 @@ void makeTable(std::vector<std::string> col_names, std::vector<long double> mean
  * @param max_times_fs The maximum times for the forward FFT in TOSI format.
  * @param times_len The number of timing segments.
  */
-void printRaw(long double* mean_times, long double* min_times, long double* max_times,
+void print_raw(long double* mean_times, long double* min_times, long double* max_times,
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
     int times_len);

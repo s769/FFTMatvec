@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; FFTMatvec 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="docs.html" />
+    <link rel="prev" title="Welcome to FFTMatvec’s Documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FFTMatvec
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Comm.html">Comm</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Matrix.html">Matrix</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Vector.html">Vector</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Utils.html">Utils</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Tester.html">Tester</a><ul class="simple">
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">LICENSE</a><ul class="simple">
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FFTMatvec</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sphinx_source/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p>To build the code, the following dependencies are required:</p>
+<ul class="simple">
+<li><p>CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU</p></li>
+<li><p>NCCL</p></li>
+</ul>
+<p>First, clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/s769/matvec-test.git
+<span class="nb">cd</span><span class="w"> </span>matvec-test
+</pre></div>
+</div>
+<p>Initialize and build the <code class="docutils literal notranslate"><span class="pre">cutranspose</span></code> submodule:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+<span class="nb">cd</span><span class="w"> </span>cutranspose
+cmake<span class="w"> </span>-B<span class="w"> </span>build
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+</pre></div>
+</div>
+<p>Optionally, you can run the tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build
+./cuttest<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span><span class="w"> </span>-p<span class="w"> </span><span class="m">2</span>,1,0
+</pre></div>
+</div>
+<p>Finally, build the main code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>matvec-test/
+cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DNCCL_LIBRARIES<span class="o">=</span>/path/to/nccl/lib<span class="w"> </span>-DNCCL_INCLUDE_DIRS<span class="o">=</span>/path/to/nccl/include<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<p>The main executable is <code class="docutils literal notranslate"><span class="pre">fft_matvec</span></code>. It takes the following arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-pr</span></code> (int): Number of processor rows (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-pc</span></code> (int): Number of processor columns (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-g</span></code> (bool): Use global sizes (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Nm</span></code> (int): Number of global block columns (default: 10, ignored if
+<code class="docutils literal notranslate"><span class="pre">-g</span></code> is false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Nd</span></code> (int): Number of global block rows (default: 5, ignored if
+<code class="docutils literal notranslate"><span class="pre">-g</span></code> is false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Nt</span></code> (int): Block size (default: 7)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nm</span></code> (int): Number of local block columns (default: 3, ignored if
+<code class="docutils literal notranslate"><span class="pre">-g</span></code> is true)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nd</span></code> (int): Number of local block rows (default: 2, ignored if
+<code class="docutils literal notranslate"><span class="pre">-g</span></code> is true)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v</span></code> (bool): Print input/output vectors (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">N</span></code> (int): Number of matvecs to use for timing (default: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw</span></code> (bool): Print raw timing data instead of table (default:
+false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code> (bool): Check matvec results (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">h</span></code> (bool): Print help message</p></li>
+</ul>
+<p>For boolean arguments, just pass the flag to enable it without a value.
+For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>./build/fft_matvec<span class="w"> </span>-pr<span class="w"> </span><span class="m">2</span><span class="w"> </span>-pc<span class="w"> </span><span class="m">2</span><span class="w"> </span>-g<span class="w"> </span>-Nm<span class="w"> </span><span class="m">20</span><span class="w"> </span>-Nd<span class="w"> </span><span class="m">10</span><span class="w"> </span>-Nt<span class="w"> </span><span class="m">7</span><span class="w"> </span>-nm<span class="w"> </span><span class="m">4</span><span class="w"> </span>-nd<span class="w"> </span><span class="m">3</span><span class="w"> </span>-v<span class="w"> </span>-N<span class="w"> </span><span class="m">100</span>
+</pre></div>
+</div>
+<p>will run the code with 4 processors, a 2x2 processor grid, global sizes,
+20 global block columns, 10 global block rows, a block size of 7, 4
+local block columns, 3 local block rows, print input/output vectors, and
+use 100 matvecs for timing.</p>
+<p>To reproduce the results in the paper, run with the configurations
+described in the Numerical Results section.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h2>
+<p>This code is released under the MIT License. See <a class="reference external" href="LICENSE.html">LICENSE</a>
+for more information.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to FFTMatvec’s Documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="docs.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Sreeram Venkat, Milinda Fernando, Stefan Henneking, Omar Ghattas.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

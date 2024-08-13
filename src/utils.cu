@@ -1,6 +1,6 @@
 #include "utils.hpp"
 
-uint64_t Utils::getHostHash(const char* string)
+uint64_t Utils::get_host_hash(const char* string)
 {
     // Based on DJB2a, result = result * 33 ^ char
     uint64_t result = 5381;
@@ -17,9 +17,9 @@ uint64_t Utils::getHostHash(const char* string)
  * @param maxlen The maximum length of the hostname.
  */
 
-void Utils::getHostName(char* hostname, int maxlen)
+void Utils::get_host_name(char* hostname, int maxlen)
 {
-    gethostname(hostname, maxlen);
+    get_host_name(hostname, maxlen);
     for (int i = 0; i < maxlen; i++) {
         if (hostname[i] == '.') {
             hostname[i] = '\0';
@@ -28,7 +28,7 @@ void Utils::getHostName(char* hostname, int maxlen)
     }
 }
 
-__global__ void PadVectorKernel(const double2* const d_in, double2* const d_pad,
+__global__ void pad_vector_kernel(const double2* const d_in, double2* const d_pad,
     const unsigned int num_cols, const unsigned int size)
 {
     int t = threadIdx.x;
@@ -40,7 +40,7 @@ __global__ void PadVectorKernel(const double2* const d_in, double2* const d_pad,
     }
 }
 
-__global__ void PadVectorKernel(const double* const d_in, double* const d_pad,
+__global__ void pad_vector_kernel(const double* const d_in, double* const d_pad,
     const unsigned int num_cols, const unsigned int size)
 {
     int t = threadIdx.x;
@@ -52,7 +52,7 @@ __global__ void PadVectorKernel(const double* const d_in, double* const d_pad,
     }
 }
 
-__global__ void UnpadVectorKernel(const double2* const d_in, double2* const d_unpad,
+__global__ void unpad_vector_kernel(const double2* const d_in, double2* const d_unpad,
     const unsigned int num_cols, const unsigned int size)
 {
     int t = threadIdx.x;
@@ -60,7 +60,7 @@ __global__ void UnpadVectorKernel(const double2* const d_in, double2* const d_un
         d_unpad[(size_t)blockIdx.x * size / 2 + j] = d_in[(size_t)blockIdx.x * size + j];
     }
 }
-__global__ void UnpadVectorKernel(const double* const d_in, double* const d_unpad,
+__global__ void unpad_vector_kernel(const double* const d_in, double* const d_unpad,
     const unsigned int num_cols, const unsigned int size)
 {
     int t = threadIdx.x;
@@ -69,7 +69,7 @@ __global__ void UnpadVectorKernel(const double* const d_in, double* const d_unpa
     }
 }
 
-__global__ void RepadVectorKernel(const double2* const d_in, double2* const d_unpad,
+__global__ void repad_vector_kernel(const double2* const d_in, double2* const d_unpad,
     const unsigned int num_cols, const unsigned int size)
 {
     int t = threadIdx.x;
@@ -83,15 +83,15 @@ __global__ void RepadVectorKernel(const double2* const d_in, double2* const d_un
     }
 }
 
-void Utils::PadVector(const double* const d_in, double* const d_pad, const unsigned int num_cols,
+void Utils::pad_vector(const double* const d_in, double* const d_pad, const unsigned int num_cols,
     const unsigned int size, cudaStream_t s)
 {
     if (size % 4 == 0)
-        PadVectorKernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
+        pad_vector_kernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
             reinterpret_cast<const double2*>(d_in), reinterpret_cast<double2*>(d_pad), num_cols,
             size / 2);
     else
-        PadVectorKernel<<<num_cols, std::min((int)(size + 1) / 2, MAX_BLOCK_SIZE), 0, s>>>(
+        pad_vector_kernel<<<num_cols, std::min((int)(size + 1) / 2, MAX_BLOCK_SIZE), 0, s>>>(
             d_in, d_pad, num_cols, size);
     gpuErrchk(cudaPeekAtLastError());
 #if ERR_CHK
@@ -100,19 +100,19 @@ void Utils::PadVector(const double* const d_in, double* const d_pad, const unsig
 #endif
 }
 
-void Utils::UnpadRepadVector(const double* const d_in, double* const d_out,
+void Utils::unpad_repad_vector(const double* const d_in, double* const d_out,
     const unsigned int num_cols, const unsigned int size, const bool unpad, cudaStream_t s)
 {
     if (unpad) {
         if (size % 4 == 0)
-            UnpadVectorKernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
+            unpad_vector_kernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
                 reinterpret_cast<const double2*>(d_in), reinterpret_cast<double2*>(d_out), num_cols,
                 size / 2);
         else
-            UnpadVectorKernel<<<num_cols, std::min((int)(size + 1) / 2, MAX_BLOCK_SIZE), 0, s>>>(
+            unpad_vector_kernel<<<num_cols, std::min((int)(size + 1) / 2, MAX_BLOCK_SIZE), 0, s>>>(
                 d_in, d_out, num_cols, size);
     } else {
-        RepadVectorKernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
+        repad_vector_kernel<<<num_cols, std::min((int)(size + 3) / 4, MAX_BLOCK_SIZE), 0, s>>>(
             reinterpret_cast<const double2*>(d_in), reinterpret_cast<double2*>(d_out), num_cols,
             size / 2);
     }
@@ -123,7 +123,7 @@ void Utils::UnpadRepadVector(const double* const d_in, double* const d_out,
 #endif
 }
 
-void Utils::printVec(double* vec, int len, int unpad_size, std::string name)
+void Utils::print_vec(double* vec, int len, int unpad_size, std::string name)
 {
     double* h_vec;
     h_vec = (double*)malloc(len * unpad_size * sizeof(double));
@@ -139,7 +139,7 @@ void Utils::printVec(double* vec, int len, int unpad_size, std::string name)
     free(h_vec);
 }
 
-void Utils::printVecMPI(
+void Utils::print_vec_mpi(
     double* vec, int len, int unpad_size, int rank, int world_size, std::string name)
 {
     if (rank == 0) {
@@ -148,13 +148,13 @@ void Utils::printVecMPI(
     for (int r = 0; r < world_size; r++) {
         if (rank == r) {
             printf("Rank: %d\n", r);
-            printVec(vec, len, unpad_size);
+            print_vec(vec, len, unpad_size);
         }
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
     }
 }
 
-void Utils::printVecComplex(Complex* vec, int len, int unpad_size, std::string name)
+void Utils::print_vec_complex(Complex* vec, int len, int unpad_size, std::string name)
 {
 
     Complex* h_vec;
@@ -173,14 +173,14 @@ void Utils::printVecComplex(Complex* vec, int len, int unpad_size, std::string n
     free(h_vec);
 }
 
-void Utils::makeTable(std::vector<std::string> col_names, std::vector<long double> mean,
+void Utils::make_table(std::vector<std::string> col_names, std::vector<long double> mean,
     std::vector<long double> min, std::vector<long double> max)
 {
 
     int size = col_names.size();
 
     if (mean.size() != size - 1 || min.size() != size - 1 || max.size() != size - 1) {
-        std::cerr << "Error: makeTable: input vectors must have the same size" << std::endl;
+        std::cerr << "Error: make_table: input vectors must have the same size" << std::endl;
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
         return;
     }
@@ -220,7 +220,7 @@ void Utils::makeTable(std::vector<std::string> col_names, std::vector<long doubl
     std::cout << table << std::endl;
 }
 
-void Utils::printRaw(long double* mean_times, long double* min_times, long double* max_times,
+void Utils::print_raw(long double* mean_times, long double* min_times, long double* max_times,
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
     int times_len)
@@ -255,7 +255,7 @@ void Utils::printRaw(long double* mean_times, long double* min_times, long doubl
     printf("\n");
 }
 
-void Utils::printTimes(int reps, bool table)
+void Utils::print_times(int reps, bool table)
 {
 #if TIME_MPI
 
@@ -322,7 +322,7 @@ void Utils::printTimes(int reps, bool table)
             std::cout << "Aggregate Times: " << std::endl;
             std::cout << std::endl;
 
-            makeTable({ "Summary", "Initialize", "Setup", "Matvecs" },
+            make_table({ "Summary", "Initialize", "Setup", "Matvecs" },
                 { mean_times[0], mean_times[1], mean_times[2] },
                 { min_times[0], min_times[1], min_times[2] },
                 { max_times[0], max_times[1], max_times[2] });
@@ -336,7 +336,7 @@ void Utils::printTimes(int reps, bool table)
 
             std::cout << std::endl;
 
-            makeTable({ "F Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
+            make_table({ "F Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
                           "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
                 mean_times_v, min_times_v, max_times_v);
 
@@ -346,11 +346,11 @@ void Utils::printTimes(int reps, bool table)
             min_times_v = std::vector<long double>(min_times_fs, min_times_fs + times_len);
             max_times_v = std::vector<long double>(max_times_fs, max_times_fs + times_len);
 
-            makeTable({ "F* Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
+            make_table({ "F* Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
                           "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
                 mean_times_v, min_times_v, max_times_v);
         } else {
-            printRaw(mean_times, min_times, max_times, mean_times_f, min_times_f, max_times_f,
+            print_raw(mean_times, min_times, max_times, mean_times_f, min_times_f, max_times_f,
                 mean_times_fs, min_times_fs, max_times_fs, times_len);
         }
 
