@@ -19,7 +19,7 @@ uint64_t Utils::get_host_hash(const char* string)
 
 void Utils::get_host_name(char* hostname, int maxlen)
 {
-    get_host_name(hostname, maxlen);
+    gethostname(hostname, maxlen);
     for (int i = 0; i < maxlen; i++) {
         if (hostname[i] == '.') {
             hostname[i] = '\0';

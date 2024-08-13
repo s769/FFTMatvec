@@ -10,8 +10,15 @@
 */
 Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col) : comm(comm), num_blocks(num_blocks), block_size(block_size), row_or_col(row_or_col)
 {
-    // Initialize the vector data structures. If row_or_col is "col", then the vector is a row vector, otherwise it is a column vector.
+    // Initialize the vector data structures. If row_or_col is "row", then the vector is a row vector, otherwise it is a column vector.
     // For row vectors, initialize only on row_color == 0, and for column vectors, initialize only on col_color == 0.
+
+    if (row_or_col != "row" && row_or_col != "col")
+    {
+        fprintf(stderr, "row_or_col must be either 'row' or 'col'\n");
+        MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+    }
+
     this->comm = comm;
     if (on_grid())
     {
