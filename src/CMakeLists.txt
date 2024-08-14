@@ -14,6 +14,6 @@ set_target_properties( fft_matvec
                       )
 target_link_options(fft_matvec PUBLIC ${OpenMP_CXX_FLAGS})
 
-target_link_libraries(fft_matvec FFT_mvec cufft cublas cuTranspose nccl MPI::MPI_CXX MPI::MPI_C OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
+target_link_libraries(fft_matvec FFT_mvec cufft cublas nccl cutensor MPI::MPI_CXX MPI::MPI_C OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
 
 

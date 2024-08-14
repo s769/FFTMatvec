@@ -9,7 +9,7 @@ The documentation for the code can be found [here](https://fftmatvec.readthedocs
 ## Installation
 
 To build the code, the following dependencies are required:
-- CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU
+- CUDA (with cuFFT, cuBLAS, and cuTensor 2.x) and a CUDA enabled GPU
 - [NCCL](https://github.com/NVIDIA/nccl)
 
 First, clone the repository:
@@ -18,26 +18,14 @@ git clone https://github.com/s769/FFTMatvec.git
 cd matvec-test
 ```
 
-Initialize and build the `cutranspose` submodule:
-```bash
-git submodule update --init --recursive
-cd cutranspose
-cmake -B build
-cmake --build build
-```
-
-Optionally, you can run the tests:
-```bash
-cd build
-./cuttest -s 10 -p 2,1,0
-```
-
-Finally, build the main code:
+Then, build the code:
 ```bash
 cd matvec-test/
-cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release
+cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release -DCUTENSOR_ROOT=/path/to/cutensor
 cmake --build build
 ```
+
+Note: the `-DCUTENSOR_ROOT` option is only needed if the cuTensor 2.x library is not in the usual CUDA library path. Some systems may have the cuTensor 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTensor 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTensor 2.x library must be provided to the build command.
 
 ## Usage
 

@@ -11,7 +11,6 @@
 
 #include "shared.hpp"
 #include "utils.hpp"
-#include <cutranspose.h>
 
 /**
  * @namespace Matvec

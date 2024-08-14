@@ -118,24 +118,16 @@
 <span class="nb">cd</span><span class="w"> </span>matvec-test
 </pre></div>
 </div>
-<p>Initialize and build the <code class="docutils literal notranslate"><span class="pre">cutranspose</span></code> submodule:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
-<span class="nb">cd</span><span class="w"> </span>cutranspose
-cmake<span class="w"> </span>-B<span class="w"> </span>build
-cmake<span class="w"> </span>--build<span class="w"> </span>build
-</pre></div>
-</div>
-<p>Optionally, you can run the tests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>build
-./cuttest<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span><span class="w"> </span>-p<span class="w"> </span><span class="m">2</span>,1,0
-</pre></div>
-</div>
-<p>Finally, build the main code:</p>
+<p>Then, build the code:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>matvec-test/
-cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DNCCL_LIBRARIES<span class="o">=</span>/path/to/nccl/lib<span class="w"> </span>-DNCCL_INCLUDE_DIRS<span class="o">=</span>/path/to/nccl/include<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release
+cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DNCCL_LIBRARIES<span class="o">=</span>/path/to/nccl/lib<span class="w"> </span>-DNCCL_INCLUDE_DIRS<span class="o">=</span>/path/to/nccl/include<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DCUTENSOR_ROOT<span class="o">=</span>/path/to/cutensor
 cmake<span class="w"> </span>--build<span class="w"> </span>build
 </pre></div>
 </div>
+<p>Note: the <code class="docutils literal notranslate"><span class="pre">-DCUTENSOR_ROOT</span></code> option is only needed if the cuTensor 2.x library is not in the usual CUDA library path.
+Some systems may have the cuTensor 1.x library in the CUDA library path, which is not compatible with this code.
+In that case, the cuTensor 2.x library must be <a class="reference external" href="https://developer.nvidia.com/cutensor-downloads">installed</a>, and
+the path to the cuTensor 2.x library must be provided to the build command.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>

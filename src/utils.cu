@@ -222,8 +222,7 @@ void Utils::make_table(std::vector<std::string> col_names, std::vector<long doub
 
 void Utils::print_raw(long double* mean_times, long double* min_times, long double* max_times,
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
-    long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
-    int times_len)
+    long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs, int times_len)
 {
 
     for (int i = 0; i < 3; i++)
@@ -308,8 +307,6 @@ void Utils::print_times(int reps, bool table)
     MPICHECK(MPI_Reduce((void*)&mpi_times_fs, (void*)max_times_fs, times_len, MPI_LONG_DOUBLE,
         MPI_MAX, 0, MPI_COMM_WORLD));
 
-
-
     if (world_rank == 0) {
         for (int i = 0; i < 3; i++) {
             mean_times[i] /= world_size;
@@ -337,7 +334,7 @@ void Utils::print_times(int reps, bool table)
             std::cout << std::endl;
 
             make_table({ "F Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
-                          "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
+                           "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
                 mean_times_v, min_times_v, max_times_v);
 
             std::cout << std::endl;
@@ -347,7 +344,7 @@ void Utils::print_times(int reps, bool table)
             max_times_v = std::vector<long double>(max_times_fs, max_times_fs + times_len);
 
             make_table({ "F* Matvec", "Broadcast", "Pad", "FFT", "SOTI-to-TOSI", "SBGEMV",
-                          "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
+                           "TOSI-to-SOTI", "IFFT", "Unpad", "Reduce", "Total" },
                 mean_times_v, min_times_v, max_times_v);
         } else {
             print_raw(mean_times, min_times, max_times, mean_times_f, min_times_f, max_times_f,
@@ -366,4 +363,73 @@ void Utils::print_times(int reps, bool table)
     }
 
 #endif
+}
+
+void Utils::swap_axes(
+    Complex* d_in, Complex* d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
+{
+    // use cuTensor to swap axes d_in[t,m,d] -> d_out[d,m,t] (column-major)
+
+    cutensorDataType_t typeA = CUTENSOR_C_64F;
+    cutensorDataType_t typeB = CUTENSOR_C_64F;
+
+    cutensorComputeDescriptor_t descCompute = CUTENSOR_COMPUTE_DESC_64F;
+
+    double alpha = 1.0;
+
+    std::vector<int> modeA = { 't', 'm', 'd' };
+    std::vector<int> modeB = { 'd', 'm', 't' };
+
+    int nmode = 3;
+
+    std::vector<int64_t> extentA = { block_size, num_cols, num_rows };
+    std::vector<int64_t> extentB = { num_rows, num_cols, block_size };
+
+    cutensorHandle_t handle;
+    cutensorSafeCall(cutensorCreate(&handle));
+
+    uint32_t const kAlignment = 128;
+    assert(uintptr_t(d_in) % kAlignment == 0);
+    assert(uintptr_t(d_out) % kAlignment == 0);
+
+    cutensorTensorDescriptor_t descA;
+
+    cutensorSafeCall(cutensorCreateTensorDescriptor(
+        handle, &descA, nmode, extentA.data(), nullptr, typeA, kAlignment));
+
+    cutensorTensorDescriptor_t descB;
+
+    cutensorSafeCall(cutensorCreateTensorDescriptor(
+        handle, &descB, nmode, extentB.data(), nullptr, typeB, kAlignment));
+
+    cutensorOperationDescriptor_t desc;
+    cutensorSafeCall(cutensorCreatePermutation(
+        handle, &desc, descA, modeA.data(), CUTENSOR_OP_IDENTITY, descB, modeB.data(), descCompute));
+
+    cutensorDataType_t scalarType;
+    cutensorSafeCall(cutensorOperationDescriptorGetAttribute(handle, desc,
+        CUTENSOR_OPERATION_DESCRIPTOR_SCALAR_TYPE, (void*)&scalarType, sizeof(scalarType)));
+
+    assert(scalarType == CUTENSOR_C_64F);
+
+    const cutensorAlgo_t algo = CUTENSOR_ALGO_DEFAULT;
+
+    cutensorPlanPreference_t planPref;
+
+    cutensorSafeCall(cutensorCreatePlanPreference(handle, &planPref, algo, CUTENSOR_JIT_MODE_NONE));
+
+    cutensorPlan_t plan;
+    cutensorSafeCall(cutensorCreatePlan(handle, &plan, desc, planPref, 0 /* worksize */));
+
+    cutensorSafeCall(cutensorPermute(handle, plan, &alpha, d_in, d_out, s));
+
+    cutensorSafeCall(cutensorDestroy(handle));
+    cutensorSafeCall(cutensorDestroyPlan(plan));
+    cutensorSafeCall(cutensorDestroyOperationDescriptor(desc));
+    cutensorSafeCall(cutensorDestroyPlanPreference(planPref));
+    cutensorSafeCall(cutensorDestroyTensorDescriptor(descA));
+    cutensorSafeCall(cutensorDestroyTensorDescriptor(descB));
+
+
+
 }

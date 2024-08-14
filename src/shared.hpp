@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <time.h>
 #include <sys/time.h>
+#include <cutensor.h>
 
 #include <omp.h>
 
@@ -165,6 +166,60 @@ static const char *_cudaGetErrorEnum2(cublasStatus_t error)
     return "<unknown>";
 }
 
+static const char *_cudaGetErrorEnum3(cutensorStatus_t error)
+{
+    switch (error)
+    {
+    case CUTENSOR_STATUS_SUCCESS:
+        return "CUTENSOR_STATUS_SUCCESS";
+
+    case CUTENSOR_STATUS_NOT_INITIALIZED:
+        return "CUTENSOR_STATUS_NOT_INITIALIZED";
+
+    case CUTENSOR_STATUS_ALLOC_FAILED:
+        return "CUTENSOR_STATUS_ALLOC_FAILED";
+
+    case CUTENSOR_STATUS_INVALID_VALUE:
+        return "CUTENSOR_STATUS_INVALID_VALUE";
+
+    case CUTENSOR_STATUS_ARCH_MISMATCH:
+        return "CUTENSOR_STATUS_ARCH_MISMATCH";
+
+    case CUTENSOR_STATUS_MAPPING_ERROR:
+        return "CUTENSOR_STATUS_MAPPING_ERROR";
+
+    case CUTENSOR_STATUS_EXECUTION_FAILED:
+        return "CUTENSOR_STATUS_EXECUTION_FAILED";
+
+    case CUTENSOR_STATUS_INTERNAL_ERROR:
+        return "CUTENSOR_STATUS_INTERNAL_ERROR";
+
+    case CUTENSOR_STATUS_NOT_SUPPORTED:
+        return "CUTENSOR_STATUS_NOT_SUPPORTED";
+
+    case CUTENSOR_STATUS_LICENSE_ERROR:
+        return "CUTENSOR_STATUS_LICENSE_ERROR";
+
+    case CUTENSOR_STATUS_CUBLAS_ERROR:
+        return "CUTENSOR_STATUS_CUBLAS_ERROR";
+    
+    case CUTENSOR_STATUS_CUDA_ERROR:
+        return "CUTENSOR_STATUS_CUDA_ERROR";
+    
+    case CUTENSOR_STATUS_INSUFFICIENT_WORKSPACE:
+        return "CUTENSOR_STATUS_INSUFFICIENT_WORKSPACE";
+
+    case CUTENSOR_STATUS_INSUFFICIENT_DRIVER:
+        return "CUTENSOR_STATUS_INSUFFICIENT_DRIVER";
+    
+    case CUTENSOR_STATUS_IO_ERROR:
+        return "CUTENSOR_STATUS_IO_ERROR";
+
+    }
+
+    return "<unknown>";
+}
+
 
 #define cufftSafeCall(err) __cufftSafeCall(err, __FILE__, __LINE__)
 /**
@@ -202,6 +257,26 @@ inline void __cublasSafeCall(cublasStatus_t err, const char *file, const int lin
     {
         fprintf(stderr, "CUBLAS error in file '%s', line %d\n error %d: %s\nterminating!\n", __FILE__, __LINE__, err,
                 _cudaGetErrorEnum2(err));
+        cudaDeviceReset();
+        assert(0);
+    }
+}
+
+
+#define cutensorSafeCall(err) __cutensorSafeCall(err, __FILE__, __LINE__)
+/**
+ * @brief Safely calls the cuTENSOR function and checks for errors.
+ * 
+ * @param err The cuTENSOR status code.
+ * @param file The file path where the function is called.
+ * @param line The line number where the function is called.
+ */ 
+inline void __cutensorSafeCall(cutensorStatus_t err, const char *file, const int line)
+{
+    if (CUTENSOR_STATUS_SUCCESS != err)
+    {
+        fprintf(stderr, "cuTENSOR error in file '%s', line %d\n error %d: %s\nterminating!\n", __FILE__, __LINE__, err,
+                _cudaGetErrorEnum3(err));
         cudaDeviceReset();
         assert(0);
     }

@@ -72,14 +72,7 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
     gpuErrchk(cudaMalloc(
         (void**)&d_mat_freq_trans, sizeof(Complex) * (size_t)(block_size / 2 + 1) * num_cols * num_rows));
     if (num_cols > 1 && num_rows > 1) {
-        int sz[3] = { (int)(block_size / 2 + 1), (int)num_cols, (int)num_rows };
-        int perm[3] = { 2, 1, 0 };
-        int elements_per_thread = 4;
-
-        if (cut_transpose3d(d_mat_freq_trans, *mat_freq_tosi, sz, perm, elements_per_thread) < 0) {
-            fprintf(stderr, "Error while performing transpose.\n");
-            exit(1);
-        }
+        Utils::swap_axes(*mat_freq_tosi, d_mat_freq_trans, num_cols, num_rows, (block_size / 2 + 1));
     } else {
         cuDoubleComplex aa({ 1, 0 });
         cuDoubleComplex bb({ 0, 0 });

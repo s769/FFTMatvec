@@ -9,6 +9,7 @@
 #include "shared.hpp"
 #include "table.hpp"
 
+
 /**
  * @namespace Utils
  * @brief Namespace containing utility functions.
@@ -147,6 +148,19 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
     long double* mean_times_f, long double* min_times_f, long double* max_times_f,
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
     int times_len);
+
+
+
+/**
+ * @brief Computes the 3D swapaxes operation on the matrix blocks.
+ * @param d_in Pointer to the input matrix.
+ * @param d_out Pointer to the output matrix.
+ * @param num_cols The number of block columns in the matrix.
+ * @param num_rows The number of block rows in the matrix.
+ * @param block_size The size of each block. Note: this is used inside the matvec setup function, so it is called with Nt + 1 and not 2 * Nt.
+ * @param s The CUDA stream to use for the operation (optional).
+ */
+void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int block_size, cudaStream_t s = nullptr);
 
 }
 
