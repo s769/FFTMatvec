@@ -9,7 +9,7 @@ The documentation for the code can be found [here](https://fftmatvec.readthedocs
 ## Installation
 
 To build the code, the following dependencies are required:
-- CUDA (with cuFFT, cuBLAS, and cuTensor 2.x) and a CUDA enabled GPU
+- CUDA (with cuFFT, cuBLAS, and cuTENSOR 2.x) and a CUDA enabled GPU
 - [NCCL](https://github.com/NVIDIA/nccl)
 
 First, clone the repository:
@@ -25,7 +25,7 @@ cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/n
 cmake --build build
 ```
 
-Note: the `-DCUTENSOR_ROOT` option is only needed if the cuTensor 2.x library is not in the usual CUDA library path. Some systems may have the cuTensor 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTensor 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTensor 2.x library must be provided to the build command.
+Note: the `-DCUTENSOR_ROOT` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTENSOR 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTENSOR 2.x library must be provided to the build command.
 
 ## Usage
 
