@@ -30,7 +30,7 @@ Then, build the code:
    cmake --build build
 
 
-Note: the ``-DCUTENSOR_ROOT`` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. 
+**Note**: the ``-DCUTENSOR_ROOT`` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. 
 Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. 
 In that case, the cuTENSOR 2.x library must be `installed <https://developer.nvidia.com/cutensor-downloads>`__, and 
 the path to the cuTENSOR 2.x library must be provided to the build command.
@@ -60,7 +60,7 @@ The main executable is ``fft_matvec``. It takes the following arguments:
 -  ``t`` (bool): Check matvec results (default: false)
 -  ``h`` (bool): Print help message
 
-``pr x pc`` must be equal to the number of processors used to run the code. 
+**Note**: ``pr x pc`` must be equal to the number of processors used to run the code. 
 If no values are provided for ``-pr`` and ``-pc``, the code will run with ``pr = 1`` and ``pc = num_mpi_procs``.
 
 For boolean arguments, just pass the flag to enable it without a value.
