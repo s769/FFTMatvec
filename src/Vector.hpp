@@ -134,4 +134,4 @@ public:
     }
 };
 
-#endif
+#endif // __VECTOR_HPP__

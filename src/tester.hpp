@@ -33,7 +33,7 @@ namespace Tester {
  */
 void check_ones_matvec(Comm& comm, Matrix& mat, Vector& out, bool conj, bool full);
 
-}
+} // namespace Tester
 
 
 #endif // __TESTER_HPP__

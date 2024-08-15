@@ -151,4 +151,4 @@ public:
     cublasHandle_t get_cublasHandle() { return cublasHandle; }
 };
 
-#endif
+#endif // __COMM_HPP__

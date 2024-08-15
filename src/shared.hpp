@@ -365,4 +365,4 @@ extern enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 
 #endif
 
-#endif
+#endif // __SHARED_H__

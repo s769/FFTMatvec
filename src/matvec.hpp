@@ -6,8 +6,8 @@
  * The Matvec namespace provides functions for matrix-vector operations.
  */
 
-#ifndef __matvec_h__
-#define __matvec_h__
+#ifndef __MATVEC_H__
+#define __MATVEC_H__
 
 #include "shared.hpp"
 #include "utils.hpp"
@@ -105,6 +105,6 @@ namespace Matvec {
         Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_tosi_other,
         double* const res_pad);
 
-}
+} // namespace Matvec
 
-#endif
+#endif // __MATVEC_H__

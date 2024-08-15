@@ -49,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-program">Example Program</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
@@ -110,7 +111,7 @@
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
 <p>To build the code, the following dependencies are required:</p>
 <ul class="simple">
-<li><p>CUDA (with cuFFT and cuBLAS) and a CUDA enabled GPU</p></li>
+<li><p>CUDA (with cuFFT, cuBLAS, and cuTENSOR 2.x) and a CUDA enabled GPU</p></li>
 <li><p><a class="reference external" href="https://github.com/NVIDIA/nccl">NCCL</a></p></li>
 </ul>
 <p>First, clone the repository:</p>
@@ -124,10 +125,10 @@ cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </s
 cmake<span class="w"> </span>--build<span class="w"> </span>build
 </pre></div>
 </div>
-<p>Note: the <code class="docutils literal notranslate"><span class="pre">-DCUTENSOR_ROOT</span></code> option is only needed if the cuTensor 2.x library is not in the usual CUDA library path.
-Some systems may have the cuTensor 1.x library in the CUDA library path, which is not compatible with this code.
-In that case, the cuTensor 2.x library must be <a class="reference external" href="https://developer.nvidia.com/cutensor-downloads">installed</a>, and
-the path to the cuTensor 2.x library must be provided to the build command.</p>
+<p>Note: the <code class="docutils literal notranslate"><span class="pre">-DCUTENSOR_ROOT</span></code> option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path.
+Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code.
+In that case, the cuTENSOR 2.x library must be <a class="reference external" href="https://developer.nvidia.com/cutensor-downloads">installed</a>, and
+the path to the cuTENSOR 2.x library must be provided to the build command.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
@@ -152,6 +153,8 @@ false)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">t</span></code> (bool): Check matvec results (default: false)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">h</span></code> (bool): Print help message</p></li>
 </ul>
+<p><code class="docutils literal notranslate"><span class="pre">pr</span> <span class="pre">x</span> <span class="pre">pc</span></code> must be equal to the number of processors used to run the code.
+If no values are provided for <code class="docutils literal notranslate"><span class="pre">-pr</span></code> and <code class="docutils literal notranslate"><span class="pre">-pc</span></code>, the code will run with <code class="docutils literal notranslate"><span class="pre">pr</span> <span class="pre">=</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">pc</span> <span class="pre">=</span> <span class="pre">num_mpi_procs</span></code>.</p>
 <p>For boolean arguments, just pass the flag to enable it without a value.
 For example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>./build/fft_matvec<span class="w"> </span>-pr<span class="w"> </span><span class="m">2</span><span class="w"> </span>-pc<span class="w"> </span><span class="m">2</span><span class="w"> </span>-g<span class="w"> </span>-Nm<span class="w"> </span><span class="m">20</span><span class="w"> </span>-Nd<span class="w"> </span><span class="m">10</span><span class="w"> </span>-Nt<span class="w"> </span><span class="m">7</span><span class="w"> </span>-nm<span class="w"> </span><span class="m">4</span><span class="w"> </span>-nd<span class="w"> </span><span class="m">3</span><span class="w"> </span>-v<span class="w"> </span>-N<span class="w"> </span><span class="m">100</span>
@@ -163,6 +166,270 @@ local block columns, 3 local block rows, print input/output vectors, and
 use 100 matvecs for timing.</p>
 <p>To reproduce the results in the paper, run with the configurations
 described in the Numerical Results section.</p>
+</section>
+<section id="example-program">
+<h2>Example Program<a class="headerlink" href="#example-program" title="Permalink to this heading"></a></h2>
+<p>The following is the main program for the FFTMatvec code (used for testing):</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * @file main.cpp</span>
+<span class="cm"> * @brief This file contains the main function for the matvec-test program.</span>
+<span class="cm"> *</span>
+<span class="cm"> * The program performs matrix-vector multiplication using MPI parallelization.</span>
+<span class="cm"> * It takes command line arguments to configure the matrix and vector dimensions,</span>
+<span class="cm"> * the number of processor rows and columns, and other options.</span>
+<span class="cm"> *</span>
+<span class="cm"> * The main function initializes MPI, parses command line arguments, creates a communication object,</span>
+<span class="cm"> * initializes matrices and vectors, performs matrix-vector multiplication, and prints the results.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param argc The number of command line arguments.</span>
+<span class="cm"> * @param argv An array of command line argument strings.</span>
+<span class="cm"> * @return 0 on success, 1 on error.</span>
+<span class="cm"> */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Comm.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Matrix.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Vector.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;cmdparser.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;matvec.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;shared.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tester.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;utils.hpp&quot;</span>
+
+<span class="c1">// enable/disable timing (see shared.hpp)</span>
+<span class="cp">#if TIME_MPI</span>
+<span class="cp">#define WARMUP 10</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">warmup</span><span class="p">;</span>
+<span class="cp">#endif</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @brief Configures the parser.</span>
+<span class="cm"> * @param parser The parser.</span>
+<span class="cm"> */</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">configureParser</span><span class="p">(</span><span class="n">cli</span><span class="o">::</span><span class="n">Parser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">parser</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;proc_rows&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of processor rows (proc_rows x proc_cols = num_mpi_ranks)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pc&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;proc_cols&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;g&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;glob_inds&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Use global indices&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;glob_cols&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of global columns&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nd&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;glob_rows&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of global rows&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unpad_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of time points&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;nm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;num_cols&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of local columns&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;nd&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;num_rows&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of local rows&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;verbose&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Print vectors&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;N&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;reps&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Number of repetitions (for timing purposes)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;raw&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;print_raw&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Print raw times (instead of table)&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">parser</span><span class="p">.</span><span class="n">set_optional</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Run tests&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/********/</span>
+<span class="cm">/* MAIN */</span>
+<span class="cm">/********/</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">world_rank</span><span class="p">,</span><span class="w"> </span><span class="n">world_size</span><span class="p">,</span><span class="w"> </span><span class="n">provided</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Initialize the MPI environment (OpenMP is used so we need to use MPI_Init_thread)</span>
+<span class="w">    </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Init_thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="n">MPI_THREAD_FUNNELED</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">provided</span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">provided</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">MPI_THREAD_FUNNELED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;The provided MPI level is not sufficient</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Parse command line arguments</span>
+<span class="w">        </span><span class="n">cli</span><span class="o">::</span><span class="n">Parser</span><span class="w"> </span><span class="n">parser</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
+<span class="w">        </span><span class="n">configureParser</span><span class="p">(</span><span class="n">parser</span><span class="p">);</span>
+<span class="w">        </span><span class="n">parser</span><span class="p">.</span><span class="n">run_and_exit_if_error</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Comm_rank</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">world_rank</span><span class="p">));</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Comm_size</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">world_size</span><span class="p">));</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pr&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">proc_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;pc&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Check that the number of processor rows and columns is valid</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_size</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">proc_rows</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">proc_cols</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">                </span><span class="n">proc_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">world_size</span><span class="p">;</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Warning: Proc Rows x Proc Cols must equal the total number of MPI &quot;</span>
+<span class="w">                                </span><span class="s">&quot;ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">proc_rows</span><span class="p">,</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">,</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">,</span><span class="w"> </span><span class="n">world_size</span><span class="p">,</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">,</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;Proc Rows x Proc Cols must equal the total number of MPI ranks. Got %d x %d = &quot;</span>
+<span class="w">                    </span><span class="s">&quot;%d, expected %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">proc_rows</span><span class="p">,</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">,</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">,</span><span class="w"> </span><span class="n">world_size</span><span class="p">);</span>
+<span class="w">                </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">row_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">world_rank</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">col_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">world_rank</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">glob_inds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;g&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">unpad_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nm&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Nd&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">num_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;nm&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">num_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;nd&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// If not using global indices, calculate the number of global columns and rows</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">glob_inds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">glob_num_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num_cols</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">;</span>
+<span class="w">            </span><span class="n">glob_num_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num_rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// If using global indices, calculate the number of local columns and rows</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">glob_inds</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">num_cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">col_color</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">proc_cols</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                                                               </span><span class="o">:</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">;</span>
+<span class="w">            </span><span class="n">num_rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">row_color</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">                                                               </span><span class="o">:</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// Check that the number of local columns and rows is valid when using global indices</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">glob_inds</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">proc_rows</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;make sure proc_rows &lt;= glob_num_rows </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">glob_inds</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">proc_cols</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;make sure proc_cols &lt;= glob_num_cols </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Abort</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unpad_size</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Proc Rows: %d, Proc Cols: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">,</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">);</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Global Rows: %d, Global Cols: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glob_num_rows</span><span class="p">,</span><span class="w"> </span><span class="n">glob_num_cols</span><span class="p">);</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unpad Size: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">unpad_size</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">COMM_INIT</span><span class="p">].</span><span class="n">start</span><span class="p">();</span>
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="c1">// Create a communicator object</span>
+<span class="w">        </span><span class="n">Comm</span><span class="w"> </span><span class="n">comm</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">,</span><span class="w"> </span><span class="n">proc_rows</span><span class="p">,</span><span class="w"> </span><span class="n">proc_cols</span><span class="p">);</span>
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">COMM_INIT</span><span class="p">].</span><span class="n">stop</span><span class="p">();</span>
+<span class="cp">#endif</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Created Comm</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">SETUP</span><span class="p">].</span><span class="n">start</span><span class="p">();</span>
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="c1">// Create matrices and vectors</span>
+<span class="w">        </span><span class="n">Matrix</span><span class="w"> </span><span class="n">F</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="w"> </span><span class="n">num_cols</span><span class="p">,</span><span class="w"> </span><span class="n">num_rows</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Created Matrices</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">F</span><span class="p">.</span><span class="n">init_mat_ones</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Initialized Matrices</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">Vector</span><span class="w"> </span><span class="n">in_F</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="w"> </span><span class="n">num_cols</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;col&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">in_FS</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="w"> </span><span class="n">num_rows</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;row&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">Vector</span><span class="w"> </span><span class="n">out_F</span><span class="p">(</span><span class="n">in_FS</span><span class="p">),</span><span class="w"> </span><span class="n">out_FS</span><span class="p">(</span><span class="n">in_F</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Created Vectors</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Initialize vectors with ones for testing</span>
+<span class="w">        </span><span class="n">in_F</span><span class="p">.</span><span class="n">init_vec_ones</span><span class="p">();</span>
+<span class="w">        </span><span class="n">in_FS</span><span class="p">.</span><span class="n">init_vec_ones</span><span class="p">();</span>
+<span class="w">        </span><span class="n">out_F</span><span class="p">.</span><span class="n">init_vec</span><span class="p">();</span>
+<span class="w">        </span><span class="n">out_FS</span><span class="p">.</span><span class="n">init_vec</span><span class="p">();</span>
+
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">SETUP</span><span class="p">].</span><span class="n">stop</span><span class="p">();</span>
+<span class="cp">#endif</span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">print</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;v&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">print</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">in_F</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;in_F&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">in_FS</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;in_FS&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Initialized Vectors</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">reps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;N&quot;</span><span class="p">);</span>
+
+<span class="cp">#if !TIME_MPI</span>
+<span class="w">        </span><span class="n">reps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">FULL</span><span class="p">].</span><span class="n">start</span><span class="p">();</span>
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="c1">// Perform matrix-vector multiplication</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">reps</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">WARMUP</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">F</span><span class="p">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">in_F</span><span class="p">,</span><span class="w"> </span><span class="n">out_F</span><span class="p">);</span>
+<span class="w">            </span><span class="n">F</span><span class="p">.</span><span class="n">transpose_matvec</span><span class="p">(</span><span class="n">in_FS</span><span class="p">,</span><span class="w"> </span><span class="n">out_FS</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="cp">#if TIME_MPI</span>
+<span class="w">        </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Barrier</span><span class="p">(</span><span class="n">MPI_COMM_WORLD</span><span class="p">));</span>
+<span class="w">        </span><span class="n">t_list</span><span class="p">[</span><span class="n">ProfilerTimesFull</span><span class="o">::</span><span class="n">FULL</span><span class="p">].</span><span class="n">stop</span><span class="p">();</span>
+<span class="cp">#endif</span>
+
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;t&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// Run tests</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Tester</span><span class="o">::</span><span class="n">check_ones_matvec</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">out_F</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Tester</span><span class="o">::</span><span class="n">check_ones_matvec</span><span class="p">(</span><span class="n">comm</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">out_FS</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Finished Matvecs</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">print</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">out_F</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;out_F&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">out_FS</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;out_FS&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="cp">#if !TIME_MPI</span>
+
+<span class="w">        </span><span class="n">F</span><span class="p">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">in_F</span><span class="p">,</span><span class="w"> </span><span class="n">out_FS</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">        </span><span class="n">F</span><span class="p">.</span><span class="n">transpose_matvec</span><span class="p">(</span><span class="n">in_FS</span><span class="p">,</span><span class="w"> </span><span class="n">out_F</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">print</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">out_F</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;out_F&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">out_FS</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">&quot;out_FS&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="c1">// Print timing results</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">print_raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parser</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;raw&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">world_rank</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Timing Results Showing Mean, Min, and Max Times Over %d Processor(s) (%d &quot;</span>
+<span class="w">                   </span><span class="s">&quot;Matvecs):</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="n">world_size</span><span class="p">,</span><span class="w"> </span><span class="n">reps</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">Utils</span><span class="o">::</span><span class="n">print_times</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span><span class="w"> </span><span class="o">!</span><span class="n">print_raw</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">MPICHECK</span><span class="p">(</span><span class="n">MPI_Finalize</span><span class="p">());</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h2>

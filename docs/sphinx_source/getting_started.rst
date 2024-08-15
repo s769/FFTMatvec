@@ -60,6 +60,9 @@ The main executable is ``fft_matvec``. It takes the following arguments:
 -  ``t`` (bool): Check matvec results (default: false)
 -  ``h`` (bool): Print help message
 
+``pr x pc`` must be equal to the number of processors used to run the code. 
+If no values are provided for ``-pr`` and ``-pc``, the code will run with ``pr = 1`` and ``pc = num_mpi_procs``.
+
 For boolean arguments, just pass the flag to enable it without a value.
 For example:
 
@@ -74,6 +77,18 @@ use 100 matvecs for timing.
 
 To reproduce the results in the paper, run with the configurations
 described in the Numerical Results section.
+
+
+
+Example Program
+---------------
+
+The following is the main program for the FFTMatvec code (used for testing):
+
+.. literalinclude:: ../../src/main.cpp
+   :language: cpp
+
+
 
 License
 -------

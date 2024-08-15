@@ -162,6 +162,6 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
  */
 void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int block_size, cudaStream_t s = nullptr);
 
-}
+} // namespace Utils
 
-#endif
+#endif // __UTILS_H__
