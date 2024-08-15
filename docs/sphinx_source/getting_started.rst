@@ -25,7 +25,6 @@ Then, build the code:
 
 .. code:: bash
 
-   cd matvec-test/
    cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release -DCUTENSOR_ROOT=/path/to/cutensor
    cmake --build build
 
@@ -34,6 +33,14 @@ Then, build the code:
 Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. 
 In that case, the cuTENSOR 2.x library must be `installed <https://developer.nvidia.com/cutensor-downloads>`__, and 
 the path to the cuTENSOR 2.x library must be provided to the build command.
+
+To build the documentation, the following dependencies are required:
+
+-  `Sphinx <https://www.sphinx-doc.org/en/master/>`__ (``pip install sphinx-rtd-theme``)
+-  `Breathe <https://breathe.readthedocs.io/en/latest/>`__ (``pip install breathe``)
+-  `Doxygen <https://www.doxygen.nl/index.html>`__
+
+Then, build the documentation by passing the ``-DBUILD_DOCS=ON`` flag to the ``cmake -B build ...`` command.
 
 
 Usage
@@ -44,21 +51,21 @@ The main executable is ``fft_matvec``. It takes the following arguments:
 -  ``-pr`` (int): Number of processor rows (default: 1)
 -  ``-pc`` (int): Number of processor columns (default: 1)
 -  ``-g`` (bool): Use global sizes (default: false)
--  ``Nm`` (int): Number of global block columns (default: 10, ignored if
+-  ``-Nm`` (int): Number of global block columns (default: 10, ignored if
    ``-g`` is false)
--  ``Nd`` (int): Number of global block rows (default: 5, ignored if
+-  ``-Nd`` (int): Number of global block rows (default: 5, ignored if
    ``-g`` is false)
--  ``Nt`` (int): Block size (default: 7)
--  ``nm`` (int): Number of local block columns (default: 3, ignored if
+-  ``-Nt`` (int): Block size (default: 7)
+-  ``-nm`` (int): Number of local block columns (default: 3, ignored if
    ``-g`` is true)
--  ``nd`` (int): Number of local block rows (default: 2, ignored if
+-  ``-nd`` (int): Number of local block rows (default: 2, ignored if
    ``-g`` is true)
--  ``v`` (bool): Print input/output vectors (default: false)
--  ``N`` (int): Number of matvecs to use for timing (default: 100)
--  ``raw`` (bool): Print raw timing data instead of table (default:
+-  ``-v`` (bool): Print input/output vectors (default: false)
+-  ``-N`` (int): Number of matvecs to use for timing (default: 100)
+-  ``-raw`` (bool): Print raw timing data instead of table (default:
    false)
--  ``t`` (bool): Check matvec results (default: false)
--  ``h`` (bool): Print help message
+-  ``-t`` (bool): Check matvec results (default: false)
+-  ``-h`` (bool): Print help message
 
 **Note**: ``pr x pc`` must be equal to the number of processors used to run the code. 
 If no values are provided for ``-pr`` and ``-pc``, the code will run with ``pr = 1`` and ``pc = num_mpi_procs``.

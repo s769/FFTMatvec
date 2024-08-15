@@ -120,15 +120,21 @@
 </pre></div>
 </div>
 <p>Then, build the code:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>matvec-test/
-cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DNCCL_LIBRARIES<span class="o">=</span>/path/to/nccl/lib<span class="w"> </span>-DNCCL_INCLUDE_DIRS<span class="o">=</span>/path/to/nccl/include<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DCUTENSOR_ROOT<span class="o">=</span>/path/to/cutensor
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DNCCL_LIBRARIES<span class="o">=</span>/path/to/nccl/lib<span class="w"> </span>-DNCCL_INCLUDE_DIRS<span class="o">=</span>/path/to/nccl/include<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span>-DCUTENSOR_ROOT<span class="o">=</span>/path/to/cutensor
 cmake<span class="w"> </span>--build<span class="w"> </span>build
 </pre></div>
 </div>
-<p>Note: the <code class="docutils literal notranslate"><span class="pre">-DCUTENSOR_ROOT</span></code> option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path.
+<p><strong>Note</strong>: the <code class="docutils literal notranslate"><span class="pre">-DCUTENSOR_ROOT</span></code> option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path.
 Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code.
 In that case, the cuTENSOR 2.x library must be <a class="reference external" href="https://developer.nvidia.com/cutensor-downloads">installed</a>, and
 the path to the cuTENSOR 2.x library must be provided to the build command.</p>
+<p>To build the documentation, the following dependencies are required:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.sphinx-doc.org/en/master/">Sphinx</a> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">sphinx-rtd-theme</span></code>)</p></li>
+<li><p><a class="reference external" href="https://breathe.readthedocs.io/en/latest/">Breathe</a> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">breathe</span></code>)</p></li>
+<li><p><a class="reference external" href="https://www.doxygen.nl/index.html">Doxygen</a></p></li>
+</ul>
+<p>Then, build the documentation by passing the <code class="docutils literal notranslate"><span class="pre">-DBUILD_DOCS=ON</span></code> flag to the <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-B</span> <span class="pre">build</span> <span class="pre">...</span></code> command.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
@@ -137,23 +143,23 @@ the path to the cuTENSOR 2.x library must be provided to the build command.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">-pr</span></code> (int): Number of processor rows (default: 1)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-pc</span></code> (int): Number of processor columns (default: 1)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-g</span></code> (bool): Use global sizes (default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Nm</span></code> (int): Number of global block columns (default: 10, ignored if
+<li><p><code class="docutils literal notranslate"><span class="pre">-Nm</span></code> (int): Number of global block columns (default: 10, ignored if
 <code class="docutils literal notranslate"><span class="pre">-g</span></code> is false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Nd</span></code> (int): Number of global block rows (default: 5, ignored if
+<li><p><code class="docutils literal notranslate"><span class="pre">-Nd</span></code> (int): Number of global block rows (default: 5, ignored if
 <code class="docutils literal notranslate"><span class="pre">-g</span></code> is false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Nt</span></code> (int): Block size (default: 7)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nm</span></code> (int): Number of local block columns (default: 3, ignored if
+<li><p><code class="docutils literal notranslate"><span class="pre">-Nt</span></code> (int): Block size (default: 7)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-nm</span></code> (int): Number of local block columns (default: 3, ignored if
 <code class="docutils literal notranslate"><span class="pre">-g</span></code> is true)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nd</span></code> (int): Number of local block rows (default: 2, ignored if
+<li><p><code class="docutils literal notranslate"><span class="pre">-nd</span></code> (int): Number of local block rows (default: 2, ignored if
 <code class="docutils literal notranslate"><span class="pre">-g</span></code> is true)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">v</span></code> (bool): Print input/output vectors (default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">N</span></code> (int): Number of matvecs to use for timing (default: 100)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">raw</span></code> (bool): Print raw timing data instead of table (default:
+<li><p><code class="docutils literal notranslate"><span class="pre">-v</span></code> (bool): Print input/output vectors (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-N</span></code> (int): Number of matvecs to use for timing (default: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-raw</span></code> (bool): Print raw timing data instead of table (default:
 false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code> (bool): Check matvec results (default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">h</span></code> (bool): Print help message</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t</span></code> (bool): Check matvec results (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-h</span></code> (bool): Print help message</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">pr</span> <span class="pre">x</span> <span class="pre">pc</span></code> must be equal to the number of processors used to run the code.
+<p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">pr</span> <span class="pre">x</span> <span class="pre">pc</span></code> must be equal to the number of processors used to run the code.
 If no values are provided for <code class="docutils literal notranslate"><span class="pre">-pr</span></code> and <code class="docutils literal notranslate"><span class="pre">-pc</span></code>, the code will run with <code class="docutils literal notranslate"><span class="pre">pr</span> <span class="pre">=</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">pc</span> <span class="pre">=</span> <span class="pre">num_mpi_procs</span></code>.</p>
 <p>For boolean arguments, just pass the flag to enable it without a value.
 For example:</p>

@@ -25,5 +25,10 @@ LINK_DIRECTORIES(${NCCL_LIBRARIES} ${CUDA_LIBRARIES} ${MPI_C_LIBRARIES} ${MPI_CX
 
 add_subdirectory(src)
 
-add_subdirectory (docs)
+option(BUILD_DOCS "Build documentation" OFF)
+
+if(BUILD_DOCS)
+    add_subdirectory (docs)
+endif()
+
 
