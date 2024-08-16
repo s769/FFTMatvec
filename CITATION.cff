@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+authors:
+  - family-names: "Venkat"
+    given-names: "Sreeram"
+    affiliation: "University of Texas at Austin"
+  - family-names: "Fernando"
+    given-names: "Milinda"
+    affiliation: "University of Texas at Austin"
+  - family-names: "Henneking"
+    given-names: "Stefan"
+    affiliation: "University of Texas at Austin"
+  - family-names: "Ghattas"
+    given-names: "Omar"
+    affiliation: "University of Texas at Austin"
+title: "FFTMatvec"
+version: "0.1.0"
+date-released: 2024-08-16
+url: "https://github.com/s769/FFTMatvec"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Venkat"
+      given-names: "Sreeram"
+      affiliation: "University of Texas at Austin"
+    - family-names: "Fernando"
+      given-names: "Milinda"
+      affiliation: "University of Texas at Austin"
+    - family-names: "Henneking"
+      given-names: "Stefan"
+      affiliation: "University of Texas at Austin"
+    - family-names: "Ghattas"
+      given-names: "Omar"
+      affiliation: "University of Texas at Austin"
+  title: "Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems"
+  journal: "arXiv preprint arXiv:2407.13066"
+  year: 2024

@@ -6,12 +6,10 @@
 Welcome to FFTMatvec's Documentation!
 =====================================
 
-This page contains the documentation for the code presented in "Venkat S, Fernando M,
-Henneking S, Ghattas O. Fast and Scalable FFT-Based GPU-Accelerated
-Algorithms for Hessian Actions Arising in Linear Inverse Problems
-Governed by Autonomous Dynamical Systems. arXiv preprint
-`arXiv:2407.13066 <https://arxiv.org/abs/2407.13066>`__. 2024 Jul 18. The source code is 
-`here <https://github.com/s769/FFTMatvec>`__.
+This page contains the documentation for the code presented in "Sreeram Venkat, Milinda Fernando, Stefan Henneking, 
+and Omar Ghattas. *Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse 
+Problems Governed by Autonomous Dynamical Systems*. arXiv preprint `arXiv:2407.13066 <https://arxiv.org/abs/2407.13066>`__. 
+2024 Jul 18."" The source code is `here <https://github.com/s769/FFTMatvec>`__.
 
 
 .. toctree::

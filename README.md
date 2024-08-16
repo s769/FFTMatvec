@@ -1,6 +1,6 @@
 # Multi-GPU Accelerated FFT-Based Matvec for Block Triangular Toeplitz Matrices
 
-This repository contains the code for the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems_. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18".
+This repository contains the code for the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems_. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18."
 
 ## Documentation
 
