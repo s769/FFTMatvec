@@ -20,7 +20,6 @@ build:
 #   configuration: docs/conf.py
 mkdocs:
   configuration: mkdocs.yml
-  theme: material
   # Optionally build your docs in additional formats such as PDF and ePub
   formats:
     - pdf
