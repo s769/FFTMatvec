@@ -1,4 +1,2 @@
-sphinx-rtd-theme
-breathe
 mkdocs-material
 mkdoxy

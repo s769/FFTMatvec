@@ -1,6 +1,7 @@
 ## Installation
 
 To build the code, the following dependencies are required:
+
 - CUDA (with cuFFT, cuBLAS, and cuTENSOR 2.x) and a CUDA enabled GPU
 - [NCCL](https://github.com/NVIDIA/nccl)
 
@@ -20,11 +21,13 @@ cmake --build build
 
 To build the documentation, the following dependencies are required:
 
-- [Sphinx](https://www.sphinx-doc.org/en/master/) (`pip install sphinx-rtd-theme`)
-- [Breathe](https://breathe.readthedocs.io/en/latest/) (`pip install breathe`)
-- [Doxygen](https://www.doxygen.nl/index.html) 
+- [MkDocs](https://www.mkdocs.org/)
+- [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
+- [MkDoxy](https://github.com/JakubAndrysek/MkDoxy)
+- [Doxygen](https://www.doxygen.nl/index.html)
 
-Then, build the documentation by passing the `-DBUILD_DOCS=ON` flag to the `cmake -B build ...` command.
+Then, build the documentation by running `mkdocs build` or `mkdocs serve` in the `docs` directory. The built documentation will be in the `site` directory.
+
 
 
 ## Usage

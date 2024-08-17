@@ -9,7 +9,6 @@ theme:
     - content.code.select
     - content.code.annotate
 
-site_dir: 'mkdocs'
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -35,7 +34,7 @@ plugins:
             RECURSIVE: True # recursive search in source directories
 
 nav:
-  - Getting Started: "mkdocs/getting_started.md"
+  - Getting Started: "getting_started.md"
   - API Reference:
     - "Classes":
         - "Comm": "FFTMatvec/classComm.md"
@@ -45,5 +44,5 @@ nav:
         - "Matvec": "FFTMatvec/namespaceMatvec.md"
         - "Utils": "FFTMatvec/namespaceUtils.md"
         - "Tester": "FFTMatvec/namespaceTester.md"
-  - LICENSE: "mkdocs/license.md"
+  - LICENSE: "license.md"
 
