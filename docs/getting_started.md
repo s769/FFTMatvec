@@ -67,6 +67,3 @@ The following is the main program for the FFTMatvec code (used for testing):
 --8<-- "src/main.cpp"
 ```
 
-## License
-
-This code is released under the MIT License. See [LICENSE](license.md) for more information.
