@@ -16,8 +16,15 @@ build:
     # golang: "1.19"
 
 # Build documentation in the "docs/" directory with Sphinx
-sphinx:
-  configuration: docs/conf.py
+# sphinx:
+#   configuration: docs/conf.py
+mkdocs:
+  configuration: mkdocs.yml
+  theme: material
+  # Optionally build your docs in additional formats such as PDF and ePub
+  formats:
+    - pdf
+  #    - epub
 
 # Optionally build your docs in additional formats such as PDF and ePub
 formats:
