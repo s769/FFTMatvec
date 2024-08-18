@@ -25,7 +25,7 @@ private:
 public:
     /**
      * @brief Constructor for the Vector class.
-     * @param comm The Comm object.
+     * @param comm The Comm object (passed as reference).
      * @param num_blocks The number of blocks.
      * @param block_size The size of each block.
      * @param row_or_col Indicates whether the vector is row or column.
@@ -40,7 +40,7 @@ public:
     Vector(Vector& vec, bool deep_copy = false);
 
     /**
-     * @brief Destructor for the Vector class.
+     * @brief Destructor for the Vector class. Frees the memory allocated for the vector data.
      */
     ~Vector();
 

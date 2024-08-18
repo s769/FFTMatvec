@@ -1,15 +1,6 @@
 #include "Comm.hpp"
 
-/*
-    Constructor for Comm class
-    @param comm MPI_Comm object for the global communicator
-    @param proc_rows Number of rows in the processor grid
-    @param proc_cols Number of columns in the processor grid
 
-    Initializes the global communicator and creates row and column communicators
-    for the processor grid. Also creates CUDA streams for each processor and GPU communicators (NCCL).
-
-*/
 Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), proc_rows(proc_rows), proc_cols(proc_cols)
 {
     int local_rank = 0;
@@ -71,11 +62,7 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), pro
 }
 
 
-/*
-    Destructor for Comm class
 
-    Frees the row and column communicators and destroys the NCCL communicators.
-*/
 Comm::~Comm()
 {
     MPICHECK(MPI_Comm_free(&row_comm));
@@ -85,6 +72,3 @@ Comm::~Comm()
     cublasSafeCall(cublasDestroy(cublasHandle));
 }
 
-/*
-
-*/

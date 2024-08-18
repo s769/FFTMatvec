@@ -43,7 +43,7 @@ private:
 public:
     /**
      * @brief Constructs a Matrix object.
-     * @param comm The communication object.
+     * @param comm The communication object (passed as reference).
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
      * @param block_size The block size of the matrix.
@@ -51,7 +51,7 @@ public:
     Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size);
 
     /**
-     * @brief Destroys the Matrix object.
+     * @brief Destroys the Matrix object. Frees the memory allocated for the matrix data.
      */
     ~Matrix();
 

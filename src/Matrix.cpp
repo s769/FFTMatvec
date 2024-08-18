@@ -171,16 +171,6 @@ void Matrix::matvec(Vector &x, Vector &y, bool full)
 
 }
 
-/**
- * Perform transpose matrix-vector multiplication.
- *
- * @param x The input vector.
- * @param y The output vector.
- * @param full Whether the matrix is of the form (FF^*\/F^*F) or just (F\/F^*).
- *
- * This function performs transpose matrix-vector multiplication using the initialized matrix.
- */
-
 void Matrix::transpose_matvec(Vector &x, Vector &y, bool full)
 {
     if (!initialized)

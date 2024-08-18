@@ -33,7 +33,7 @@ private:
 public:
     /**
      * @brief Constructor for the Comm class.
-     * @param comm The MPI communicator.
+     * @param comm The MPI global communicator.
      * @param proc_rows Number of process rows.
      * @param proc_cols Number of process columns.
      */
@@ -62,7 +62,7 @@ public:
     } // Copy constructor
 
     /**
-     * @brief Destructor for the Comm class.
+     * @brief Destructor for the Comm class. Destroys cuBLAS handle and NCCL/MPI communicators.
      */
     ~Comm();
 

@@ -1,13 +1,6 @@
 #include "Vector.hpp"
 
-/*
-    Constructor for Vector class
-    @param comm Comm object for the communicator
-    @param num_blocks Number of blocks in the vector
-    @param block_size Size of each block in the vector
 
-    Initializes the vector object with the given number of blocks and block size.
-*/
 Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col) : comm(comm), num_blocks(num_blocks), block_size(block_size), row_or_col(row_or_col)
 {
     // Initialize the vector data structures. If row_or_col is "row", then the vector is a row vector, otherwise it is a column vector.
@@ -32,11 +25,6 @@ Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std
 
 }
 
-/*
-    Copy constructor for Vector class
-    @param vec Vector object to copy
-    @param deep_copy Whether to perform a deep copy of the vector data or just allocate memory.
-*/
 
 Vector::Vector(Vector& vec, bool deep_copy) : comm(vec.comm), num_blocks(vec.num_blocks), block_size(vec.block_size), row_or_col(vec.row_or_col)
 {
@@ -58,11 +46,6 @@ Vector::Vector(Vector& vec, bool deep_copy) : comm(vec.comm), num_blocks(vec.num
 
 
 
-/*
-    Destructor for Vector class
-
-    Frees the memory allocated for the vector.
-*/
 
 Vector::~Vector()
 {
@@ -83,11 +66,7 @@ void Vector::init_vec()
 }
 
 
-/*
-    Initializes the vector with zeros.
 
-    Sets all elements of the vector to zero.
-*/
 
 void Vector::init_vec_zeros()
 {
@@ -99,11 +78,6 @@ void Vector::init_vec_zeros()
     initialized = true;
 }
 
-/*
-    Initializes the vector with ones.
-
-    Sets all elements of the vector to one.
-*/
 
 void Vector::init_vec_ones()
 {
@@ -126,9 +100,7 @@ void Vector::init_vec_ones()
 }
 
 
-/*
-    Prints the vector to stdout.
-*/
+
 
 void Vector::print(std::string name)
 {

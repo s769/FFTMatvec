@@ -26,7 +26,7 @@ To build the documentation, the following dependencies are required:
 - [MkDoxy](https://github.com/JakubAndrysek/MkDoxy)
 - [Doxygen](https://www.doxygen.nl/index.html)
 
-Then, build the documentation by running `mkdocs build` or `mkdocs serve` in the `docs` directory. The built documentation will be in the `site` directory.
+Then, build the documentation by running `mkdocs build` or `mkdocs serve`. When running `mkdocs build`, the built documentation will be in the `site` directory.
 
 
 
