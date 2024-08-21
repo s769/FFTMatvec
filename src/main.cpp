@@ -55,7 +55,7 @@ void configureParser(cli::Parser& parser)
 /********/
 int main(int argc, char** argv)
 {
-    int world_rank, world_size, provided;
+    int world_rank=0, world_size, provided;
     // Initialize the MPI environment (OpenMP is used so we need to use MPI_Init_thread)
     MPICHECK(MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided));
 
