@@ -72,6 +72,8 @@ int main(int argc, char** argv)
         configureParser(parser);
         parser.run_and_exit_if_error();
 
+        
+
         MPICHECK(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
         MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &world_size));
 
