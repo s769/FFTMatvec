@@ -3,15 +3,15 @@
 #include "Matrix.hpp"
 
 
-Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size)
+Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size) : comm(comm), num_cols(num_cols), num_rows(num_rows), block_size(block_size), padded_size(2 * block_size)
 {
     // Initialize the matrix data structures
 
-    fft_int_t n[1] = {(fft_int_t)block_size};
+    fft_int_t n[1] = {(fft_int_t)padded_size};
     int rank = 1;
 
-    fft_int_t idist = block_size;
-    fft_int_t odist = (block_size / 2 + 1);
+    fft_int_t idist = padded_size;
+    fft_int_t odist = (padded_size / 2 + 1);
 
     fft_int_t inembed[] = {0};
     fft_int_t onembed[] = {0};
@@ -33,14 +33,14 @@ Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigne
 
     cufftSafeCall(cufftSetStream(forward_plan, s));
     cufftSafeCall(cufftSetStream(inverse_plan, s));
-    gpuErrchk(cudaMalloc((void **)&(col_vec_pad), (size_t)num_cols * block_size * sizeof(double)));
-    gpuErrchk(cudaMalloc((void **)&(col_vec_freq), sizeof(Complex) * (size_t)(block_size / 2 + 1) * num_cols));
+    gpuErrchk(cudaMalloc((void **)&(col_vec_pad), (size_t)num_cols * padded_size * sizeof(double)));
+    gpuErrchk(cudaMalloc((void **)&(col_vec_freq), sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols));
 
-    gpuErrchk(cudaMalloc((void **)&(col_vec_freq_tosi), sizeof(Complex) * (size_t)(block_size / 2 + 1) * num_cols));
-    gpuErrchk(cudaMalloc((void **)&(row_vec_freq_tosi), (size_t)sizeof(Complex) * (block_size / 2 + 1) * num_rows));
+    gpuErrchk(cudaMalloc((void **)&(col_vec_freq_tosi), sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols));
+    gpuErrchk(cudaMalloc((void **)&(row_vec_freq_tosi), (size_t)sizeof(Complex) * (padded_size / 2 + 1) * num_rows));
 
-    gpuErrchk(cudaMalloc((void **)&(row_vec_freq), (size_t)sizeof(Complex) * (block_size / 2 + 1) * num_rows));
-    gpuErrchk(cudaMalloc((void **)&(row_vec_pad), (size_t)sizeof(double) * block_size * num_rows)); // num_cols * num_rows));
+    gpuErrchk(cudaMalloc((void **)&(row_vec_freq), (size_t)sizeof(Complex) * (padded_size / 2 + 1) * num_rows));
+    gpuErrchk(cudaMalloc((void **)&(row_vec_pad), (size_t)sizeof(double) * padded_size * num_rows)); // num_cols * num_rows));
 
 #if !FFT_64
     cufftSafeCall(cufftPlanMany(&(forward_plan_conj), rank, n, inembed, istride, idist, onembed, ostride, odist, CUFFT_D2Z, num_rows));
@@ -56,12 +56,12 @@ Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigne
 
     int max_block_len = (num_cols > num_rows) ? num_cols : num_rows;
 
-    gpuErrchk(cudaMalloc((void **)&(res_pad), sizeof(double) * (size_t)block_size * max_block_len));
+    gpuErrchk(cudaMalloc((void **)&(res_pad), sizeof(double) * (size_t)padded_size * max_block_len));
 
 
-    gpuErrchk(cudaMalloc((void **)&(col_vec_unpad), (size_t)num_cols * block_size / 2 * sizeof(double)));
+    gpuErrchk(cudaMalloc((void **)&(col_vec_unpad), (size_t)num_cols * padded_size / 2 * sizeof(double)));
 
-    gpuErrchk(cudaMalloc((void **)&(row_vec_unpad), sizeof(double) * (size_t)block_size / 2 * num_rows));
+    gpuErrchk(cudaMalloc((void **)&(row_vec_unpad), sizeof(double) * (size_t)padded_size / 2 * num_rows));
 }
 
 
@@ -92,23 +92,23 @@ Matrix::~Matrix()
 
 void Matrix::init_mat_ones()
 {
-    double *h_mat = new double[(size_t)block_size * num_cols * num_rows];
+    double *h_mat = new double[(size_t)padded_size * num_cols * num_rows];
 #pragma omp parallel for collapse(3)
     for (int i = 0; i < num_rows; i++)
     {
         for (int j = 0; j < num_cols; j++)
         {
-            for (int k = 0; k < block_size; k++)
+            for (int k = 0; k < padded_size; k++)
             {
-                // set to 1 if k < block_size / 2, 0 otherwise.
-                h_mat[(size_t)i * num_cols * block_size + (size_t)j * block_size + k] = (k < block_size / 2) ? 1.0 : 0.0;
+                // set to 1 if k < padded_size / 2, 0 otherwise.
+                h_mat[(size_t)i * num_cols * padded_size + (size_t)j * padded_size + k] = (k < padded_size / 2) ? 1.0 : 0.0;
             }
         }
     }
 
     cublasHandle_t cublasHandle = comm.get_cublasHandle();
 
-    Matvec::setup(&mat_freq_tosi, h_mat, block_size, num_cols, num_rows, cublasHandle);
+    Matvec::setup(&mat_freq_tosi, h_mat, padded_size, num_cols, num_rows, cublasHandle);
     delete[] h_mat;
     initialized = true;
 }
@@ -160,9 +160,9 @@ void Matrix::matvec(Vector &x, Vector &y, bool full)
 
 
     if (full)
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, true, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, padded_size, num_cols, num_rows, false, true, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
     else
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, false, false, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, padded_size, num_cols, num_rows, false, false, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan, forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq, col_vec_freq_tosi, row_vec_freq_tosi, cublasHandle, mat_freq_tosi_other, res_pad);
     gpuErrchk(cudaStreamSynchronize(s));
 
 
@@ -215,9 +215,9 @@ void Matrix::transpose_matvec(Vector &x, Vector &y, bool full)
 
     
     if (full)
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, true, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, padded_size, num_cols, num_rows, true, true, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
     else
-        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, block_size, num_cols, num_rows, true, false, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
+        Matvec::compute_matvec(out_vec, in_vec, mat_freq_tosi, padded_size, num_cols, num_rows, true, false, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj, inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_tosi, col_vec_freq_tosi, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_tosi_other, res_pad);
     gpuErrchk(cudaStreamSynchronize(s));
 
     if (out_color == 0)

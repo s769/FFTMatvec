@@ -43,7 +43,7 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
     int proc_rows = comm.get_proc_rows();
     int proc_cols = comm.get_proc_cols();
 
-    int Nt = mat.get_block_size() / 2;
+    int Nt = mat.get_block_size();
     int nm = mat.get_num_cols();
     int nd = mat.get_num_rows();
 

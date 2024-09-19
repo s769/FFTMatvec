@@ -30,16 +30,16 @@ void Utils::get_host_name(char* hostname, int maxlen)
 
 
 
-void Utils::print_vec(double* vec, int len, int unpad_size, std::string name)
+void Utils::print_vec(double* vec, int len, int block_size, std::string name)
 {
     double* h_vec;
-    h_vec = (double*)malloc(len * unpad_size * sizeof(double));
-    gpuErrchk(cudaMemcpy(h_vec, vec, len * unpad_size * sizeof(double), cudaMemcpyDeviceToHost));
+    h_vec = (double*)malloc(len * block_size * sizeof(double));
+    gpuErrchk(cudaMemcpy(h_vec, vec, len * block_size * sizeof(double), cudaMemcpyDeviceToHost));
     printf("%s:\n", name.c_str());
 
     for (int i = 0; i < len; i++) {
-        for (int j = 0; j < unpad_size; j++) {
-            printf("block: %d, t: %d, val: %f\n", i, j, h_vec[i * unpad_size + j]);
+        for (int j = 0; j < block_size; j++) {
+            printf("block: %d, t: %d, val: %f\n", i, j, h_vec[i * block_size + j]);
         }
         printf("\n");
     }
@@ -47,7 +47,7 @@ void Utils::print_vec(double* vec, int len, int unpad_size, std::string name)
 }
 
 void Utils::print_vec_mpi(
-    double* vec, int len, int unpad_size, int rank, int world_size, std::string name)
+    double* vec, int len, int block_size, int rank, int world_size, std::string name)
 {
     if (rank == 0) {
         printf("%s:\n", name.c_str());
@@ -55,25 +55,25 @@ void Utils::print_vec_mpi(
     for (int r = 0; r < world_size; r++) {
         if (rank == r) {
             printf("Rank: %d\n", r);
-            print_vec(vec, len, unpad_size);
+            print_vec(vec, len, block_size);
         }
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
     }
 }
 
-void Utils::print_vec_complex(Complex* vec, int len, int unpad_size, std::string name)
+void Utils::print_vec_complex(Complex* vec, int len, int block_size, std::string name)
 {
 
     Complex* h_vec;
-    h_vec = (Complex*)malloc(len * unpad_size * sizeof(Complex));
-    gpuErrchk(cudaMemcpy(h_vec, vec, len * unpad_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+    h_vec = (Complex*)malloc(len * block_size * sizeof(Complex));
+    gpuErrchk(cudaMemcpy(h_vec, vec, len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
 
     printf("%s:\n", name.c_str());
 
     for (int i = 0; i < len; i++) {
-        for (int j = 0; j < unpad_size; j++) {
-            printf("block: %d, t: %d, val: %f + %f i\n", i, j, h_vec[i * unpad_size + j].x,
-                h_vec[i * unpad_size + j].y);
+        for (int j = 0; j < block_size; j++) {
+            printf("block: %d, t: %d, val: %f + %f i\n", i, j, h_vec[i * block_size + j].x,
+                h_vec[i * block_size + j].y);
         }
         printf("\n");
     }
@@ -273,7 +273,7 @@ void Utils::print_times(int reps, bool table)
 }
 
 void Utils::swap_axes(
-    Complex* d_in, Complex* d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
+    Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size, cudaStream_t s)
 {
     // use cuTensor to swap axes d_in[t,m,d] -> d_out[d,m,t] (column-major)
 
@@ -289,8 +289,8 @@ void Utils::swap_axes(
 
     int nmode = 3;
 
-    std::vector<int64_t> extentA = { block_size, num_cols, num_rows };
-    std::vector<int64_t> extentB = { num_rows, num_cols, block_size };
+    std::vector<int64_t> extentA = { padded_size, num_cols, num_rows };
+    std::vector<int64_t> extentB = { num_rows, num_cols, padded_size };
 
     cutensorHandle_t handle;
     cutensorSafeCall(cutensorCreate(&handle));

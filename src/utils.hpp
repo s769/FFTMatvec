@@ -43,10 +43,10 @@ void get_host_name(char* hostname, int maxlen);
  *
  * @param vec Pointer to the vector.
  * @param len The length of the vector.
- * @param unpad_size The size of the unpadded vector.
+ * @param block_size The size of the unpadded vector.
  * @param name (Optional) The name of the vector. Defaults to "Vector".
  */
-void print_vec(double* vec, int len, int unpad_size, std::string name = "Vector");
+void print_vec(double* vec, int len, int block_size, std::string name = "Vector");
 
 /**
  * @brief Prints a complex vector.
@@ -55,10 +55,10 @@ void print_vec(double* vec, int len, int unpad_size, std::string name = "Vector"
  *
  * @param vec The complex vector to be printed.
  * @param len The length of the vector.
- * @param unpad_size The size of the unpadded vector.
+ * @param block_size The size of the unpadded vector.
  * @param name The name of the vector (optional).
  */
-void print_vec_complex(Complex* vec, int len, int unpad_size, std::string name = "Vector");
+void print_vec_complex(Complex* vec, int len, int block_size, std::string name = "Vector");
 
 /**
  * @brief Prints a vector using MPI.
@@ -66,20 +66,20 @@ void print_vec_complex(Complex* vec, int len, int unpad_size, std::string name =
  * This function prints the elements of a vector using MPI. It takes the following parameters:
  * - `vec`: A pointer to the vector to be printed.
  * - `len`: The length of the vector.
- * - `unpad_size`: The size of the unpadded vector.
+ * - `block_size`: The size of the unpadded vector.
  * - `rank`: The rank of the current process.
  * - `world_size`: The total number of processes.
  * - `name`: (Optional) The name of the vector (default is "Vector").
  *
  * @param vec A pointer to the vector to be printed.
  * @param len The length of the vector.
- * @param unpad_size The size of the unpadded vector.
+ * @param block_size The size of the unpadded vector.
  * @param rank The rank of the current process.
  * @param world_size The total number of processes.
  * @param name (Optional) The name of the vector (default is "Vector").
  */
 void print_vec_mpi(
-    double* vec, int len, int unpad_size, int rank, int world_size, std::string name = "Vector");
+    double* vec, int len, int block_size, int rank, int world_size, std::string name = "Vector");
 
 /**
  * @brief Print the times for the different parts of the code.
@@ -124,10 +124,10 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
  * @param d_out Pointer to the output matrix.
  * @param num_cols The number of block columns in the matrix.
  * @param num_rows The number of block rows in the matrix.
- * @param block_size The size of each block. Note: this is used inside the matvec setup function, so it is called with Nt + 1 and not 2 * Nt.
+ * @param padded_size The size of each block. Note: this is used inside the matvec setup function, so it is called with Nt + 1 and not 2 * Nt.
  * @param s The CUDA stream to use for the operation (optional).
  */
-void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int block_size, cudaStream_t s = nullptr);
+void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size, cudaStream_t s = nullptr);
 
 } // namespace Utils
 

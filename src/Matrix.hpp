@@ -21,7 +21,8 @@ private:
     Comm& comm; /**< Reference to the communication object. */
     Complex *mat_freq_tosi; /**< Pointer to the matrix frequency in TOSI format. */
     Complex *mat_freq_tosi_other=nullptr; /**< Pointer to the other matrix frequency in TOSI format. */
-    unsigned int block_size; /**< The block size of the matrix. */
+    unsigned int padded_size; /**< The padded block size of the matrix. */
+    unsigned int block_size; /**< The unpadded block size of the matrix. */
     unsigned int num_cols; /**< The number of columns in the matrix. */
     unsigned int num_rows; /**< The number of rows in the matrix. */
     double * col_vec_unpad; /**< Pointer to the unpadded column vector. */
@@ -46,7 +47,7 @@ public:
      * @param comm The communication object (passed as reference).
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
-     * @param block_size The block size of the matrix.
+     * @param block_size The block size of the matrix without padding.
      */
     Matrix(Comm& comm, unsigned int num_cols, unsigned int num_rows, unsigned int block_size);
 
@@ -101,7 +102,8 @@ public:
     Comm& get_comm() { return comm; } /**< Returns reference to the communication object. */
     unsigned int get_num_cols() { return num_cols; } /**< Returns the number of columns in the matrix. */
     unsigned int get_num_rows() { return num_rows; } /**< Returns the number of rows in the matrix. */
-    unsigned int get_block_size() { return block_size; } /**< Returns the block size of the matrix. */
+    unsigned int get_padded_size() { return padded_size; } /**< Returns the padded block size of the matrix. */
+    unsigned int get_block_size() { return block_size; } /**< Returns the unpadded block size of the matrix. */
     bool is_initialized() { return initialized; } /**< Returns true if the matrix is initialized, false otherwise. */
     bool get_has_mat_freq_tosi_other() { return has_mat_freq_tosi_other; } /**< Returns true if the other matrix frequency in TOSI format exists, false otherwise. */
 

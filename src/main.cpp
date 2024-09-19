@@ -36,12 +36,14 @@ bool warmup;
 
 void configureParser(cli::Parser& parser)
 {
-    parser.set_optional<int>("pr", "proc_rows", 1, "Number of processor rows (proc_rows x proc_cols = num_mpi_ranks)");
-    parser.set_optional<int>("pc", "proc_cols", 1, "Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)");
+    parser.set_optional<int>(
+        "pr", "proc_rows", 1, "Number of processor rows (proc_rows x proc_cols = num_mpi_ranks)");
+    parser.set_optional<int>("pc", "proc_cols", 1,
+        "Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)");
     parser.set_optional<bool>("g", "glob_inds", false, "Use global indices");
     parser.set_optional<int>("Nm", "glob_cols", 10, "Number of global columns");
     parser.set_optional<int>("Nd", "glob_rows", 5, "Number of global rows");
-    parser.set_optional<int>("Nt", "unpad_size", 7, "Number of time points");
+    parser.set_optional<int>("Nt", "block_size", 7, "Number of time points");
     parser.set_optional<int>("nm", "num_cols", 3, "Number of local columns");
     parser.set_optional<int>("nd", "num_rows", 2, "Number of local rows");
     parser.set_optional<bool>("v", "verbose", false, "Print vectors");
@@ -55,7 +57,7 @@ void configureParser(cli::Parser& parser)
 /********/
 int main(int argc, char** argv)
 {
-    int world_rank=0, world_size, provided;
+    int world_rank = 0, world_size, provided;
     // Initialize the MPI environment (OpenMP is used so we need to use MPI_Init_thread)
     MPICHECK(MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided));
 
@@ -72,8 +74,6 @@ int main(int argc, char** argv)
         configureParser(parser);
         parser.run_and_exit_if_error();
 
-        
-
         MPICHECK(MPI_Comm_rank(MPI_COMM_WORLD, &world_rank));
         MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &world_size));
 
@@ -84,8 +84,9 @@ int main(int argc, char** argv)
             if (proc_rows == 1 && proc_cols == 1) {
                 proc_rows = 1;
                 proc_cols = world_size;
-                fprintf(stderr, "Warning: Proc Rows x Proc Cols must equal the total number of MPI "
-                                "ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead\n",
+                fprintf(stderr,
+                    "Warning: Proc Rows x Proc Cols must equal the total number of MPI "
+                    "ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead\n",
                     proc_rows, proc_cols, proc_rows * proc_cols, world_size, proc_rows, proc_cols,
                     proc_rows * proc_cols);
             } else if (world_rank == 0) {
@@ -103,7 +104,7 @@ int main(int argc, char** argv)
 
         auto glob_inds = parser.get<bool>("g");
 
-        auto unpad_size = parser.get<int>("Nt");
+        auto block_size = parser.get<int>("Nt");
         auto glob_num_cols = parser.get<int>("Nm");
         auto glob_num_rows = parser.get<int>("Nd");
         auto num_cols = parser.get<int>("nm");
@@ -137,12 +138,11 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        unsigned int size = 2 * unpad_size;
 
         if (world_rank == 0) {
             printf("Proc Rows: %d, Proc Cols: %d\n", proc_rows, proc_cols);
             printf("Global Rows: %d, Global Cols: %d\n", glob_num_rows, glob_num_cols);
-            printf("Unpad Size: %d\n", unpad_size);
+            printf("Block Size: %d\n", block_size);
         }
 
 #if TIME_MPI
@@ -164,7 +164,7 @@ int main(int argc, char** argv)
         t_list[ProfilerTimesFull::SETUP].start();
 #endif
         // Create matrices and vectors
-        Matrix F(comm, num_cols, num_rows, size);
+        Matrix F(comm, num_cols, num_rows, block_size);
 
         if (world_rank == 0)
             printf("Created Matrices\n");
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
         if (world_rank == 0)
             printf("Initialized Matrices\n");
 
-        Vector in_F(comm, num_cols, size, "col"), in_FS(comm, num_rows, size, "row");
+        Vector in_F(comm, num_cols, block_size, "col"), in_FS(comm, num_rows, block_size, "row");
         Vector out_F(in_FS), out_FS(in_F);
 
         if (world_rank == 0)
@@ -195,6 +195,22 @@ int main(int argc, char** argv)
         if (print) {
             in_F.print("in_F");
             in_FS.print("in_FS");
+        }
+
+
+        double in_F_norm_2 = in_F.norm(2);
+        double in_FS_norm_2 = in_FS.norm(2);
+        double in_F_norm_1 = in_F.norm(1);
+        double in_FS_norm_1 = in_FS.norm(1);
+        double in_F_norm_inf = in_F.norm(-1);
+        double in_FS_norm_inf = in_FS.norm(-1);
+        if (world_rank == 0){
+            std::cout << "||in_F||_2 = " << in_F_norm_2 << std::endl;
+            std::cout << "||in_FS||_2 = " << in_FS_norm_2 << std::endl;
+            std::cout << "||in_F||_1 = " << in_F_norm_1 << std::endl;
+            std::cout << "||in_FS||_1 = " << in_FS_norm_1 << std::endl;
+            std::cout << "||in_F||_inf = " << in_F_norm_inf << std::endl;
+            std::cout << "||in_FS||_inf = " << in_FS_norm_inf << std::endl;
         }
 
         if (world_rank == 0)
@@ -235,9 +251,29 @@ int main(int argc, char** argv)
             out_FS.print("out_FS");
         }
 
+        double out_F_norm_2 = out_F.norm(2);
+        double out_FS_norm_2 = out_FS.norm(2);
+        double out_F_norm_1 = out_F.norm(1);
+        double out_FS_norm_1 = out_FS.norm(1);
+        double out_F_norm_inf = out_F.norm(-1);
+        double out_FS_norm_inf = out_FS.norm(-1);
+        double dot_inF_outFS = in_F.dot(out_FS);
+        double dot_inFS_outF = in_FS.dot(out_F);
+
+        if (world_rank == 0){
+            std::cout << "||out_F||_2 = " << out_F_norm_2 << std::endl;
+            std::cout << "||out_FS||_2 = " << out_FS_norm_2 << std::endl;
+            std::cout << "||out_F||_1 = " << out_F_norm_1 << std::endl;
+            std::cout << "||out_FS||_1 = " << out_FS_norm_1 << std::endl;
+            std::cout << "||out_F||_inf = " << out_F_norm_inf << std::endl;
+            std::cout << "||out_FS||_inf = " << out_FS_norm_inf << std::endl;
+            std::cout << "<in_F, out_FS> = " << dot_inF_outFS << std::endl;
+            std::cout << "<in_FS, out_F> = " << dot_inFS_outF << std::endl;
+        }
+
 #if !TIME_MPI
 
-        F.matvec(in_F, out_FS, true);
+            F.matvec(in_F, out_FS, true);
         F.transpose_matvec(in_FS, out_F, true);
 
         if (print) {

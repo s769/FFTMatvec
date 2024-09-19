@@ -26,12 +26,12 @@ namespace Matvec {
      * 
      * @param d_mat_freq Pointer to the matrix in device memory.
      * @param h_mat Pointer to the matrix in host memory.
-     * @param block_size The block size for matrix operations.
+     * @param padded_size The block size for matrix operations.
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
      * @param cublasHandle The handle for the cuBLAS library.
      */
-    void setup(Complex** d_mat_freq, const double* const h_mat, const unsigned int block_size,
+    void setup(Complex** d_mat_freq, const double* const h_mat, const unsigned int padded_size,
         const unsigned int num_cols, const unsigned int num_rows, cublasHandle_t cublasHandle);
 
     /**
@@ -73,7 +73,7 @@ namespace Matvec {
      * @param out_vec Pointer to the output vector.
      * @param in_vec Pointer to the input vector.
      * @param mat_freq_tosi Pointer to the matrix in frequency domain (transpose of input, scaled).
-     * @param block_size The block size for matrix operations.
+     * @param padded_size The block size for matrix operations.
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
      * @param conjugate Flag indicating whether to perform conjugate multiplication.
@@ -97,7 +97,7 @@ namespace Matvec {
      * @param mat_freq_tosi_other Pointer to the matrix in frequency domain (transpose of input, scaled) on other devices.
      * @param res_pad Pointer to the padded result vector.
      */
-    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int block_size,
+    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int padded_size,
         const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
         const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
         cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,

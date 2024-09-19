@@ -8,19 +8,19 @@ enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 
 
 
-void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const unsigned int block_size,
+void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const unsigned int padded_size,
     const unsigned int num_cols, const unsigned int num_rows, cublasHandle_t cublasHandle)
 {
 
     double* d_mat;
     cufftHandle forward_plan_mat;
-    const size_t mat_len = (size_t)block_size * num_cols * num_rows * sizeof(double);
+    const size_t mat_len = (size_t)padded_size * num_cols * num_rows * sizeof(double);
 
-    fft_int_t n[1] = { (fft_int_t)block_size };
+    fft_int_t n[1] = { (fft_int_t)padded_size };
     int rank = 1;
 
-    fft_int_t idist = block_size;
-    fft_int_t odist = (block_size / 2 + 1);
+    fft_int_t idist = padded_size;
+    fft_int_t odist = (padded_size / 2 + 1);
 
     fft_int_t inembed[] = { 0 };
     fft_int_t onembed[] = { 0 };
@@ -45,55 +45,55 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
     gpuErrchk(cudaMalloc((void**)&d_mat, mat_len));
     gpuErrchk(cudaMemcpy(d_mat, h_mat, mat_len, cudaMemcpyHostToDevice));
     gpuErrchk(cudaMalloc(
-        (void**)mat_freq_tosi, (size_t)(block_size / 2 + 1) * num_cols * num_rows * sizeof(Complex)));
+        (void**)mat_freq_tosi, (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(Complex)));
 
 #if !ROW_SETUP
     cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_tosi));
 #else
     for (int i = 0; i < num_rows; i++) {
-        cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat + (size_t)i * block_size * num_cols,
-            *mat_freq_tosi + (size_t)i * num_cols * (block_size / 2 + 1)));
+        cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat + (size_t)i * padded_size * num_cols,
+            *mat_freq_tosi + (size_t)i * num_cols * (padded_size / 2 + 1)));
     }
 #endif
 
     cufftSafeCall(cufftDestroy(forward_plan_mat));
     gpuErrchk(cudaFree(d_mat));
 
-    double scale = 1.0 / block_size;
+    double scale = 1.0 / padded_size;
 #if !FFT_64
-    cublasSafeCall(cublasZdscal(cublasHandle, (size_t)(block_size / 2 + 1) * num_cols * num_rows,
+    cublasSafeCall(cublasZdscal(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
         &scale, *mat_freq_tosi, 1));
 #else
-    cublasSafeCall(cublasZdscal_64(cublasHandle, (size_t)(block_size / 2 + 1) * num_cols * num_rows,
+    cublasSafeCall(cublasZdscal_64(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
         &scale, *mat_freq_tosi, 1));
 #endif
 
     Complex* d_mat_freq_trans;
     gpuErrchk(cudaMalloc(
-        (void**)&d_mat_freq_trans, sizeof(Complex) * (size_t)(block_size / 2 + 1) * num_cols * num_rows));
+        (void**)&d_mat_freq_trans, sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols * num_rows));
     if (num_cols > 1 && num_rows > 1) {
-        Utils::swap_axes(*mat_freq_tosi, d_mat_freq_trans, num_cols, num_rows, (block_size / 2 + 1));
+        Utils::swap_axes(*mat_freq_tosi, d_mat_freq_trans, num_cols, num_rows, (padded_size / 2 + 1));
     } else {
         cuDoubleComplex aa({ 1, 0 });
         cuDoubleComplex bb({ 0, 0 });
         if (num_rows == 1) {
 #if !FFT_64
             cublasSafeCall(
-                cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_cols, (block_size / 2 + 1), &aa,
-                    *mat_freq_tosi, (block_size / 2 + 1), &bb, NULL, num_cols, d_mat_freq_trans, num_cols));
+                cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_cols, (padded_size / 2 + 1), &aa,
+                    *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_cols, d_mat_freq_trans, num_cols));
 #else
             cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_cols,
-                (block_size / 2 + 1), &aa, *mat_freq_tosi, (block_size / 2 + 1), &bb, NULL, num_cols,
+                (padded_size / 2 + 1), &aa, *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_cols,
                 d_mat_freq_trans, num_cols));
 #endif
         } else {
 #if !FFT_64
             cublasSafeCall(
-                cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_rows, (block_size / 2 + 1), &aa,
-                    *mat_freq_tosi, (block_size / 2 + 1), &bb, NULL, num_rows, d_mat_freq_trans, num_rows));
+                cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_rows, (padded_size / 2 + 1), &aa,
+                    *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_rows, d_mat_freq_trans, num_rows));
 #else
             cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_rows,
-                (block_size / 2 + 1), &aa, *mat_freq_tosi, (block_size / 2 + 1), &bb, NULL, num_rows,
+                (padded_size / 2 + 1), &aa, *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_rows,
                 d_mat_freq_trans, num_rows));
 #endif
         }
@@ -104,7 +104,7 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
 }
 
 void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Complex* const d_mat_freq,
-    const unsigned int block_size, const unsigned int num_cols, const unsigned int num_rows,
+    const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
     const bool conjugate, const bool unpad, const unsigned int device, cufftHandle forward_plan,
     cufftHandle inverse_plan, double* const out_vec_pad, Complex* const in_vec_freq,
     Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi, Complex* const out_vec_freq,
@@ -134,13 +134,13 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
     cuDoubleComplex beta({ 0, 0 });
 #if !FFT_64
     cublasSafeCall(
-        cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (block_size / 2 + 1), &alpha,
-            in_vec_freq, (block_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
+        cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (padded_size / 2 + 1), &alpha,
+            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
 
 #else
     cublasSafeCall(
-        cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (block_size / 2 + 1), &alpha,
-            in_vec_freq, (block_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
+        cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (padded_size / 2 + 1), &alpha,
+            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
 #endif
 
 #if TIME_MPI
@@ -157,12 +157,12 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 #if !FFT_64
     cublasSafeCall(cublasZgemvStridedBatched(cublasHandle, transa, num_rows, num_cols, &alpha,
         d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_tosi, 1, vec_in_len, &beta,
-        out_vec_freq_tosi, 1, vec_out_len, (block_size / 2 + 1)));
+        out_vec_freq_tosi, 1, vec_out_len, (padded_size / 2 + 1)));
 
 #else
     cublasSafeCall(cublasZgemvStridedBatched_64(cublasHandle, transa, num_rows, num_cols, &alpha,
         d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_tosi, 1, vec_in_len, &beta,
-        out_vec_freq_tosi, 1, vec_out_len, (block_size / 2 + 1)));
+        out_vec_freq_tosi, 1, vec_out_len, (padded_size / 2 + 1)));
 #endif
 
 #if TIME_MPI
@@ -175,13 +175,13 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 #endif
 
 #if !FFT_64
-    cublasSafeCall(cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (block_size / 2 + 1), vec_out_len,
-        &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (block_size / 2 + 1), out_vec_freq,
-        (block_size / 2 + 1)));
+    cublasSafeCall(cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1), vec_out_len,
+        &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (padded_size / 2 + 1), out_vec_freq,
+        (padded_size / 2 + 1)));
 #else
-    cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (block_size / 2 + 1),
-        vec_out_len, &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (block_size / 2 + 1),
-        out_vec_freq, (block_size / 2 + 1)));
+    cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1),
+        vec_out_len, &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (padded_size / 2 + 1),
+        out_vec_freq, (padded_size / 2 + 1)));
 #endif
 
 #if TIME_MPI
@@ -203,7 +203,7 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
     (*tl)[ProfilerTimes::UNPAD].start();
 #endif
 
-    UtilKernels::unpad_repad_vector(out_vec_pad, out_vec, vec_out_len, block_size, unpad, s);
+    UtilKernels::unpad_repad_vector(out_vec_pad, out_vec, vec_out_len, padded_size, unpad, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -211,7 +211,7 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 #endif
 }
 
-void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int block_size,
+void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int padded_size,
     const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
     const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
     cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
@@ -240,7 +240,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
     ncclComm_t comm = (conjugate) ? nccl_row_comm : nccl_col_comm;
     ncclComm_t comm2 = (conjugate) ? nccl_col_comm : nccl_row_comm;
     NCCLCHECK(ncclBroadcast(
-        (const void*)in_vec, (void*)in_vec, (size_t)vec_in_len * block_size / 2, ncclDouble, 0, comm, s));
+        (const void*)in_vec, (void*)in_vec, (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm, s));
     gpuErrchk(cudaStreamSynchronize(s));
 #if TIME_MPI
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
@@ -250,7 +250,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 #if TIME_MPI
     (*tl)[ProfilerTimes::PAD].start();
 #endif
-    UtilKernels::pad_vector(in_vec, in_vec_pad, vec_in_len, block_size, s);
+    UtilKernels::pad_vector(in_vec, in_vec_pad, vec_in_len, padded_size, s);
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
     (*tl)[ProfilerTimes::PAD].stop();
@@ -273,7 +273,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
 
     double* res_vec = (full) ? res_pad : out_vec;
 
-    local_matvec(res_vec, in_vec_pad, mat_freq_tosi1, block_size, num_cols, num_rows, conjugate, !(full),
+    local_matvec(res_vec, in_vec_pad, mat_freq_tosi1, padded_size, num_cols, num_rows, conjugate, !(full),
         device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_tosi, in_vec_freq_tosi, out_vec_freq, s,
         cublasHandle);
 #if TIME_MPI
@@ -285,7 +285,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * block_size / 2,
+        NCCLCHECK(ncclReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size / 2,
             ncclDouble, ncclSum, 0, comm2, s));
         gpuErrchk(cudaStreamSynchronize(s));
 
@@ -302,7 +302,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclAllReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * block_size,
+        NCCLCHECK(ncclAllReduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size,
             ncclDouble, ncclSum, comm2, s));
         gpuErrchk(cudaStreamSynchronize(s));
 #if TIME_MPI
@@ -316,7 +316,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
         (*tl2)[ProfilerTimes::TOT].start();
 #endif
 
-        local_matvec(out_vec, res_vec, mat_freq_tosi2, block_size, num_cols, num_rows, !(conjugate), true,
+        local_matvec(out_vec, res_vec, mat_freq_tosi2, padded_size, num_cols, num_rows, !(conjugate), true,
             device, forward_plan_conj, inverse_plan_conj, in_vec_pad, out_vec_freq, in_vec_freq_tosi,
             out_vec_freq_tosi, in_vec_freq, s, cublasHandle);
 
@@ -325,7 +325,7 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl2)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclReduce((const void*)out_vec, (void*)out_vec, (size_t)vec_in_len * block_size / 2,
+        NCCLCHECK(ncclReduce((const void*)out_vec, (void*)out_vec, (size_t)vec_in_len * padded_size / 2,
             ncclDouble, ncclSum, 0, comm, s));
         gpuErrchk(cudaStreamSynchronize(s));
 
