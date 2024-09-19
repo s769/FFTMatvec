@@ -11,6 +11,7 @@
 
 #include "shared.hpp"
 #include "utils.hpp"
+#include "util_kernels.hpp"
 
 /**
  * @namespace Matvec

@@ -25,10 +25,6 @@ cmake --build build
 
 **Note**: the `-DCUTENSOR_ROOT` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTENSOR 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTENSOR 2.x library must be provided to the build command.
 
-For systems that have compiler wrappers (`cc`, `CC`, `FC`, etc.), use `CC=$(which cc) CXX=$(which CC) FC=$(which ftn) cmake ...`. For some of these systems (e.g. Perlmutter), where the variables such as `MPI_C_LIBRARIES` and `HDF5_INCLUDE_DIRS` are not automatically set, you need to add them manually via
-```bash
-CC=$(which cc) CXX=$(which CC) FC=$(which ftn) cmake ... -DMPI_INCLUDE=/path/to/mpi/include -DMPI_LIBRARIES=/path/to/mpi/lib/ -DHDF5_INCLUDE_DIRS=/path/to/hdf5/include -DHDF5_LIBRARIES=/path/to/hdf5/lib
-```
 
 To build the documentation, the following dependencies are required:
 

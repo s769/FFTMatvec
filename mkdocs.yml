@@ -43,6 +43,7 @@ nav:
     - "Namespaces":
         - "Matvec": "FFTMatvec/namespaceMatvec.md"
         - "Utils": "FFTMatvec/namespaceUtils.md"
+        - "UtilKernels": "FFTMatvec/namespaceUtilKernels.md"
         - "Tester": "FFTMatvec/namespaceTester.md"
   - LICENSE: "license.md"
 
