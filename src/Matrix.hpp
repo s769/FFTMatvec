@@ -25,6 +25,8 @@ private:
     unsigned int block_size; /**< The unpadded block size of the matrix. */
     unsigned int num_cols; /**< The number of columns in the matrix. */
     unsigned int num_rows; /**< The number of rows in the matrix. */
+    unsigned int glob_num_cols; /**< The global number of columns in the matrix. */
+    unsigned int glob_num_rows; /**< The global number of rows in the matrix. */
     double * col_vec_unpad; /**< Pointer to the unpadded column vector. */
     double * col_vec_pad; /**< Pointer to the padded column vector. */
     double * row_vec_pad; /**< Pointer to the padded row vector. */
@@ -102,6 +104,8 @@ public:
     Comm& get_comm() { return comm; } /**< Returns reference to the communication object. */
     unsigned int get_num_cols() { return num_cols; } /**< Returns the number of columns in the matrix. */
     unsigned int get_num_rows() { return num_rows; } /**< Returns the number of rows in the matrix. */
+    unsigned int get_glob_num_cols() { return glob_num_cols; } /**< Returns the global number of columns in the matrix. */
+    unsigned int get_glob_num_rows() { return glob_num_rows; } /**< Returns the global number of rows in the matrix. */
     unsigned int get_padded_size() { return padded_size; } /**< Returns the padded block size of the matrix. */
     unsigned int get_block_size() { return block_size; } /**< Returns the unpadded block size of the matrix. */
     bool is_initialized() { return initialized; } /**< Returns true if the matrix is initialized, false otherwise. */

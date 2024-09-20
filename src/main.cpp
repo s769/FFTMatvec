@@ -175,7 +175,7 @@ int main(int argc, char** argv)
             printf("Initialized Matrices\n");
 
         Vector in_F(comm, num_cols, block_size, "col"), in_FS(comm, num_rows, block_size, "row");
-        Vector out_F(in_FS), out_FS(in_F);
+        Vector out_F(in_FS, false), out_FS(in_F, false);
 
         if (world_rank == 0)
             printf("Created Vectors\n");
@@ -271,9 +271,44 @@ int main(int argc, char** argv)
             std::cout << "<in_FS, out_F> = " << dot_inFS_outF << std::endl;
         }
 
+
+        Vector test1(comm, num_cols, block_size, "col");
+        Vector test2(comm, num_cols, block_size, "col");
+
+        test1.init_vec_ones();
+        test2.init_vec_ones();
+
+        test1.scale(2.0);
+        if (print)
+            test1.print("2*test1");
+
+        test1.axpy(3.0, test2);
+        if (print)
+            test1.print("3*test2 + 2*test1");
+
+        test1.axpby(3.0, 2.0, test2);
+        if (print)
+            test1.print("9*test2 + 4*test1");
+
+        Vector test3 = test1.wscale(0.5);
+        if (print)
+            test3.print("0.5*test1");
+
+        Vector test_param(comm, num_cols, block_size, "col");
+        Vector test_data(comm, num_rows, block_size, "row");
+
+        test_param.init_vec_from_file("test_param.h5");
+        test_data.init_vec_from_file("test_data.h5");
+
+        if (print) {
+            test_param.print("test_param");
+            test_data.print("test_data");
+        }
+        
+
 #if !TIME_MPI
 
-            F.matvec(in_F, out_FS, true);
+        F.matvec(in_F, out_FS, true);
         F.transpose_matvec(in_FS, out_F, true);
 
         if (print) {

@@ -17,6 +17,7 @@ class Vector {
 private:
     Comm& comm; /**< Reference to the Comm object. */
     unsigned int num_blocks; /**< Number of blocks. */
+    unsigned int glob_num_blocks; /**< Global number of blocks. */
     unsigned int padded_size; /**< Size of each block with padding. */
     unsigned int block_size; /**< Size of each block without padding. */
     double* d_vec; /**< Pointer to the vector data. */
@@ -38,7 +39,98 @@ public:
      * @param vec The Vector object to be copied.
      * @param deep_copy Flag indicating whether to perform a deep copy.
      */
-    Vector(Vector& vec, bool deep_copy = false);
+    Vector(Vector& vec, bool deep_copy);
+
+    /**
+     * @brief Copy constructor for the Vector class.
+     * @param vec The Vector object to be copied.
+     * 
+     */
+    Vector(Vector& vec) : Vector(vec, true) {} // default to deep copy
+
+    /** 
+     * @brief Move constructor for the Vector class.
+     * @param vec The Vector object to be moved.
+     * 
+     */
+    Vector(Vector&& vec) : comm(vec.comm), num_blocks(vec.num_blocks), padded_size(vec.padded_size),
+                          block_size(vec.block_size), d_vec(vec.d_vec), row_or_col(vec.row_or_col),
+                          initialized(vec.initialized) { vec.d_vec = nullptr; } 
+
+    /**
+     * @brief Copy assignment operator for the Vector class.
+     * @param vec The Vector object to be copied.
+     * @return The copied Vector object.
+     */
+    Vector& operator=(Vector& vec);
+
+    /**
+     * @brief Move assignment operator for the Vector class.
+     * @param vec The Vector object to be moved.
+     * @return The moved Vector object.
+     */
+    Vector& operator=(Vector&& vec);
+
+    /**
+     * @brief Addition operator for the Vector class.
+     * @param x The Vector object to be added.
+     * @return The sum of the two vectors.
+     */
+    Vector operator+(Vector& x) { return waxpy(1.0, x); }
+
+    /**
+     * @brief Subtraction operator for the Vector class.
+     * @param x The Vector object to be subtracted.
+     * @return The difference of the two vectors.
+     */
+    Vector operator-(Vector& x) { return waxpy(-1.0, x); }
+
+    /**
+     * @brief Scalar multiplication operator for the Vector class.
+     * @param alpha The constant by which to scale the vector.
+     * @return The scaled vector.
+     * 
+     */
+    Vector operator*(double alpha) { return wscale(alpha); }
+
+    /**
+     * @brief Scalar division operator for the Vector class.
+     * @param alpha The constant by which to divide the vector.
+     * @return The scaled vector.
+     * 
+     */
+    Vector operator/(double alpha) { return wscale(1.0 / alpha); }
+
+
+
+    /**
+     * @brief Additive assignment operator for the Vector class.
+     * @param x The Vector object to be added.
+     * @return The sum of the two vectors.
+     */
+    Vector& operator+=(Vector& x) { return *this = waxpy(1.0, x); }
+
+    /**
+     * @brief Subtractive assignment operator for the Vector class.
+     * @param x The Vector object to be subtracted.
+     * @return The difference of the two vectors.
+     */
+    Vector& operator-=(Vector& x) { return *this = waxpy(-1.0, x); }
+
+    /**
+     * @brief Scalar Multiplicative assignment operator for the Vector class.
+     * @param alpha The constant by which to scale the vector.
+     * @return The scaled vector.
+     */
+    Vector& operator*=(double alpha) { return *this = wscale(alpha); }
+
+    /**
+     * @brief Scalar Division assignment operator for the Vector class.
+     * @param alpha The constant by which to divide the vector.
+     * @return The scaled vector.
+     */
+    Vector& operator/=(double alpha) { return *this = wscale(1.0 / alpha); }
+
 
     /**
      * @brief Destructor for the Vector class. Frees the memory allocated for the vector data.
@@ -60,6 +152,12 @@ public:
      * @brief Initializes the vector with all zeros.
      */
     void init_vec_zeros();
+
+    /**
+     * @brief Initializes the vector from a file.
+     * @param filename The name of the file.
+     */
+    void init_vec_from_file(std::string filename);
 
     /**
      * @brief Checks if the calling process has the vector data.
@@ -92,10 +190,17 @@ public:
     double norm(int order = 2);
 
     /**
-     * @brief Scales the vector by a constant.
+     * @brief Scales the vector by a constant (in-place).
      * @param alpha The constant by which to scale the vector.
      */
     void scale(double alpha);
+
+    /**
+     * @brief Scales the vector by a constant (out-of-place).
+     * @param alpha The constant by which to scale the vector.
+     * @return The scaled vector.
+     */
+    Vector wscale(double alpha);
 
     /**
      * @brief Computes the operation y = alpha * x + y.
@@ -106,6 +211,14 @@ public:
     void axpy(double alpha, Vector& x);
 
     /**
+     * @brief Computes the operation w = alpha * x + y.
+     * @param alpha The constant by which to scale the vector x.
+     * @param x The vector to be added.
+     */
+    Vector waxpy(double alpha, Vector& x);
+
+
+    /**
      * @brief Computes the operation y = alpha * x + beta * y.
      * @param alpha The constant by which to scale the vector x.
      * @param beta The constant by which to scale the vector y.
@@ -114,11 +227,25 @@ public:
     void axpby(double alpha, double beta, Vector& x);
 
     /**
+     * @brief Computes the operation w = alpha * x + beta * y.
+     * @param alpha The constant by which to scale the vector x.
+     * @param beta The constant by which to scale the vector y.
+     * @param x The vector to be added.
+     */
+    Vector waxpby(double alpha, double beta, Vector& x);
+
+    /**
      * @brief Computes the dot product of the vector with another vector.
      * @param x The vector with which to compute the dot product.
      * @return The dot product of the two vectors. Only rank 0 has the global dot product.
      */
     double dot(Vector& x);
+
+    /**
+     * @brief Saves the vector to a file (HDF5 format).
+     * @param filename The name of the file.
+     */
+    void save(std::string filename);
     
 
     // Getters
@@ -134,6 +261,12 @@ public:
      * @return The number of blocks.
      */
     unsigned int get_num_blocks() { return num_blocks; }
+
+    /**
+     * @brief Gets the global number of blocks.
+     * @return The global number of blocks.
+     */
+    unsigned int get_glob_num_blocks() { return glob_num_blocks; }
 
     /**
      * @brief Gets the size of each block with padding.

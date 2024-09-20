@@ -62,6 +62,11 @@ Matrix::Matrix(Comm &comm, unsigned int num_cols, unsigned int num_rows, unsigne
     gpuErrchk(cudaMalloc((void **)&(col_vec_unpad), (size_t)num_cols * padded_size / 2 * sizeof(double)));
 
     gpuErrchk(cudaMalloc((void **)&(row_vec_unpad), sizeof(double) * (size_t)padded_size / 2 * num_rows));
+
+    // Use MPI to set the global number of columns and rows
+
+    MPICHECK(MPI_Allreduce(&num_cols, &glob_num_cols, 1, MPI_INT, MPI_SUM, comm.get_row_comm()));
+    MPICHECK(MPI_Allreduce(&num_rows, &glob_num_rows, 1, MPI_INT, MPI_SUM, comm.get_col_comm()));
 }
 
 
