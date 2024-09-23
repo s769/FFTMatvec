@@ -12,7 +12,7 @@ To build the code, the following dependencies are required:
 
 - CUDA (with cuFFT, cuBLAS, and cuTENSOR 2.x) and a CUDA enabled GPU
 - [NCCL](https://github.com/NVIDIA/nccl)
-- HDF5
+- HDF5 (parallel version is required)
 
 First, clone the repository:
 ```bash
