@@ -20,6 +20,12 @@ LINK_DIRECTORIES(${NCCL_LIBRARIES} ${CUDA_LIBRARIES} ${MPI_C_LIBRARIES} ${MPI_CX
 
 
 add_subdirectory(HighFive)
+
+# if H5_HAVE_PARALLEL is not true, error out
+if (NOT HDF5_IS_PARALLEL)
+    message(FATAL_ERROR "HDF5 is not built with parallel support. HDF5_HAVE_PARALLEL: ${HDF5_IS_PARALLEL}")
+endif()
+
 add_subdirectory(src)
 
 

@@ -340,3 +340,12 @@ void Utils::swap_axes(
 
 
 }
+
+void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props) {
+    auto mnccp = HighFive::MpioNoCollectiveCause(xfer_props);
+    if (mnccp.getLocalCause() || mnccp.getGlobalCause()) {
+        std::cout
+            << "The operation was successful, but couldn't use collective MPI-IO. local cause: "
+            << mnccp.getLocalCause() << " global cause:" << mnccp.getGlobalCause() << std::endl;
+    }
+}

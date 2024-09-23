@@ -129,6 +129,14 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
  */
 void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size, cudaStream_t s = nullptr);
 
+
+
+/**
+ * @brief Check if the collective I/O is working.
+ * @param xfer_props The data transfer properties.
+ */
+void check_collective_io(const HighFive::DataTransferProps& xfer_props);
+
 } // namespace Utils
 
 #endif // __UTILS_H__

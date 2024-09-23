@@ -21,8 +21,7 @@ Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std
         gpuErrchk(cudaMalloc((void**)&d_vec, (size_t)num_blocks * block_size * sizeof(double)));
         // Use MPI to set the global number of blocks
         MPI_Comm grid_comm = (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
-        MPICHECK(MPI_Allreduce(
-            &num_blocks, &glob_num_blocks, 1, MPI_INT, MPI_SUM, grid_comm));
+        MPICHECK(MPI_Allreduce(&num_blocks, &glob_num_blocks, 1, MPI_INT, MPI_SUM, grid_comm));
     } else {
         d_vec = nullptr;
     }
@@ -138,8 +137,16 @@ void Vector::init_vec_from_file(std::string filename)
     if (on_grid()) {
         // read in the vector from the file
         try {
-            File file(filename, File::ReadOnly);
+            FileAccessProps fapl;
+            MPI_Comm grid_comm = (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
+            fapl.add(MPIOFileAccess { grid_comm, MPI_INFO_NULL });
+            fapl.add(MPIOCollectiveMetadata {});
+
+            File file(filename, File::ReadOnly, fapl);
             std::vector<double> vec;
+
+            auto xfer_props = DataTransferProps {};
+            xfer_props.add(UseCollectiveIO {});
 
             auto dataset = file.getDataSet("vec");
             int reindex, n_blocks, steps;
@@ -157,16 +164,19 @@ void Vector::init_vec_from_file(std::string filename)
                 fprintf(stderr, "reindex must be true. Got reindex = %d.\n", reindex);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (n_blocks != glob_num_blocks) {
-                fprintf(stderr, "n_blocks must be equal to glob_num_blocks. Got n_blocks = %d, glob_num_blocks = %d.\n",
+                fprintf(stderr,
+                    "n_blocks must be equal to glob_num_blocks. Got n_blocks = %d, glob_num_blocks "
+                    "= %d.\n",
                     n_blocks, glob_num_blocks);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (steps != block_size) {
-                fprintf(stderr, "steps must be equal to block_size. Got steps = %d, block_size = %d.\n",
-                    steps, block_size);
+                fprintf(stderr,
+                    "steps must be equal to block_size. Got steps = %d, block_size = %d.\n", steps,
+                    block_size);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             }
 
-            int start;
+            size_t start;
 
             if (row_or_col == "col") {
                 start = (comm.get_col_color() < glob_num_blocks % comm.get_proc_cols())
@@ -180,12 +190,13 @@ void Vector::init_vec_from_file(std::string filename)
                         + glob_num_blocks % comm.get_proc_rows();
             }
 
-            dataset.select({ start * block_size }, { num_blocks * block_size }).read(vec);
+            dataset.select({ start * block_size }, { (size_t)num_blocks * block_size })
+                .read(vec, xfer_props);
+            Utils::check_collective_io(xfer_props);
             // copy to device
             gpuErrchk(cudaMemcpy(d_vec, vec.data(),
                 (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyHostToDevice));
-        }
-        catch (const std::exception& e) {
+        } catch (const std::exception& e) {
             std::cerr << e.what() << std::endl;
             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
         }
@@ -433,7 +444,8 @@ double Vector::dot(Vector& x)
     return global_dot; // only rank 0 has the global dot product
 }
 
-void Vector::save(std::string filename) {
+void Vector::save(std::string filename)
+{
     // Use HighFive to save the vector to a file
     // If the vector is not initialized, print an error message and abort the program.
 
@@ -444,27 +456,60 @@ void Vector::save(std::string filename) {
 
     using namespace HighFive;
     // use collective I/O to write the vector to a file
-    // if (on_grid()) {
-    //     try {
-    //         File file(filename,
-    //             File::ReadWrite | File::Create | File::Truncate);
-    //         std::vector<double> vec(num_blocks * block_size);
-    //         // copy to host
-    //         gpuErrchk(cudaMemcpy(vec.data(), d_vec,
-    //             (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
-    //         // each process writes its own data to the file
-    //         DataSet dataset = file.createDataSet<double>("vec", DataSpace({ glob_num_blocks * block_size }));
+    if (on_grid()) {
+        try {
+            FileAccessProps fapl;
+            MPI_Comm grid_comm = (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
+            fapl.add(MPIOFileAccess { grid_comm, MPI_INFO_NULL });
+            fapl.add(MPIOCollectiveMetadata {});
 
-    //         if (row_or_col == "col") {
-    //             dataset.write(vec);
-    //             dataset.createAttribute<int>("n_param", DataSpace({ 1 })).write(glob_num_blocks);
-    //             dataset.createAttribute<int>("param_steps", DataSpace({ 1 })).write(block_size);
-    //             dataset.createAttribute<int>("reindex", DataSpace({ 1 })).write(1);
-    //         } else {
-    //             dataset.write(vec);
-    //             dataset.createAttribute<int>("n_obs", DataSpace({ 1 })).write(glob_num_blocks);
-    //             dataset.createAttribute<int>("obs_steps", DataSpace({ 1 })).write(block_size);
-    //             dataset.createAttribute<int>("reindex", DataSpace({ 1 })).write(1);
-    //         }
-            
+            File file(filename, File::Overwrite, fapl);
+            std::vector<double> vec(num_blocks * block_size);
+
+            // copy to host
+            gpuErrchk(cudaMemcpy(vec.data(), d_vec,
+                (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
+
+            auto xfer_props = DataTransferProps {};
+            xfer_props.add(UseCollectiveIO {});
+
+            size_t start;
+
+            if (row_or_col == "col") {
+                start = (comm.get_col_color() < glob_num_blocks % comm.get_proc_cols())
+                    ? (glob_num_blocks / comm.get_proc_cols() + 1) * comm.get_col_color()
+                    : (glob_num_blocks / comm.get_proc_cols()) * comm.get_col_color()
+                        + glob_num_blocks % comm.get_proc_cols();
+            } else {
+                start = (comm.get_row_color() < glob_num_blocks % comm.get_proc_rows())
+                    ? (glob_num_blocks / comm.get_proc_rows() + 1) * comm.get_row_color()
+                    : (glob_num_blocks / comm.get_proc_rows()) * comm.get_row_color()
+                        + glob_num_blocks % comm.get_proc_rows();
+            }
+
+            std::vector<size_t> dims = { (size_t)glob_num_blocks * block_size };
+
+            DataSet dataset = file.createDataSet<double>("vec", DataSpace(dims));
+            dataset.select({ start * block_size }, { (size_t)num_blocks * block_size })
+                .write(vec, xfer_props);
+            Utils::check_collective_io(xfer_props);
+
+            if (row_or_col == "col") {
+                dataset.createAttribute<int>("n_param", glob_num_blocks);
+                dataset.createAttribute<int>("param_steps", block_size);
+            } else {
+                dataset.createAttribute<int>("n_obs", glob_num_blocks);
+                dataset.createAttribute<int>("obs_steps", block_size);
+            }
+            dataset.createAttribute<int>("reindex", 1);
+
+            file.flush();
+
+            if (comm.get_world_rank() == 0)
+                printf("Saved vector to %s\n", filename.c_str());
+        } catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+        }
+    }
 }

@@ -304,6 +304,8 @@ int main(int argc, char** argv)
             test_param.print("test_param");
             test_data.print("test_data");
         }
+
+        test1.save("test1.h5");
         
 
 #if !TIME_MPI

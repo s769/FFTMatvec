@@ -13,5 +13,5 @@ add_library(FFT_mvec ${SOURCE_FILES})
 add_executable(fft_matvec main.cpp)
 
 
-target_link_libraries(fft_matvec PUBLIC FFT_mvec cufft cublas nccl cutensor mpi_nvidia OpenMP::OpenMP_CXX OpenMP::OpenMP_C ${CUDA_LIBRARIES})
+target_link_libraries(fft_matvec PUBLIC FFT_mvec cufft cublas nccl cutensor mpi_nvidia OpenMP::OpenMP_CXX OpenMP::OpenMP_C ${CUDA_LIBRARIES} HighFive)
 
