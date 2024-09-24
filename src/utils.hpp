@@ -9,7 +9,6 @@
 #include "shared.hpp"
 #include "table.hpp"
 
-
 /**
  * @namespace Utils
  * @brief Namespace containing utility functions.
@@ -34,7 +33,6 @@ uint64_t get_host_hash(const char* string);
  * @param maxlen The maximum length of the buffer.
  */
 void get_host_name(char* hostname, int maxlen);
-
 
 /**
  * @brief Prints the elements of a vector.
@@ -116,26 +114,51 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
     long double* mean_times_fs, long double* min_times_fs, long double* max_times_fs,
     int times_len);
 
-
-
 /**
  * @brief Computes the 3D swapaxes operation on the matrix blocks.
  * @param d_in Pointer to the input matrix.
  * @param d_out Pointer to the output matrix.
  * @param num_cols The number of block columns in the matrix.
  * @param num_rows The number of block rows in the matrix.
- * @param padded_size The size of each block. Note: this is used inside the matvec setup function, so it is called with Nt + 1 and not 2 * Nt.
+ * @param padded_size The size of each block. Note: this is used inside the matvec setup function,
+ * so it is called with Nt + 1 and not 2 * Nt.
  * @param s The CUDA stream to use for the operation (optional).
  */
-void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size, cudaStream_t s = nullptr);
-
-
+void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size,
+    cudaStream_t s = nullptr);
 
 /**
  * @brief Check if the collective I/O is working.
  * @param xfer_props The data transfer properties.
  */
 void check_collective_io(const HighFive::DataTransferProps& xfer_props);
+
+/**
+ * @brief Get the starting index for a given color (row or col).
+ * @param glob_num_blocks The global number of blocks (distributed across the communicator).
+ * @param color The color of the process in the communicator.
+ * @param comm_size The number of processes in the communicator.
+ *
+ */
+size_t get_start_index(int glob_num_blocks, int color, int comm_size);
+
+/**
+ * @brief Get the global size of a vector.
+ * @param local_size The local size of the vector.
+ * @param color The color of the process in the communicator.
+ * @param comm_size The number of processes in the communicator.
+ * @return The global size of the vector.
+ */
+int global_to_local_size(int global_size, int color, int comm_size);
+
+/**
+ * @brief Get the global size of a vector.
+ * @param local_size The local size of the vector.
+ * @param color The color of the process in the communicator.
+ * @param comm_size The number of processes in the communicator.
+ * @return The global size of the vector (just local_size * comm_size).
+ */
+int local_to_global_size(int local_size, int comm_size);
 
 } // namespace Utils
 

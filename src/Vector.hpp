@@ -20,6 +20,7 @@ private:
     unsigned int glob_num_blocks; /**< Global number of blocks. */
     unsigned int padded_size; /**< Size of each block with padding. */
     unsigned int block_size; /**< Size of each block without padding. */
+    bool soti_ordering; /**< Flag indicating whether to use SOTI ordering. */
     double* d_vec; /**< Pointer to the vector data. */
     std::string row_or_col; /**< Indicates whether the vector is row or column. */
     bool initialized = false; /**< Flag indicating if the vector is initialized. */
@@ -28,11 +29,14 @@ public:
     /**
      * @brief Constructor for the Vector class.
      * @param comm The Comm object (passed as reference).
-     * @param num_blocks The number of blocks.
+     * @param blocks The number of blocks (local or global based on value of global_sizes).
      * @param block_size The size of each block without padding.
      * @param row_or_col Indicates whether the vector is row or column.
+     * @param global_sizes Flag indicating whether the sizes are global.
+     * @param soti_ordering Flag indicating whether to use SOTI ordering.
      */
-    Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col);
+    Vector(Comm& comm, unsigned int blocks, unsigned int block_size, std::string row_or_col,
+        bool global_sizes = false, bool soti_ordering = true);
 
     /**
      * @brief Copy constructor for the Vector class.
@@ -44,18 +48,29 @@ public:
     /**
      * @brief Copy constructor for the Vector class.
      * @param vec The Vector object to be copied.
-     * 
+     *
      */
-    Vector(Vector& vec) : Vector(vec, true) {} // default to deep copy
+    Vector(Vector& vec)
+        : Vector(vec, true)
+    {
+    } // default to deep copy
 
-    /** 
+    /**
      * @brief Move constructor for the Vector class.
      * @param vec The Vector object to be moved.
-     * 
+     *
      */
-    Vector(Vector&& vec) : comm(vec.comm), num_blocks(vec.num_blocks), padded_size(vec.padded_size),
-                          block_size(vec.block_size), d_vec(vec.d_vec), row_or_col(vec.row_or_col),
-                          initialized(vec.initialized) { vec.d_vec = nullptr; } 
+    Vector(Vector&& vec)
+        : comm(vec.comm)
+        , num_blocks(vec.num_blocks)
+        , padded_size(vec.padded_size)
+        , block_size(vec.block_size)
+        , d_vec(vec.d_vec)
+        , row_or_col(vec.row_or_col)
+        , initialized(vec.initialized)
+    {
+        vec.d_vec = nullptr;
+    }
 
     /**
      * @brief Copy assignment operator for the Vector class.
@@ -89,7 +104,7 @@ public:
      * @brief Scalar multiplication operator for the Vector class.
      * @param alpha The constant by which to scale the vector.
      * @return The scaled vector.
-     * 
+     *
      */
     Vector operator*(double alpha) { return wscale(alpha); }
 
@@ -97,11 +112,9 @@ public:
      * @brief Scalar division operator for the Vector class.
      * @param alpha The constant by which to divide the vector.
      * @return The scaled vector.
-     * 
+     *
      */
     Vector operator/(double alpha) { return wscale(1.0 / alpha); }
-
-
 
     /**
      * @brief Additive assignment operator for the Vector class.
@@ -131,7 +144,6 @@ public:
      */
     Vector& operator/=(double alpha) { return *this = wscale(1.0 / alpha); }
 
-
     /**
      * @brief Destructor for the Vector class. Frees the memory allocated for the vector data.
      */
@@ -141,7 +153,6 @@ public:
      * @brief Initializes the vector.
      */
     void init_vec();
-
 
     /**
      * @brief Initializes the vector with all ones.
@@ -184,7 +195,8 @@ public:
 
     /**
      * @brief Computes the norm of the vector.
-     * @param order The order of the norm (e.g., "2" for the 2-norm, "1" for the 1-norm, "-1" for the infinity norm).
+     * @param order The order of the norm (e.g., "2" for the 2-norm, "1" for the 1-norm, "-1" for
+     * the infinity norm).
      * @return The norm of the vector. Only rank 0 has the global norm.
      */
     double norm(int order = 2);
@@ -217,7 +229,6 @@ public:
      */
     Vector waxpy(double alpha, Vector& x);
 
-
     /**
      * @brief Computes the operation y = alpha * x + beta * y.
      * @param alpha The constant by which to scale the vector x.
@@ -246,7 +257,6 @@ public:
      * @param filename The name of the file.
      */
     void save(std::string filename);
-    
 
     // Getters
 
@@ -297,6 +307,12 @@ public:
      * @return True if the vector data is initialized, false otherwise.
      */
     bool is_initialized() { return initialized; }
+
+    /**
+     * @brief Checks if the vector is using SOTI ordering.
+     * @return True if the vector is using SOTI ordering, false otherwise.
+     */
+    bool is_soti_ordered() { return soti_ordering; }
 
     // Setters
 

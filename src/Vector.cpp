@@ -1,11 +1,12 @@
 #include "Vector.hpp"
 
-Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std::string row_or_col)
+Vector::Vector(Comm& comm, unsigned int blocks, unsigned int block_size, std::string row_or_col,
+    bool global_sizes, bool soti_ordering)
     : comm(comm)
-    , num_blocks(num_blocks)
     , block_size(block_size)
     , padded_size(2 * block_size)
     , row_or_col(row_or_col)
+    , soti_ordering(soti_ordering)
 {
     // Initialize the vector data structures. If row_or_col is "row", then the vector is a row
     // vector, otherwise it is a column vector. For row vectors, initialize only on row_color == 0,
@@ -16,12 +17,19 @@ Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std
         MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
     }
 
-    this->comm = comm;
+    int comm_size = (row_or_col == "col") ? comm.get_proc_cols() : comm.get_proc_rows();
+
+    if (global_sizes) {
+        glob_num_blocks = blocks;
+        int color = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
+        num_blocks = Utils::global_to_local_size(glob_num_blocks, color, comm_size);
+    } else {
+        num_blocks = blocks;
+        glob_num_blocks = Utils::local_to_global_size(num_blocks, comm_size);
+    }
+
     if (on_grid()) {
         gpuErrchk(cudaMalloc((void**)&d_vec, (size_t)num_blocks * block_size * sizeof(double)));
-        // Use MPI to set the global number of blocks
-        MPI_Comm grid_comm = (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
-        MPICHECK(MPI_Allreduce(&num_blocks, &glob_num_blocks, 1, MPI_INT, MPI_SUM, grid_comm));
     } else {
         d_vec = nullptr;
     }
@@ -30,9 +38,11 @@ Vector::Vector(Comm& comm, unsigned int num_blocks, unsigned int block_size, std
 Vector::Vector(Vector& vec, bool deep_copy)
     : comm(vec.comm)
     , num_blocks(vec.num_blocks)
+    , glob_num_blocks(vec.glob_num_blocks)
     , padded_size(vec.padded_size)
     , block_size(vec.block_size)
     , row_or_col(vec.row_or_col)
+    , soti_ordering(vec.soti_ordering)
 {
     // Copy constructor for the Vector class. If deep_copy is true, then copy the data from vec,
     // otherwise just allocate memory.
@@ -53,9 +63,11 @@ Vector& Vector::operator=(Vector& vec)
     if (this != &vec) {
         comm = vec.comm;
         num_blocks = vec.num_blocks;
+        glob_num_blocks = vec.glob_num_blocks;
         padded_size = vec.padded_size;
         block_size = vec.block_size;
         row_or_col = vec.row_or_col;
+        soti_ordering = vec.soti_ordering;
 
         if (on_grid()) {
             gpuErrchk(cudaMalloc((void**)&d_vec, (size_t)num_blocks * block_size * sizeof(double)));
@@ -75,11 +87,13 @@ Vector& Vector::operator=(Vector&& vec)
     if (this != &vec) {
         comm = vec.comm;
         num_blocks = vec.num_blocks;
+        glob_num_blocks = vec.glob_num_blocks;
         padded_size = vec.padded_size;
         block_size = vec.block_size;
         row_or_col = vec.row_or_col;
         d_vec = vec.d_vec;
         initialized = vec.initialized;
+        soti_ordering = vec.soti_ordering;
 
         vec.d_vec = nullptr;
     }
@@ -160,8 +174,10 @@ void Vector::init_vec_from_file(std::string filename)
             }
             dataset.getAttribute("reindex").read<int>(reindex);
 
-            if (!reindex) {
-                fprintf(stderr, "reindex must be true. Got reindex = %d.\n", reindex);
+            if ((bool) reindex != soti_ordering) {
+                fprintf(stderr, "reindex must match soti_ordering. Got reindex = %d, soti_ordering "
+                                "= %d.\n",
+                    reindex, soti_ordering);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (n_blocks != glob_num_blocks) {
                 fprintf(stderr,
@@ -176,19 +192,10 @@ void Vector::init_vec_from_file(std::string filename)
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             }
 
-            size_t start;
-
-            if (row_or_col == "col") {
-                start = (comm.get_col_color() < glob_num_blocks % comm.get_proc_cols())
-                    ? (glob_num_blocks / comm.get_proc_cols() + 1) * comm.get_col_color()
-                    : (glob_num_blocks / comm.get_proc_cols()) * comm.get_col_color()
-                        + glob_num_blocks % comm.get_proc_cols();
-            } else {
-                start = (comm.get_row_color() < glob_num_blocks % comm.get_proc_rows())
-                    ? (glob_num_blocks / comm.get_proc_rows() + 1) * comm.get_row_color()
-                    : (glob_num_blocks / comm.get_proc_rows()) * comm.get_row_color()
-                        + glob_num_blocks % comm.get_proc_rows();
-            }
+            size_t start = (row_or_col == "col") ? Utils::get_start_index(glob_num_blocks,
+                                                       comm.get_col_color(), comm.get_proc_cols())
+                                                 : Utils::get_start_index(glob_num_blocks,
+                                                       comm.get_row_color(), comm.get_proc_rows());
 
             dataset.select({ start * block_size }, { (size_t)num_blocks * block_size })
                 .read(vec, xfer_props);
@@ -202,6 +209,10 @@ void Vector::init_vec_from_file(std::string filename)
         }
     }
     initialized = true;
+
+    if (comm.get_world_rank() == 0) {
+        printf("Vector initialized from file: %s\n", filename.c_str());
+    }
 }
 
 void Vector::print(std::string name)
@@ -473,19 +484,10 @@ void Vector::save(std::string filename)
             auto xfer_props = DataTransferProps {};
             xfer_props.add(UseCollectiveIO {});
 
-            size_t start;
-
-            if (row_or_col == "col") {
-                start = (comm.get_col_color() < glob_num_blocks % comm.get_proc_cols())
-                    ? (glob_num_blocks / comm.get_proc_cols() + 1) * comm.get_col_color()
-                    : (glob_num_blocks / comm.get_proc_cols()) * comm.get_col_color()
-                        + glob_num_blocks % comm.get_proc_cols();
-            } else {
-                start = (comm.get_row_color() < glob_num_blocks % comm.get_proc_rows())
-                    ? (glob_num_blocks / comm.get_proc_rows() + 1) * comm.get_row_color()
-                    : (glob_num_blocks / comm.get_proc_rows()) * comm.get_row_color()
-                        + glob_num_blocks % comm.get_proc_rows();
-            }
+            size_t start = (row_or_col == "col") ? Utils::get_start_index(glob_num_blocks,
+                                                       comm.get_col_color(), comm.get_proc_cols())
+                                                 : Utils::get_start_index(glob_num_blocks,
+                                                       comm.get_row_color(), comm.get_proc_rows());
 
             std::vector<size_t> dims = { (size_t)glob_num_blocks * block_size };
 
@@ -501,7 +503,7 @@ void Vector::save(std::string filename)
                 dataset.createAttribute<int>("n_obs", glob_num_blocks);
                 dataset.createAttribute<int>("obs_steps", block_size);
             }
-            dataset.createAttribute<int>("reindex", 1);
+            dataset.createAttribute<int>("reindex", (int)soti_ordering);
 
             file.flush();
 

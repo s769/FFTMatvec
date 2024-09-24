@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <cutensor.h>
 #include <highfive/highfive.hpp>
+#include <fstream>
 
 #include <omp.h>
 

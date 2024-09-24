@@ -40,7 +40,7 @@ void configureParser(cli::Parser& parser)
         "pr", "proc_rows", 1, "Number of processor rows (proc_rows x proc_cols = num_mpi_ranks)");
     parser.set_optional<int>("pc", "proc_cols", 1,
         "Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)");
-    parser.set_optional<bool>("g", "glob_inds", false, "Use global indices");
+    parser.set_optional<bool>("g", "glob_sizes", false, "Use global indices");
     parser.set_optional<int>("Nm", "glob_cols", 10, "Number of global columns");
     parser.set_optional<int>("Nd", "glob_rows", 5, "Number of global rows");
     parser.set_optional<int>("Nt", "block_size", 7, "Number of time points");
@@ -99,49 +99,21 @@ int main(int argc, char** argv)
             }
         }
 
-        int row_color = world_rank % proc_rows;
-        int col_color = world_rank / proc_rows;
-
-        auto glob_inds = parser.get<bool>("g");
+        auto glob_sizes = parser.get<bool>("g");
 
         auto block_size = parser.get<int>("Nt");
-        auto glob_num_cols = parser.get<int>("Nm");
-        auto glob_num_rows = parser.get<int>("Nd");
-        auto num_cols = parser.get<int>("nm");
-        auto num_rows = parser.get<int>("nd");
-        // If not using global indices, calculate the number of global columns and rows
-        if (!glob_inds) {
-            glob_num_cols = num_cols * proc_cols;
-            glob_num_rows = num_rows * proc_rows;
-        }
 
-        // If using global indices, calculate the number of local columns and rows
-        if (glob_inds) {
-            num_cols = (col_color < glob_num_cols % proc_cols) ? glob_num_cols / proc_cols + 1
-                                                               : glob_num_cols / proc_cols;
-            num_rows = (row_color < glob_num_rows % proc_rows) ? glob_num_rows / proc_rows + 1
-                                                               : glob_num_rows / proc_rows;
-        }
-        // Check that the number of local columns and rows is valid when using global indices
-        if (glob_inds && proc_rows > glob_num_rows) {
-
-            if (world_rank == 0)
-                fprintf(stderr, "make sure proc_rows <= glob_num_rows \n");
-            MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
-            return 1;
-        }
-
-        if (glob_inds && proc_cols > glob_num_cols) {
-            if (world_rank == 0)
-                fprintf(stderr, "make sure proc_cols <= glob_num_cols \n");
-            MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
-            return 1;
-        }
-
+        // global or local sizes depending on the flag (other ones are automatically set when
+        // creating matrices and vectors)
+        auto num_cols = (glob_sizes) ? parser.get<int>("Nm") : parser.get<int>("nm");
+        auto num_rows = (glob_sizes) ? parser.get<int>("Nd") : parser.get<int>("nd");
 
         if (world_rank == 0) {
             printf("Proc Rows: %d, Proc Cols: %d\n", proc_rows, proc_cols);
-            printf("Global Rows: %d, Global Cols: %d\n", glob_num_rows, glob_num_cols);
+            if (glob_sizes)
+                printf("Global Rows: %d, Global Cols: %d\n", num_rows, num_cols);
+            else
+                printf("Local Rows: %d, Local Cols: %d\n", num_rows, num_cols);
             printf("Block Size: %d\n", block_size);
         }
 
@@ -164,7 +136,7 @@ int main(int argc, char** argv)
         t_list[ProfilerTimesFull::SETUP].start();
 #endif
         // Create matrices and vectors
-        Matrix F(comm, num_cols, num_rows, block_size);
+        Matrix F(comm, num_cols, num_rows, block_size, glob_sizes);
 
         if (world_rank == 0)
             printf("Created Matrices\n");
@@ -174,7 +146,8 @@ int main(int argc, char** argv)
         if (world_rank == 0)
             printf("Initialized Matrices\n");
 
-        Vector in_F(comm, num_cols, block_size, "col"), in_FS(comm, num_rows, block_size, "row");
+        Vector in_F(comm, num_cols, block_size, "col", glob_sizes),
+            in_FS(comm, num_rows, block_size, "row", glob_sizes);
         Vector out_F(in_FS, false), out_FS(in_F, false);
 
         if (world_rank == 0)
@@ -197,14 +170,13 @@ int main(int argc, char** argv)
             in_FS.print("in_FS");
         }
 
-
         double in_F_norm_2 = in_F.norm(2);
         double in_FS_norm_2 = in_FS.norm(2);
         double in_F_norm_1 = in_F.norm(1);
         double in_FS_norm_1 = in_FS.norm(1);
         double in_F_norm_inf = in_F.norm(-1);
         double in_FS_norm_inf = in_FS.norm(-1);
-        if (world_rank == 0){
+        if (world_rank == 0) {
             std::cout << "||in_F||_2 = " << in_F_norm_2 << std::endl;
             std::cout << "||in_FS||_2 = " << in_FS_norm_2 << std::endl;
             std::cout << "||in_F||_1 = " << in_F_norm_1 << std::endl;
@@ -260,7 +232,7 @@ int main(int argc, char** argv)
         double dot_inF_outFS = in_F.dot(out_FS);
         double dot_inFS_outF = in_FS.dot(out_F);
 
-        if (world_rank == 0){
+        if (world_rank == 0) {
             std::cout << "||out_F||_2 = " << out_F_norm_2 << std::endl;
             std::cout << "||out_FS||_2 = " << out_FS_norm_2 << std::endl;
             std::cout << "||out_F||_1 = " << out_F_norm_1 << std::endl;
@@ -271,9 +243,8 @@ int main(int argc, char** argv)
             std::cout << "<in_FS, out_F> = " << dot_inFS_outF << std::endl;
         }
 
-
-        Vector test1(comm, num_cols, block_size, "col");
-        Vector test2(comm, num_cols, block_size, "col");
+        Vector test1(in_F, false);
+        Vector test2(in_F, false);
 
         test1.init_vec_ones();
         test2.init_vec_ones();
@@ -294,8 +265,8 @@ int main(int argc, char** argv)
         if (print)
             test3.print("0.5*test1");
 
-        Vector test_param(comm, num_cols, block_size, "col");
-        Vector test_data(comm, num_rows, block_size, "row");
+        Vector test_param(in_F, false);
+        Vector test_data(in_FS, false);
 
         test_param.init_vec_from_file("test_param.h5");
         test_data.init_vec_from_file("test_data.h5");
@@ -306,7 +277,34 @@ int main(int argc, char** argv)
         }
 
         test1.save("test1.h5");
-        
+
+        Matrix F2(comm, "/global/homes/s/srvenkat/test_1_new/p2o_reindex/");
+
+        Vector in_F2(comm, F2.get_glob_num_cols(), F2.get_block_size(), "col", true),
+            out_F2(comm, F2.get_glob_num_rows(), F2.get_block_size(), "row", true);
+
+        in_F2.init_vec_from_file("/global/homes/s/srvenkat/test_1_new/true_param_vec_reindex.h5");
+        out_F2.init_vec();
+
+        F2.matvec(in_F2, out_F2);
+
+        Vector true_out_F2(out_F2, false);
+
+        true_out_F2.init_vec_from_file("/global/homes/s/srvenkat/test_1_new/true_obs_vec_reindex.h5");
+
+        out_F2.axpy(-1.0, true_out_F2);
+
+        double norm_diff = out_F2.norm(2);
+        double norm_true = true_out_F2.norm(2);
+
+        if (world_rank == 0){
+            printf("||F*m -d|| %f\n", norm_diff);
+            printf("||d|| %f\n", norm_true);
+            printf("||F*m -d||/||d|| %f\n", norm_diff/norm_true);
+        }
+
+
+
 
 #if !TIME_MPI
 

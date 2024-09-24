@@ -349,3 +349,28 @@ void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props) {
             << mnccp.getLocalCause() << " global cause:" << mnccp.getGlobalCause() << std::endl;
     }
 }
+
+
+size_t Utils::get_start_index(int glob_num_blocks, int color, int comm_size) {
+    return (color < glob_num_blocks % comm_size)
+        ? (glob_num_blocks / comm_size + 1) * color
+        : (glob_num_blocks / comm_size) * color + glob_num_blocks % comm_size;
+}
+
+int Utils::global_to_local_size(int global_size, int color, int comm_size) {
+    if (color >= comm_size) {
+        fprintf(stderr, "Invalid color for communicator. Got color = %d, comm_size = %d\n",
+            color, comm_size);
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
+    if (global_size < comm_size) {
+        fprintf(stderr, "Make sure global_size >= comm_size. Got global_size = %d, comm_size = %d\n",
+            global_size, comm_size);
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
+    return (color < global_size % comm_size) ? global_size / comm_size + 1 : global_size / comm_size;
+}
+
+int Utils::local_to_global_size(int local_size, int comm_size) {
+    return local_size * comm_size;
+}
