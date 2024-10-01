@@ -52,8 +52,8 @@ namespace Matvec {
      * @param inverse_plan The inverse FFT plan.
      * @param out_vec_pad Pointer to the padded output vector.
      * @param in_vec_freq Pointer to the input vector in frequency domain.
-     * @param out_vec_freq_tosi Pointer to the output vector in frequency domain (transpose of input, scaled).
-     * @param in_vec_freq_tosi Pointer to the input vector in frequency domain (transpose of input, scaled).
+     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of input, scaled).
+     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input, scaled).
      * @param out_vec_freq Pointer to the output vector in frequency domain.
      * @param s The CUDA stream.
      * @param cublasHandle The handle for the cuBLAS library.
@@ -62,7 +62,7 @@ namespace Matvec {
         const unsigned int size, const unsigned int num_cols, const unsigned int num_rows,
         const bool conjugate, const bool unpad, const unsigned int device, cufftHandle forward_plan,
         cufftHandle inverse_plan, double* const out_vec_pad, Complex* const in_vec_freq,
-        Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi, Complex* const out_vec_freq,
+        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI, Complex* const out_vec_freq,
         cudaStream_t s, cublasHandle_t cublasHandle);
 
     /**
@@ -72,7 +72,7 @@ namespace Matvec {
      * 
      * @param out_vec Pointer to the output vector.
      * @param in_vec Pointer to the input vector.
-     * @param mat_freq_tosi Pointer to the matrix in frequency domain (transpose of input, scaled).
+     * @param mat_freq_TOSI Pointer to the matrix in frequency domain (transpose of input, scaled).
      * @param padded_size The block size for matrix operations.
      * @param num_cols The number of columns in the matrix.
      * @param num_rows The number of rows in the matrix.
@@ -90,21 +90,22 @@ namespace Matvec {
      * @param inverse_plan_conj The inverse FFT plan for conjugate multiplication.
      * @param out_vec_pad Pointer to the padded output vector.
      * @param in_vec_freq Pointer to the input vector in frequency domain.
-     * @param out_vec_freq_tosi Pointer to the output vector in frequency domain (transpose of input, scaled).
-     * @param in_vec_freq_tosi Pointer to the input vector in frequency domain (transpose of input, scaled).
+     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of input, scaled).
+     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input, scaled).
      * @param out_vec_freq Pointer to the output vector in frequency domain.
      * @param cublasHandle The handle for the cuBLAS library.
-     * @param mat_freq_tosi_other Pointer to the matrix in frequency domain (transpose of input, scaled) on other devices.
+     * @param mat_freq_TOSI_aux Pointer to the matrix in frequency domain (transpose of input, scaled) on other devices.
      * @param res_pad Pointer to the padded result vector.
+     * @param use_aux_mat Flag indicating whether to use the auxiliary matrix for the full multiplication (i.e. FG^* or G^*F)
      */
-    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int padded_size,
+    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_TOSI, const unsigned int padded_size,
         const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
         const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
         cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
         cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj, double* const out_vec_pad,
-        Complex* const in_vec_freq, Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi,
-        Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_tosi_other,
-        double* const res_pad);
+        Complex* const in_vec_freq, Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
+        Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_TOSI_aux,
+        double* const res_pad, bool use_aux_mat = false);
 
 } // namespace Matvec
 

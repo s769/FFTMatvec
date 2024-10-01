@@ -8,7 +8,7 @@ enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 
 
 
-void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const unsigned int padded_size,
+void Matvec::setup(Complex** mat_freq_TOSI, const double* const h_mat, const unsigned int padded_size,
     const unsigned int num_cols, const unsigned int num_rows, cublasHandle_t cublasHandle)
 {
 
@@ -28,7 +28,7 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
     fft_int_t istride = 1;
     fft_int_t ostride = 1;
 
-#if !FFT_64
+#if !INDICES_64_BIT
 #if !ROW_SETUP
     cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
         ostride, odist, CUFFT_D2Z, (size_t)num_cols * num_rows));
@@ -45,14 +45,14 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
     gpuErrchk(cudaMalloc((void**)&d_mat, mat_len));
     gpuErrchk(cudaMemcpy(d_mat, h_mat, mat_len, cudaMemcpyHostToDevice));
     gpuErrchk(cudaMalloc(
-        (void**)mat_freq_tosi, (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(Complex)));
+        (void**)mat_freq_TOSI, (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(Complex)));
 
 #if !ROW_SETUP
-    cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_tosi));
+    cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_TOSI));
 #else
     for (int i = 0; i < num_rows; i++) {
         cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat + (size_t)i * padded_size * num_cols,
-            *mat_freq_tosi + (size_t)i * num_cols * (padded_size / 2 + 1)));
+            *mat_freq_TOSI + (size_t)i * num_cols * (padded_size / 2 + 1)));
     }
 #endif
 
@@ -60,54 +60,54 @@ void Matvec::setup(Complex** mat_freq_tosi, const double* const h_mat, const uns
     gpuErrchk(cudaFree(d_mat));
 
     double scale = 1.0 / padded_size;
-#if !FFT_64
+#if !INDICES_64_BIT
     cublasSafeCall(cublasZdscal(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
-        &scale, *mat_freq_tosi, 1));
+        &scale, *mat_freq_TOSI, 1));
 #else
     cublasSafeCall(cublasZdscal_64(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
-        &scale, *mat_freq_tosi, 1));
+        &scale, *mat_freq_TOSI, 1));
 #endif
 
     Complex* d_mat_freq_trans;
     gpuErrchk(cudaMalloc(
         (void**)&d_mat_freq_trans, sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols * num_rows));
     if (num_cols > 1 && num_rows > 1) {
-        Utils::swap_axes(*mat_freq_tosi, d_mat_freq_trans, num_cols, num_rows, (padded_size / 2 + 1));
+        Utils::swap_axes(*mat_freq_TOSI, d_mat_freq_trans, num_cols, num_rows, (padded_size / 2 + 1));
     } else {
         cuDoubleComplex aa({ 1, 0 });
         cuDoubleComplex bb({ 0, 0 });
         if (num_rows == 1) {
-#if !FFT_64
+#if !INDICES_64_BIT
             cublasSafeCall(
                 cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_cols, (padded_size / 2 + 1), &aa,
-                    *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_cols, d_mat_freq_trans, num_cols));
+                    *mat_freq_TOSI, (padded_size / 2 + 1), &bb, NULL, num_cols, d_mat_freq_trans, num_cols));
 #else
             cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_cols,
-                (padded_size / 2 + 1), &aa, *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_cols,
+                (padded_size / 2 + 1), &aa, *mat_freq_TOSI, (padded_size / 2 + 1), &bb, NULL, num_cols,
                 d_mat_freq_trans, num_cols));
 #endif
         } else {
-#if !FFT_64
+#if !INDICES_64_BIT
             cublasSafeCall(
                 cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_rows, (padded_size / 2 + 1), &aa,
-                    *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_rows, d_mat_freq_trans, num_rows));
+                    *mat_freq_TOSI, (padded_size / 2 + 1), &bb, NULL, num_rows, d_mat_freq_trans, num_rows));
 #else
             cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_rows,
-                (padded_size / 2 + 1), &aa, *mat_freq_tosi, (padded_size / 2 + 1), &bb, NULL, num_rows,
+                (padded_size / 2 + 1), &aa, *mat_freq_TOSI, (padded_size / 2 + 1), &bb, NULL, num_rows,
                 d_mat_freq_trans, num_rows));
 #endif
         }
     }
 
-    gpuErrchk(cudaFree(*mat_freq_tosi));
-    *mat_freq_tosi = d_mat_freq_trans;
+    gpuErrchk(cudaFree(*mat_freq_TOSI));
+    *mat_freq_TOSI = d_mat_freq_trans;
 }
 
 void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Complex* const d_mat_freq,
     const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
     const bool conjugate, const bool unpad, const unsigned int device, cufftHandle forward_plan,
     cufftHandle inverse_plan, double* const out_vec_pad, Complex* const in_vec_freq,
-    Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi, Complex* const out_vec_freq,
+    Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI, Complex* const out_vec_freq,
     cudaStream_t s, cublasHandle_t cublasHandle)
 {
 
@@ -132,15 +132,15 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 
     cuDoubleComplex alpha({ 1, 0 });
     cuDoubleComplex beta({ 0, 0 });
-#if !FFT_64
+#if !INDICES_64_BIT
     cublasSafeCall(
         cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (padded_size / 2 + 1), &alpha,
-            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
+            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_TOSI, vec_in_len));
 
 #else
     cublasSafeCall(
         cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len, (padded_size / 2 + 1), &alpha,
-            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_tosi, vec_in_len));
+            in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len, in_vec_freq_TOSI, vec_in_len));
 #endif
 
 #if TIME_MPI
@@ -154,15 +154,15 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 
     cublasOperation_t transa = (conjugate) ? CUBLAS_OP_C : CUBLAS_OP_N;
 
-#if !FFT_64
+#if !INDICES_64_BIT
     cublasSafeCall(cublasZgemvStridedBatched(cublasHandle, transa, num_rows, num_cols, &alpha,
-        d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_tosi, 1, vec_in_len, &beta,
-        out_vec_freq_tosi, 1, vec_out_len, (padded_size / 2 + 1)));
+        d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_TOSI, 1, vec_in_len, &beta,
+        out_vec_freq_TOSI, 1, vec_out_len, (padded_size / 2 + 1)));
 
 #else
     cublasSafeCall(cublasZgemvStridedBatched_64(cublasHandle, transa, num_rows, num_cols, &alpha,
-        d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_tosi, 1, vec_in_len, &beta,
-        out_vec_freq_tosi, 1, vec_out_len, (padded_size / 2 + 1)));
+        d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_TOSI, 1, vec_in_len, &beta,
+        out_vec_freq_TOSI, 1, vec_out_len, (padded_size / 2 + 1)));
 #endif
 
 #if TIME_MPI
@@ -174,13 +174,13 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
     (*tl)[ProfilerTimes::TRANS2].start();
 #endif
 
-#if !FFT_64
+#if !INDICES_64_BIT
     cublasSafeCall(cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1), vec_out_len,
-        &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (padded_size / 2 + 1), out_vec_freq,
+        &alpha, out_vec_freq_TOSI, vec_out_len, &beta, NULL, (padded_size / 2 + 1), out_vec_freq,
         (padded_size / 2 + 1)));
 #else
     cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1),
-        vec_out_len, &alpha, out_vec_freq_tosi, vec_out_len, &beta, NULL, (padded_size / 2 + 1),
+        vec_out_len, &alpha, out_vec_freq_TOSI, vec_out_len, &beta, NULL, (padded_size / 2 + 1),
         out_vec_freq, (padded_size / 2 + 1)));
 #endif
 
@@ -211,14 +211,14 @@ void Matvec::local_matvec(double* const out_vec, double* const in_vec, const Com
 #endif
 }
 
-void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_tosi, const unsigned int padded_size,
+void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_TOSI, const unsigned int padded_size,
     const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
     const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
     cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
     cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj, double* const out_vec_pad,
-    Complex* const in_vec_freq, Complex* const out_vec_freq_tosi, Complex* const in_vec_freq_tosi,
-    Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_tosi_other,
-    double* const res_pad)
+    Complex* const in_vec_freq, Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
+    Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_TOSI_aux,
+    double* const res_pad, bool use_aux_mat)
 {
 
 #if TIME_MPI
@@ -256,25 +256,25 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
     (*tl)[ProfilerTimes::PAD].stop();
 #endif
 
-    Complex *mat_freq_tosi1, *mat_freq_tosi2;
+    Complex *mat_freq_TOSI1, *mat_freq_TOSI2;
 
-    if (full) {
+    if (full && use_aux_mat) {
         if (conjugate) {
-            mat_freq_tosi1 = (mat_freq_tosi_other) ? mat_freq_tosi_other : mat_freq_tosi;
-            mat_freq_tosi2 = mat_freq_tosi;
+            mat_freq_TOSI1 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
+            mat_freq_TOSI2 = mat_freq_TOSI;
         } else {
-            mat_freq_tosi1 = mat_freq_tosi;
-            mat_freq_tosi2 = (mat_freq_tosi_other) ? mat_freq_tosi_other : mat_freq_tosi;
+            mat_freq_TOSI1 = mat_freq_TOSI;
+            mat_freq_TOSI2 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
         }
     } else {
-        mat_freq_tosi1 = mat_freq_tosi;
-        mat_freq_tosi2 = mat_freq_tosi;
+        mat_freq_TOSI1 = mat_freq_TOSI;
+        mat_freq_TOSI2 = mat_freq_TOSI;
     }
 
     double* res_vec = (full) ? res_pad : out_vec;
 
-    local_matvec(res_vec, in_vec_pad, mat_freq_tosi1, padded_size, num_cols, num_rows, conjugate, !(full),
-        device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_tosi, in_vec_freq_tosi, out_vec_freq, s,
+    local_matvec(res_vec, in_vec_pad, mat_freq_TOSI1, padded_size, num_cols, num_rows, conjugate, !(full),
+        device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_TOSI, in_vec_freq_TOSI, out_vec_freq, s,
         cublasHandle);
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -316,9 +316,9 @@ void Matvec::compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_t
         (*tl2)[ProfilerTimes::TOT].start();
 #endif
 
-        local_matvec(out_vec, res_vec, mat_freq_tosi2, padded_size, num_cols, num_rows, !(conjugate), true,
-            device, forward_plan_conj, inverse_plan_conj, in_vec_pad, out_vec_freq, in_vec_freq_tosi,
-            out_vec_freq_tosi, in_vec_freq, s, cublasHandle);
+        local_matvec(out_vec, res_vec, mat_freq_TOSI2, padded_size, num_cols, num_rows, !(conjugate), true,
+            device, forward_plan_conj, inverse_plan_conj, in_vec_pad, out_vec_freq, in_vec_freq_TOSI,
+            out_vec_freq_TOSI, in_vec_freq, s, cublasHandle);
 
 #if TIME_MPI
         gpuErrchk(cudaDeviceSynchronize());

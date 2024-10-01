@@ -33,10 +33,10 @@
 
 #define TIME_MPI 1
 #define ERR_CHK 1
-#define FFT_64 0
+#define INDICES_64_BIT 0
 #define ROW_SETUP 1
 
-#if FFT_64
+#if INDICES_64_BIT
 typedef long long int fft_int_t;
 #else
 typedef int fft_int_t;

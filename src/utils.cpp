@@ -28,8 +28,6 @@ void Utils::get_host_name(char* hostname, int maxlen)
     }
 }
 
-
-
 void Utils::print_vec(double* vec, int len, int block_size, std::string name)
 {
     double* h_vec;
@@ -310,8 +308,8 @@ void Utils::swap_axes(
         handle, &descB, nmode, extentB.data(), nullptr, typeB, kAlignment));
 
     cutensorOperationDescriptor_t desc;
-    cutensorSafeCall(cutensorCreatePermutation(
-        handle, &desc, descA, modeA.data(), CUTENSOR_OP_IDENTITY, descB, modeB.data(), descCompute));
+    cutensorSafeCall(cutensorCreatePermutation(handle, &desc, descA, modeA.data(),
+        CUTENSOR_OP_IDENTITY, descB, modeB.data(), descCompute));
 
     cutensorDataType_t scalarType;
     cutensorSafeCall(cutensorOperationDescriptorGetAttribute(handle, desc,
@@ -336,12 +334,10 @@ void Utils::swap_axes(
     cutensorSafeCall(cutensorDestroyPlanPreference(planPref));
     cutensorSafeCall(cutensorDestroyTensorDescriptor(descA));
     cutensorSafeCall(cutensorDestroyTensorDescriptor(descB));
-
-
-
 }
 
-void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props) {
+void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props)
+{
     auto mnccp = HighFive::MpioNoCollectiveCause(xfer_props);
     if (mnccp.getLocalCause() || mnccp.getGlobalCause()) {
         std::cout
@@ -350,27 +346,41 @@ void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props) {
     }
 }
 
-
-size_t Utils::get_start_index(int glob_num_blocks, int color, int comm_size) {
+size_t Utils::get_start_index(int glob_num_blocks, int color, int comm_size)
+{
     return (color < glob_num_blocks % comm_size)
         ? (glob_num_blocks / comm_size + 1) * color
         : (glob_num_blocks / comm_size) * color + glob_num_blocks % comm_size;
 }
 
-int Utils::global_to_local_size(int global_size, int color, int comm_size) {
+int Utils::global_to_local_size(int global_size, int color, int comm_size)
+{
     if (color >= comm_size) {
-        fprintf(stderr, "Invalid color for communicator. Got color = %d, comm_size = %d\n",
-            color, comm_size);
+        fprintf(stderr, "Invalid color for communicator. Got color = %d, comm_size = %d\n", color,
+            comm_size);
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
     if (global_size < comm_size) {
-        fprintf(stderr, "Make sure global_size >= comm_size. Got global_size = %d, comm_size = %d\n",
+        fprintf(stderr,
+            "Make sure global_size >= comm_size. Got global_size = %d, comm_size = %d\n",
             global_size, comm_size);
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
-    return (color < global_size % comm_size) ? global_size / comm_size + 1 : global_size / comm_size;
+    return (color < global_size % comm_size) ? global_size / comm_size + 1
+                                             : global_size / comm_size;
 }
 
-int Utils::local_to_global_size(int local_size, int comm_size) {
-    return local_size * comm_size;
+int Utils::local_to_global_size(int local_size, int comm_size) { return local_size * comm_size; }
+
+void Utils::alltoall_v(ncclComm_t gpu_comm, double* sendbuf, int* sendcounts, int* sdispls,
+    double* recvbuf, int* recvcounts, int* rdispls, int size, int rank, cudaStream_t stream) {
+
+    // AlltoAll_v operation using NCCL
+    NCCLCHECK(ncclGroupStart());
+    for (int i = 0; i < size; i++) {
+        NCCLCHECK(ncclSend(sendbuf + sdispls[i], sendcounts[i], ncclDouble, i, gpu_comm, stream));
+        NCCLCHECK(ncclRecv(recvbuf + rdispls[i], recvcounts[i], ncclDouble, i, gpu_comm, stream));
+    }
+    NCCLCHECK(ncclGroupEnd());
+    
 }

@@ -9,23 +9,30 @@
 #include "Comm.hpp"
 #include "shared.hpp"
 
+class Matrix; // forward declaration
+
 /**
  * @class Vector
  * @brief Represents a vector.
  */
 class Vector {
 private:
-    Comm& comm; /**< Reference to the Comm object. */
     unsigned int num_blocks; /**< Number of blocks. */
     unsigned int glob_num_blocks; /**< Global number of blocks. */
     unsigned int padded_size; /**< Size of each block with padding. */
     unsigned int block_size; /**< Size of each block without padding. */
-    bool soti_ordering; /**< Flag indicating whether to use SOTI ordering. */
+    bool SOTI_ordering; /**< Flag indicating whether to use SOTI ordering. */
     double* d_vec; /**< Pointer to the vector data. */
     std::string row_or_col; /**< Indicates whether the vector is row or column. */
     bool initialized = false; /**< Flag indicating if the vector is initialized. */
 
+    // void to_TOSI_local(); /**< Reorder the vector to TOSI ordering (locally). */
+    // void to_SOTI_local(); /**< Reorder the vector to SOTI ordering (locally). */
+
+    // void switch_ordering(); /**< Switch the ordering of the vector. */
+
 public:
+    Comm& comm; /**< Reference to the communication object. */
     /**
      * @brief Constructor for the Vector class.
      * @param comm The Comm object (passed as reference).
@@ -33,10 +40,10 @@ public:
      * @param block_size The size of each block without padding.
      * @param row_or_col Indicates whether the vector is row or column.
      * @param global_sizes Flag indicating whether the sizes are global.
-     * @param soti_ordering Flag indicating whether to use SOTI ordering.
+     * @param SOTI_ordering Flag indicating whether to use SOTI ordering.
      */
     Vector(Comm& comm, unsigned int blocks, unsigned int block_size, std::string row_or_col,
-        bool global_sizes = false, bool soti_ordering = true);
+        bool global_sizes = false, bool SOTI_ordering = true);
 
     /**
      * @brief Copy constructor for the Vector class.
@@ -165,10 +172,16 @@ public:
     void init_vec_zeros();
 
     /**
+     * @brief Initializes the vector with consecutive integers.
+     */
+    void init_vec_consecutive();
+
+    /**
      * @brief Initializes the vector from a file.
      * @param filename The name of the file.
+     * @param QoI Flag indicating whether the vector is a quantity of interest or regular observation (if applicable).
      */
-    void init_vec_from_file(std::string filename);
+    void init_vec_from_file(std::string filename, bool QoI = false);
 
     /**
      * @brief Checks if the calling process has the vector data.
@@ -258,6 +271,16 @@ public:
      */
     void save(std::string filename);
 
+    // /**
+    //  * @brief Converts from SOTI to TOSI ordering.
+    //  */
+    // void to_TOSI();
+
+    // /**
+    //  * @brief Converts from TOSI to SOTI ordering.
+    //  */
+    // void to_SOTI();
+
     // Getters
 
     /**
@@ -291,12 +314,6 @@ public:
     unsigned int get_block_size() { return block_size; }
 
     /**
-     * @brief Gets the communication object.
-     * @return The communication object.
-     */
-    Comm& get_comm() { return comm; }
-
-    /**
      * @brief Gets the row or column descriptor.
      * @return The row or column descriptor.
      */
@@ -312,7 +329,7 @@ public:
      * @brief Checks if the vector is using SOTI ordering.
      * @return True if the vector is using SOTI ordering, false otherwise.
      */
-    bool is_soti_ordered() { return soti_ordering; }
+    bool is_SOTI_ordered() { return SOTI_ordering; }
 
     // Setters
 

@@ -142,6 +142,7 @@ int main(int argc, char** argv)
             printf("Created Matrices\n");
 
         F.init_mat_ones();
+        F.init_mat_ones(true);
 
         if (world_rank == 0)
             printf("Initialized Matrices\n");
@@ -278,7 +279,7 @@ int main(int argc, char** argv)
 
         test1.save("test1.h5");
 
-        Matrix F2(comm, "/global/homes/s/srvenkat/test_1_new/p2o_reindex/");
+        Matrix F2(comm, "/global/homes/s/srvenkat/test_1_new/p2o_reindex/", "/global/homes/s/srvenkat/test_1_new/p2o_prior_reindex/");
 
         Vector in_F2(comm, F2.get_glob_num_cols(), F2.get_block_size(), "col", true),
             out_F2(comm, F2.get_glob_num_rows(), F2.get_block_size(), "row", true);
@@ -302,6 +303,7 @@ int main(int argc, char** argv)
             printf("||d|| %f\n", norm_true);
             printf("||F*m -d||/||d|| %f\n", norm_diff/norm_true);
         }
+
 
 
 

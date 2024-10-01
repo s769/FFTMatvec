@@ -1,12 +1,12 @@
 #include "Vector.hpp"
 
 Vector::Vector(Comm& comm, unsigned int blocks, unsigned int block_size, std::string row_or_col,
-    bool global_sizes, bool soti_ordering)
+    bool global_sizes, bool SOTI_ordering)
     : comm(comm)
     , block_size(block_size)
     , padded_size(2 * block_size)
     , row_or_col(row_or_col)
-    , soti_ordering(soti_ordering)
+    , SOTI_ordering(SOTI_ordering)
 {
     // Initialize the vector data structures. If row_or_col is "row", then the vector is a row
     // vector, otherwise it is a column vector. For row vectors, initialize only on row_color == 0,
@@ -42,7 +42,7 @@ Vector::Vector(Vector& vec, bool deep_copy)
     , padded_size(vec.padded_size)
     , block_size(vec.block_size)
     , row_or_col(vec.row_or_col)
-    , soti_ordering(vec.soti_ordering)
+    , SOTI_ordering(vec.SOTI_ordering)
 {
     // Copy constructor for the Vector class. If deep_copy is true, then copy the data from vec,
     // otherwise just allocate memory.
@@ -67,7 +67,7 @@ Vector& Vector::operator=(Vector& vec)
         padded_size = vec.padded_size;
         block_size = vec.block_size;
         row_or_col = vec.row_or_col;
-        soti_ordering = vec.soti_ordering;
+        SOTI_ordering = vec.SOTI_ordering;
 
         if (on_grid()) {
             gpuErrchk(cudaMalloc((void**)&d_vec, (size_t)num_blocks * block_size * sizeof(double)));
@@ -93,7 +93,7 @@ Vector& Vector::operator=(Vector&& vec)
         row_or_col = vec.row_or_col;
         d_vec = vec.d_vec;
         initialized = vec.initialized;
-        soti_ordering = vec.soti_ordering;
+        SOTI_ordering = vec.SOTI_ordering;
 
         vec.d_vec = nullptr;
     }
@@ -132,7 +132,7 @@ void Vector::init_vec_ones()
     if (on_grid()) {
         double* h_vec = new double[num_blocks * block_size];
 #pragma omp parallel for
-        for (int i = 0; i < num_blocks * block_size; i++) {
+        for (size_t i = 0; i < (size_t)num_blocks * block_size; i++) {
             h_vec[i] = 1.0;
         }
         // copy to device
@@ -143,7 +143,26 @@ void Vector::init_vec_ones()
     initialized = true;
 }
 
-void Vector::init_vec_from_file(std::string filename)
+void Vector::init_vec_consecutive()
+{
+    // Initialize the vector with consecutive integers (global across all processes containing the
+    // vector)
+    if (on_grid()) {
+        double* h_vec = new double[num_blocks * block_size];
+        size_t start = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
+        start *= num_blocks * block_size;
+#pragma omp parallel for
+        for (size_t i = 0; i < (size_t)num_blocks * block_size; i++) {
+            h_vec[i] = i + start;
+        }
+        // copy to device
+        gpuErrchk(cudaMemcpy(d_vec, h_vec, (size_t)num_blocks * block_size * sizeof(double),
+            cudaMemcpyHostToDevice));
+        delete[] h_vec;
+    }
+    initialized = true;
+}
+void Vector::init_vec_from_file(std::string filename, bool QoI)
 {
     // Use HighFive to read in the vector from a file
     // Initialize the vector with the data from the file
@@ -164,6 +183,7 @@ void Vector::init_vec_from_file(std::string filename)
 
             auto dataset = file.getDataSet("vec");
             int reindex, n_blocks, steps;
+            int QoI_flag;
 
             if (row_or_col == "col") {
                 dataset.getAttribute("n_param").read<int>(n_blocks);
@@ -171,13 +191,21 @@ void Vector::init_vec_from_file(std::string filename)
             } else {
                 dataset.getAttribute("n_obs").read<int>(n_blocks);
                 dataset.getAttribute("obs_steps").read<int>(steps);
+                if (QoI) {
+                    dataset.getAttribute("qoi").read<int>(QoI_flag);
+                    if (QoI_flag != 1) {
+                        fprintf(stderr, "qoi attribute must be 1. Got qoi attribute = %d.\n", QoI_flag);
+                        MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+                    }
+                }
             }
             dataset.getAttribute("reindex").read<int>(reindex);
 
-            if ((bool) reindex != soti_ordering) {
-                fprintf(stderr, "reindex must match soti_ordering. Got reindex = %d, soti_ordering "
-                                "= %d.\n",
-                    reindex, soti_ordering);
+            if ((bool)reindex != SOTI_ordering) {
+                fprintf(stderr,
+                    "reindex must match SOTI_ordering. Got reindex = %d, SOTI_ordering "
+                    "= %d.\n",
+                    reindex, SOTI_ordering);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (n_blocks != glob_num_blocks) {
                 fprintf(stderr,
@@ -269,7 +297,7 @@ double Vector::norm(int order)
 
         switch (order) {
         case 1:
-#if !FFT_64
+#if !INDICES_64_BIT
             cublasSafeCall(cublasDasum(cublasHandle, num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
@@ -279,7 +307,7 @@ double Vector::norm(int order)
 
             break;
         case 2:
-#if !FFT_64
+#if !INDICES_64_BIT
             cublasSafeCall(cublasDnrm2(cublasHandle, num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
@@ -290,7 +318,7 @@ double Vector::norm(int order)
             global_norm = std::sqrt(global_norm);
             break;
         case -1:
-#if !FFT_64
+#if !INDICES_64_BIT
             int max_index;
             cublasSafeCall(
                 cublasIdamax(cublasHandle, num_blocks * block_size, d_vec, 1, &max_index));
@@ -327,7 +355,7 @@ void Vector::scale(double alpha)
     if (on_grid()) {
         // use cuBLAS to scale the vector
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
-#if !FFT_64
+#if !INDICES_64_BIT
         cublasSafeCall(cublasDscal(cublasHandle, num_blocks * block_size, &alpha, d_vec, 1));
 #else
         cublasSafeCall(
@@ -371,7 +399,7 @@ void Vector::axpy(double alpha, Vector& x)
     if (on_grid()) {
         // use cuBLAS to compute the axpy operation
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
-#if !FFT_64
+#if !INDICES_64_BIT
         cublasSafeCall(
             cublasDaxpy(cublasHandle, num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
 #else
@@ -438,7 +466,7 @@ double Vector::dot(Vector& x)
         dot = 0.0;
         // use cuBLAS to compute the dot product
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
-#if !FFT_64
+#if !INDICES_64_BIT
         cublasSafeCall(
             cublasDdot(cublasHandle, num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
 #else
@@ -503,7 +531,7 @@ void Vector::save(std::string filename)
                 dataset.createAttribute<int>("n_obs", glob_num_blocks);
                 dataset.createAttribute<int>("obs_steps", block_size);
             }
-            dataset.createAttribute<int>("reindex", (int)soti_ordering);
+            dataset.createAttribute<int>("reindex", (int)SOTI_ordering);
 
             file.flush();
 
@@ -515,3 +543,150 @@ void Vector::save(std::string filename)
         }
     }
 }
+
+// void Vector::to_TOSI_local()
+// {
+//     cublasHandle_t cublasHandle = comm.get_cublasHandle();
+//     double alpha = 1.0;
+//     double beta = 0.0;
+
+//     double* d_vec_TOSI;
+//     gpuErrchk(cudaMalloc((void**)&d_vec_TOSI, (size_t)num_blocks * block_size * sizeof(double)));
+
+// #if !INDICES_64_BIT
+//     cublasSafeCall(cublasDgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_blocks, block_size,
+//         &alpha, d_vec, block_size, &beta, NULL, num_blocks, d_vec_TOSI, num_blocks));
+
+// #else
+//     cublasSafeCall(cublasDgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_blocks, block_size,
+//         &alpha, d_vec, block_size, &beta, NULL, num_blocks, d_vec_TOSI, num_blocks));
+// #endif
+
+//     gpuErrchk(cudaFree(d_vec));
+//     d_vec = d_vec_TOSI;
+//     SOTI_ordering = false;
+// }
+
+// void Vector::to_SOTI_local()
+// {
+//     cublasHandle_t cublasHandle = comm.get_cublasHandle();
+//     double alpha = 1.0;
+//     double beta = 0.0;
+
+//     double* d_vec_SOTI;
+//     gpuErrchk(cudaMalloc((void**)&d_vec_SOTI, (size_t)num_blocks * block_size * sizeof(double)));
+
+// #if !INDICES_64_BIT
+//     cublasSafeCall(cublasDgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, block_size, num_blocks,
+//         &alpha, d_vec, num_blocks, &beta, NULL, block_size, d_vec_SOTI, block_size));
+// #else
+//     cublasSafeCall(cublasDgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, block_size, num_blocks,
+//         &alpha, d_vec, num_blocks, &beta, NULL, block_size, d_vec_SOTI, block_size));
+// #endif
+
+//     gpuErrchk(cudaFree(d_vec));
+//     d_vec = d_vec_SOTI;
+//     SOTI_ordering = true;
+// }
+
+// void Vector::switch_ordering()
+// {
+//     int distribute_procs = (row_or_col == "col") ? comm.get_proc_cols() : comm.get_proc_rows();
+//     int distribute_rank = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
+//     printf("rank: %d, distribute_procs: %d, distribute_rank: %d\n", comm.get_world_rank(),
+//         distribute_procs, distribute_rank);
+
+//     unsigned int new_block_size = (distribute_rank < block_size % distribute_procs)
+//         ? block_size / distribute_procs + 1
+//         : block_size / distribute_procs;
+//     std::vector<int> sendcounts(distribute_procs), recvcounts(distribute_procs),
+//         sdispls(distribute_procs), rdispls(distribute_procs);
+//     int send_offset = 0, recv_offset = 0;
+
+//     for (int i = 0; i < distribute_procs; i++) {
+//         sendcounts[i] = (i < (distribute_procs < block_size % distribute_procs))
+//             ? (block_size / distribute_procs + 1) * num_blocks
+//             : (block_size / distribute_procs) * num_blocks;
+//         sdispls[i] = send_offset;
+//         send_offset += sendcounts[i];
+//     }
+
+//     for (int i = 0; i < distribute_procs; ++i) {
+//         recvcounts[i] = (i < (block_size % distribute_procs))
+//             ? (block_size / distribute_procs + 1) * glob_num_blocks
+//             : (block_size / distribute_procs) * glob_num_blocks;
+//         rdispls[i] = recv_offset;
+//         recv_offset += recvcounts[i];
+//     }
+
+//     double *sendbuf, *recvbuf;
+
+//     gpuErrchk(cudaMalloc((void**)&sendbuf, (size_t)send_offset * sizeof(double)));
+//     gpuErrchk(
+//         cudaMemcpy(sendbuf, d_vec, (size_t)send_offset * sizeof(double), cudaMemcpyDeviceToDevice));
+//     gpuErrchk(cudaMalloc((void**)&recvbuf, (size_t)recv_offset * sizeof(double)));
+
+//     ncclComm_t gpu_comm = (row_or_col == "col") ? comm.get_gpu_row_comm() : comm.get_gpu_col_comm();
+//     cudaStream_t stream = comm.get_stream();
+
+//     Utils::alltoall_v(gpu_comm, sendbuf, sendcounts.data(), sdispls.data(), recvbuf,
+//         recvcounts.data(), rdispls.data(), distribute_procs, distribute_rank, stream);
+
+//     double * h_vec = new double[recv_offset];
+//     gpuErrchk(cudaMemcpy(h_vec, recvbuf, (size_t)recv_offset * sizeof(double), cudaMemcpyDeviceToHost));
+//     for (int i = 0; i < recv_offset; i++) {
+//         printf("rank: %d, recvbuf[%d] = %f\n", distribute_rank, i, h_vec[i]);
+//     }
+
+//     gpuErrchk(cudaFree(sendbuf));
+//     gpuErrchk(cudaFree(d_vec));
+//     d_vec = recvbuf;
+//     int temp = block_size;
+//     num_blocks = new_block_size;
+//     block_size = glob_num_blocks;
+//     glob_num_blocks = temp;
+//     gpuErrchk(cudaFree(recvbuf));
+// }
+
+// void Vector::to_TOSI()
+// {
+//     if (!initialized) {
+//         fprintf(stderr, "Vector not initialized.\n");
+//         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+//     }
+//     if (!SOTI_ordering) {
+//         if (comm.get_world_rank() == 0) {
+//             fprintf(stderr, "Vector is already in TOSI ordering.\n");
+//         }
+//         return;
+//     }
+//     printf("HERE1: rank: %d, col: %d, row: %d\n", comm.get_world_rank(), comm.get_col_color(),
+//         comm.get_row_color());
+//     if (on_grid()) {
+//         printf("rank: %d, col: %d, row: %d\n", comm.get_world_rank(), comm.get_col_color(),
+//             comm.get_row_color());
+//         to_TOSI_local();
+//         switch_ordering();
+//         SOTI_ordering = false;
+//     }
+// }
+
+// // void Vector::to_SOTI()
+// {
+//     if (!initialized) {
+//         fprintf(stderr, "Vector not initialized.\n");
+//         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+//     }
+//     if (SOTI_ordering) {
+//         if (comm.get_world_rank() == 0) {
+//             fprintf(stderr, "Vector is already in SOTI ordering.\n");
+//         }
+//         return;
+//     }
+
+//     if (on_grid()) {
+//         switch_ordering();
+//         to_SOTI_local();
+//         SOTI_ordering = true;
+//     }
+// }

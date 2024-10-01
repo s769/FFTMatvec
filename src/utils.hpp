@@ -160,6 +160,22 @@ int global_to_local_size(int global_size, int color, int comm_size);
  */
 int local_to_global_size(int local_size, int comm_size);
 
+/**
+ * @brief AlltoAll_v operation using NCCL.
+ * @param gpu_comm The NCCL communicator.
+ * @param sendbuf The send buffer.
+ * @param sendcounts The send counts.
+ * @param sdispls The send displacements.
+ * @param recvbuf The receive buffer.
+ * @param recvcounts The receive counts.
+ * @param rdispls The receive displacements.
+ * @param size The number of processes.
+ * @param rank The rank of the current process.
+ * @param stream The CUDA stream to use for the operation.
+ */
+void alltoall_v(ncclComm_t gpu_comm, double* sendbuf, int* sendcounts, int* sdispls,
+                double* recvbuf, int* recvcounts, int* rdispls, int size, int rank, cudaStream_t stream);
+
 } // namespace Utils
 
 #endif // __UTILS_H__
