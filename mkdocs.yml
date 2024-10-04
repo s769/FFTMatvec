@@ -30,7 +30,7 @@ plugins:
           src-dirs: src/ # path to source code (support multiple paths separated by space) => INPUT
           full-doc: True # if you want to generate full documentation
           doxy-cfg: # standard doxygen configuration (key: value)
-            FILE_PATTERNS: "Comm.*pp main.cpp Matrix.*pp matvec.*pp shared.hpp tester.*pp utils.*pp util_kernels.cu util_kernels.hpp Vector.*pp error_checkers.h comm_error_checkers.h" # specify file patterns to filter out
+            FILE_PATTERNS: "Comm.*pp main.cpp Matrix.*pp shared.hpp tester.*pp utils.*pp util_kernels.cu util_kernels.hpp Vector.*pp error_checkers.h comm_error_checkers.h" # specify file patterns to filter out
             RECURSIVE: True # recursive search in source directories
 
 nav:
@@ -41,7 +41,6 @@ nav:
         - "Matrix": "FFTMatvec/classMatrix.md"
         - "Vector": "FFTMatvec/classVector.md"
     - "Namespaces":
-        - "Matvec": "FFTMatvec/namespaceMatvec.md"
         - "Utils": "FFTMatvec/namespaceUtils.md"
         - "UtilKernels": "FFTMatvec/namespaceUtilKernels.md"
         - "Tester": "FFTMatvec/namespaceTester.md"

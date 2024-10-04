@@ -1,81 +1,82 @@
-#include "Comm.hpp"
-#include "gtest-mpi-listener.hpp"
 #include "shared.hpp"
+#include "utils.hpp"
 #include <gtest/gtest.h>
 
-int proc_rows, proc_cols;
-
-class UtilsTest : public ::testing::Test {
-protected:
-    static Comm* comm;
-    static void SetUpTestSuite()
-    {
-        if (comm == nullptr) {
-            comm = new Comm(MPI_COMM_WORLD, proc_rows, proc_cols);
-        }
-    }
-    static void TearDownTestSuite()
-    {
-        if (comm != nullptr) {
-            delete comm;
-            comm = nullptr;
-        }
-    }
-};
-
-Comm* UtilsTest::comm = nullptr;
-
-TEST_F(UtilsTest, Example)
+TEST(UtilsTest, GetHostHash)
 {
-    printf("proc_rows = %d, proc_cols = %d\n", proc_rows, proc_cols);
-    printf(
-        "comm proc_rows = %d, comm proc_cols = %d\n", comm->get_proc_rows(), comm->get_proc_cols());
-    ASSERT_EQ(comm->get_proc_rows(), proc_rows);
-    ASSERT_EQ(comm->get_proc_cols(), proc_cols);
+    uint64_t hash = Utils::get_host_hash("localhost");
+    ASSERT_EQ(hash, 249786565182708392);
 }
 
-TEST_F(UtilsTest, Example2)
+TEST(UtilsTest, GetHostName)
 {
-    printf("proc_rows = %d, proc_cols = %d\n", proc_rows, proc_cols);
-    printf(
-        "comm proc_rows = %d, comm proc_cols = %d\n", comm->get_proc_rows(), comm->get_proc_cols());
-    ASSERT_EQ(comm->get_proc_rows(), proc_rows);
-    ASSERT_EQ(comm->get_proc_cols(), proc_cols);
+    char hostname[256];
+    Utils::get_host_name(hostname, 256);
+    ASSERT_TRUE(strlen(hostname) > 0);
 }
 
-int main(int argc, char** argv)
+TEST(UtilsTest, SwapAxes)
 {
-    // Filter out Google Test arguments
-    ::testing::InitGoogleTest(&argc, argv);
-
-    // Initialize MPI
-    MPI_Init(&argc, &argv);
-
-    // Add object that will finalize MPI on exit; Google Test owns this pointer
-    ::testing::AddGlobalTestEnvironment(new GTestMPIListener::MPIEnvironment);
-
-    // Get the event listener list.
-    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-
-    // Remove default listener: the default printer and the default XML printer
-    ::testing::TestEventListener* l = listeners.Release(listeners.default_result_printer());
-
-    // Adds MPI listener; Google Test owns this pointer
-    listeners.Append(new GTestMPIListener::MPIWrapperPrinter(l, MPI_COMM_WORLD));
-    // Run tests, then clean up and exit. RUN_ALL_TESTS() returns 0 if all tests
-    // pass and 1 if some test fails.
-
-    int world_size;
-    MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &world_size));
-    proc_cols = sqrt(world_size);
-    proc_rows = world_size / proc_cols;
-    if (proc_rows > proc_cols) {
-        int temp = proc_cols;
-        proc_cols = proc_rows;
-        proc_rows = temp;
+    int num_cols = 3;
+    int num_rows = 2;
+    int padded_size = 4;
+    Complex* d_in;
+    Complex* d_out;
+    gpuErrchk(cudaMalloc(&d_in, num_cols * num_rows * padded_size * sizeof(Complex)));
+    Complex* h_in = new Complex[num_cols * num_rows * padded_size * 2];
+    for (int i = 0; i < num_cols * num_rows * padded_size * 2; i++) {
+        h_in[i] = { i, i + 1 };
     }
-    printf("proc_rows = %d, proc_cols = %d\n", proc_rows, proc_cols);
-    int result = RUN_ALL_TESTS();
+    gpuErrchk(cudaMemcpy(
+        d_in, h_in, num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMalloc(&d_out, num_cols * num_rows * padded_size * sizeof(Complex)));
+    Utils::swap_axes(d_in, d_out, num_cols, num_rows, padded_size);
+    Complex* h_out = new Complex[num_cols * num_rows * padded_size];
+    gpuErrchk(cudaMemcpy(
+        h_out, d_out, num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+    for (int r = 0; r < num_rows; r++) {
+        for (int c = 0; c < num_cols; c++) {
+            for (int t = 0; t < padded_size; t++) {
+                int idx = r * num_cols * padded_size + c * padded_size + t;
+                int idx2 = t * num_rows * num_cols + c * num_rows + r;
+                ASSERT_EQ(h_in[idx].x, h_out[idx2].x);
+                ASSERT_EQ(h_in[idx].y, h_out[idx2].y);
+            }
+        }
+    }
 
-    return result; // Run tests, then clean up and exit
+    delete[] h_in;
+    delete[] h_out;
+    gpuErrchk(cudaFree(d_in));
+    gpuErrchk(cudaFree(d_out));
+}
+
+TEST(UtilsTest, GetStartIndex)
+{
+    int glob_num_blocks = 10;
+    int comm_size = 4;
+    int correct_start_indices[4] = {0, 3, 6, 8};
+    for (int color = 0; color < comm_size; color ++){
+        size_t start_index = Utils::get_start_index(glob_num_blocks, color, comm_size);
+        ASSERT_EQ(start_index, correct_start_indices[color]);
+    }
+}
+
+TEST(UtilsTest, GlobalToLocalSize)
+{
+    int global_size = 10;
+    int comm_size = 4;
+    int correct_local_sizes[4] = {3, 3, 2, 2};
+    for (int color = 0; color < comm_size; color ++){
+        int local_size = Utils::global_to_local_size(global_size, color, comm_size);
+        ASSERT_EQ(local_size, correct_local_sizes[color]);
+    }
+}
+
+TEST(UtilsTest, LocalToGlobalSize)
+{
+    int local_size = 3;
+    int comm_size = 4;
+    int global_size = Utils::local_to_global_size(local_size, comm_size);
+    ASSERT_EQ(global_size, 12);
 }

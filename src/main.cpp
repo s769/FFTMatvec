@@ -18,7 +18,6 @@
 #include "Matrix.hpp"
 #include "Vector.hpp"
 #include "cmdparser.hpp"
-#include "matvec.hpp"
 #include "shared.hpp"
 #include "tester.hpp"
 #include "utils.hpp"
