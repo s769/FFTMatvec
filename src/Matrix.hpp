@@ -26,8 +26,8 @@ private:
     unsigned int block_size; /**< The unpadded block size of the matrix. */
     unsigned int num_cols; /**< The number of columns in the matrix. */
     unsigned int num_rows; /**< The number of rows in the matrix. */
-    unsigned int glob_num_cols; /**< The global number of columns in the matrix. */
-    unsigned int glob_num_rows; /**< The global number of rows in the matrix. */
+    size_t glob_num_cols; /**< The global number of columns in the matrix. */
+    size_t glob_num_rows; /**< The global number of rows in the matrix. */
     double* col_vec_unpad; /**< Pointer to the unpadded column vector. */
     double* col_vec_pad; /**< Pointer to the padded column vector. */
     double* row_vec_pad; /**< Pointer to the padded row vector. */

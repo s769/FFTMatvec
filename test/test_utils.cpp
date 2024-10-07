@@ -22,23 +22,23 @@ TEST(UtilsTest, SwapAxes)
     int padded_size = 4;
     Complex* d_in;
     Complex* d_out;
-    gpuErrchk(cudaMalloc(&d_in, num_cols * num_rows * padded_size * sizeof(Complex)));
-    Complex* h_in = new Complex[num_cols * num_rows * padded_size * 2];
-    for (int i = 0; i < num_cols * num_rows * padded_size * 2; i++) {
+    gpuErrchk(cudaMalloc(&d_in, (size_t) num_cols * num_rows * padded_size * sizeof(Complex)));
+    Complex* h_in = new Complex[(size_t) num_cols * num_rows * padded_size * 2];
+    for (size_t i = 0; i < (size_t) num_cols * num_rows * padded_size * 2; i++) {
         h_in[i] = { i, i + 1 };
     }
     gpuErrchk(cudaMemcpy(
-        d_in, h_in, num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc(&d_out, num_cols * num_rows * padded_size * sizeof(Complex)));
+        d_in, h_in, (size_t) num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMalloc(&d_out, (size_t) num_cols * num_rows * padded_size * sizeof(Complex)));
     Utils::swap_axes(d_in, d_out, num_cols, num_rows, padded_size);
-    Complex* h_out = new Complex[num_cols * num_rows * padded_size];
+    Complex* h_out = new Complex[(size_t) num_cols * num_rows * padded_size];
     gpuErrchk(cudaMemcpy(
         h_out, d_out, num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyDeviceToHost));
     for (int r = 0; r < num_rows; r++) {
         for (int c = 0; c < num_cols; c++) {
             for (int t = 0; t < padded_size; t++) {
-                int idx = r * num_cols * padded_size + c * padded_size + t;
-                int idx2 = t * num_rows * num_cols + c * num_rows + r;
+                size_t idx = r * num_cols * padded_size + c * padded_size + t;
+                size_t idx2 = t * num_rows * num_cols + c * num_rows + r;
                 ASSERT_EQ(h_in[idx].x, h_out[idx2].x);
                 ASSERT_EQ(h_in[idx].y, h_out[idx2].y);
             }
@@ -53,7 +53,7 @@ TEST(UtilsTest, SwapAxes)
 
 TEST(UtilsTest, GetStartIndex)
 {
-    int glob_num_blocks = 10;
+    size_t glob_num_blocks = 10;
     int comm_size = 4;
     int correct_start_indices[4] = {0, 3, 6, 8};
     for (int color = 0; color < comm_size; color ++){

@@ -55,6 +55,7 @@ Vector::Vector(Vector& vec, bool deep_copy)
     } else {
         d_vec = nullptr;
     }
+    initialized = deep_copy && vec.initialized;
 }
 
 Vector& Vector::operator=(Vector& vec)
@@ -68,6 +69,7 @@ Vector& Vector::operator=(Vector& vec)
         block_size = vec.block_size;
         row_or_col = vec.row_or_col;
         SOTI_ordering = vec.SOTI_ordering;
+        initialized = vec.initialized;
 
         if (on_grid()) {
             gpuErrchk(cudaMalloc((void**)&d_vec, (size_t)num_blocks * block_size * sizeof(double)));
@@ -130,7 +132,7 @@ void Vector::init_vec_ones()
     // make double array on host
 
     if (on_grid()) {
-        double* h_vec = new double[num_blocks * block_size];
+        double* h_vec = new double[(size_t) num_blocks * block_size];
 #pragma omp parallel for
         for (size_t i = 0; i < (size_t)num_blocks * block_size; i++) {
             h_vec[i] = 1.0;
@@ -148,7 +150,7 @@ void Vector::init_vec_consecutive()
     // Initialize the vector with consecutive integers (global across all processes containing the
     // vector)
     if (on_grid()) {
-        double* h_vec = new double[num_blocks * block_size];
+        double* h_vec = new double[(size_t) num_blocks * block_size];
         size_t start = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
         start *= num_blocks * block_size;
 #pragma omp parallel for
@@ -249,7 +251,7 @@ void Vector::print(std::string name)
 
     double* h_vec;
     if (on_grid()) {
-        h_vec = new double[num_blocks * block_size];
+        h_vec = new double[(size_t) num_blocks * block_size];
         gpuErrchk(cudaMemcpy(h_vec, d_vec, (size_t)num_blocks * block_size * sizeof(double),
             cudaMemcpyDeviceToHost));
     }
@@ -262,8 +264,8 @@ void Vector::print(std::string name)
     for (int r = 0; r < num_ranks; r++) {
         if (group_rank == r && on_grid()) {
             printf("Group Rank %d: \n", group_rank);
-            for (int i = 0; i < num_blocks; i++) {
-                for (int j = 0; j < block_size; j++) {
+            for (size_t i = 0; i < num_blocks; i++) {
+                for (size_t j = 0; j < block_size; j++) {
                     printf("block: %d, t: %d, val: %f\n", i, j, h_vec[i * block_size + j]);
                 }
                 printf("\n");
@@ -298,7 +300,7 @@ double Vector::norm(int order)
         switch (order) {
         case 1:
 #if !INDICES_64_BIT
-            cublasSafeCall(cublasDasum(cublasHandle, num_blocks * block_size, d_vec, 1, &norm));
+            cublasSafeCall(cublasDasum(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
                 cublasDasum_64(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
@@ -308,7 +310,7 @@ double Vector::norm(int order)
             break;
         case 2:
 #if !INDICES_64_BIT
-            cublasSafeCall(cublasDnrm2(cublasHandle, num_blocks * block_size, d_vec, 1, &norm));
+            cublasSafeCall(cublasDnrm2(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
                 cublasDnrm2_64(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
@@ -321,12 +323,12 @@ double Vector::norm(int order)
 #if !INDICES_64_BIT
             int max_index;
             cublasSafeCall(
-                cublasIdamax(cublasHandle, num_blocks * block_size, d_vec, 1, &max_index));
+                cublasIdamax(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &max_index));
             cublasSafeCall(cublasGetVector(1, sizeof(double), d_vec + max_index - 1, 1, &norm, 1));
 #else
             size_t max_index;
             cublasSafeCall(cublasIdamax_64(
-                cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &max_index));
+                cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &max_index));
             cublasSafeCall(
                 cublasGetVector_64(1, sizeof(double), d_vec + max_index - 1, 1, &norm, 1));
 #endif
@@ -356,10 +358,10 @@ void Vector::scale(double alpha)
         // use cuBLAS to scale the vector
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
-        cublasSafeCall(cublasDscal(cublasHandle, num_blocks * block_size, &alpha, d_vec, 1));
+        cublasSafeCall(cublasDscal(cublasHandle, (size_t) num_blocks * block_size, &alpha, d_vec, 1));
 #else
         cublasSafeCall(
-            cublasDscal_64(cublasHandle, (size_t)num_blocks * block_size, &alpha, d_vec, 1));
+            cublasDscal_64(cublasHandle, (size_t) num_blocks * block_size, &alpha, d_vec, 1));
 #endif
     }
 }
@@ -401,10 +403,10 @@ void Vector::axpy(double alpha, Vector& x)
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
         cublasSafeCall(
-            cublasDaxpy(cublasHandle, num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
+            cublasDaxpy(cublasHandle, (size_t) num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
 #else
         cublasSafeCall(cublasDaxpy_64(
-            cublasHandle, (size_t)num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
+            cublasHandle, (size_t) num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
 #endif
     }
 }
@@ -468,10 +470,10 @@ double Vector::dot(Vector& x)
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
         cublasSafeCall(
-            cublasDdot(cublasHandle, num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
+            cublasDdot(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
 #else
         cublasSafeCall(cublasDdot_64(
-            cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
+            cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
 #endif
 
         // use MPI to compute the global dot product
@@ -503,11 +505,11 @@ void Vector::save(std::string filename)
             fapl.add(MPIOCollectiveMetadata {});
 
             File file(filename, File::Overwrite, fapl);
-            std::vector<double> vec(num_blocks * block_size);
+            std::vector<double> vec((size_t) num_blocks * block_size);
 
             // copy to host
             gpuErrchk(cudaMemcpy(vec.data(), d_vec,
-                (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
+                (size_t) num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
 
             auto xfer_props = DataTransferProps {};
             xfer_props.add(UseCollectiveIO {});
@@ -517,10 +519,10 @@ void Vector::save(std::string filename)
                                                  : Utils::get_start_index(glob_num_blocks,
                                                        comm.get_row_color(), comm.get_proc_rows());
 
-            std::vector<size_t> dims = { (size_t)glob_num_blocks * block_size };
+            std::vector<size_t> dims = { (size_t) glob_num_blocks * block_size };
 
             DataSet dataset = file.createDataSet<double>("vec", DataSpace(dims));
-            dataset.select({ start * block_size }, { (size_t)num_blocks * block_size })
+            dataset.select({ start * block_size }, { (size_t) num_blocks * block_size })
                 .write(vec, xfer_props);
             Utils::check_collective_io(xfer_props);
 
@@ -541,6 +543,19 @@ void Vector::save(std::string filename)
             std::cerr << e.what() << std::endl;
             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
         }
+    }
+}
+
+void Vector::set_d_vec(double * vec) {
+    if (on_grid()) {
+        // get pointer attribute to check if it is a device pointer
+        cudaPointerAttributes attributes;
+        gpuErrchk(cudaPointerGetAttributes(&attributes, vec));
+        if (attributes.type != cudaMemoryTypeDevice) {
+            fprintf(stderr, "vec must be a device pointer.\n");
+            MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+        }
+        d_vec = vec;
     }
 }
 

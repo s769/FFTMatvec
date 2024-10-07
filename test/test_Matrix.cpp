@@ -111,14 +111,14 @@ TEST_F(MatrixTest, MatrixConstructorLocal)
 
 TEST_F(MatrixTest, MatrixConstructorGlobal)
 {
-    int num_rows = 2;
-    int num_cols = 3;
+    size_t glob_num_rows = 2;
+    size_t glob_num_cols = 3;
     int block_size = 4;
-    Matrix A = Matrix(*comm, num_cols, num_rows, block_size, true);
+    Matrix A = Matrix(*comm, glob_num_cols, glob_num_rows, block_size, true);
     ASSERT_EQ(A.get_block_size(), block_size);
     ASSERT_EQ(A.get_padded_size(), 2 * block_size);
-    ASSERT_EQ(A.get_glob_num_cols(), num_cols);
-    ASSERT_EQ(A.get_glob_num_rows(), num_rows);
+    ASSERT_EQ(A.get_glob_num_cols(), glob_num_cols);
+    ASSERT_EQ(A.get_glob_num_rows(), glob_num_rows);
     ASSERT_NE(A.get_col_vec_freq(), nullptr);
     ASSERT_NE(A.get_row_vec_freq(), nullptr);
     ASSERT_NE(A.get_col_vec_freq_TOSI(), nullptr);
@@ -145,11 +145,11 @@ TEST_F(MatrixTest, MatrixConstructorP2Q)
     int num_rows = 2;
     int num_cols = 3;
     int block_size = 4;
-    Matrix A = Matrix(*comm, num_cols, num_rows, block_size, true, true);
+    Matrix A = Matrix(*comm, num_cols, num_rows, block_size, false, true);
     ASSERT_EQ(A.get_block_size(), block_size);
     ASSERT_EQ(A.get_padded_size(), 2 * block_size);
-    ASSERT_EQ(A.get_glob_num_cols(), num_cols);
-    ASSERT_EQ(A.get_glob_num_rows(), num_rows);
+    ASSERT_EQ(A.get_num_cols(), num_cols);
+    ASSERT_EQ(A.get_num_rows(), num_rows);
     ASSERT_NE(A.get_col_vec_freq(), nullptr);
     ASSERT_NE(A.get_row_vec_freq(), nullptr);
     ASSERT_NE(A.get_col_vec_freq_TOSI(), nullptr);

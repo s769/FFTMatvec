@@ -31,12 +31,12 @@ void Utils::get_host_name(char* hostname, int maxlen)
 void Utils::print_vec(double* vec, int len, int block_size, std::string name)
 {
     double* h_vec;
-    h_vec = (double*)malloc(len * block_size * sizeof(double));
-    gpuErrchk(cudaMemcpy(h_vec, vec, len * block_size * sizeof(double), cudaMemcpyDeviceToHost));
+    h_vec = (double*)malloc((size_t) len * block_size * sizeof(double));
+    gpuErrchk(cudaMemcpy(h_vec, vec, (size_t) len * block_size * sizeof(double), cudaMemcpyDeviceToHost));
     printf("%s:\n", name.c_str());
 
-    for (int i = 0; i < len; i++) {
-        for (int j = 0; j < block_size; j++) {
+    for (size_t i = 0; i < len; i++) {
+        for (size_t j = 0; j < block_size; j++) {
             printf("block: %d, t: %d, val: %f\n", i, j, h_vec[i * block_size + j]);
         }
         printf("\n");
@@ -63,13 +63,13 @@ void Utils::print_vec_complex(Complex* vec, int len, int block_size, std::string
 {
 
     Complex* h_vec;
-    h_vec = (Complex*)malloc(len * block_size * sizeof(Complex));
-    gpuErrchk(cudaMemcpy(h_vec, vec, len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+    h_vec = (Complex*)malloc((size_t) len * block_size * sizeof(Complex));
+    gpuErrchk(cudaMemcpy(h_vec, vec, (size_t) len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
 
     printf("%s:\n", name.c_str());
 
-    for (int i = 0; i < len; i++) {
-        for (int j = 0; j < block_size; j++) {
+    for (size_t i = 0; i < len; i++) {
+        for (size_t j = 0; j < block_size; j++) {
             printf("block: %d, t: %d, val: %f + %f i\n", i, j, h_vec[i * block_size + j].x,
                 h_vec[i * block_size + j].y);
         }
@@ -346,7 +346,7 @@ void Utils::check_collective_io(const HighFive::DataTransferProps& xfer_props)
     }
 }
 
-size_t Utils::get_start_index(int glob_num_blocks, int color, int comm_size)
+size_t Utils::get_start_index(size_t glob_num_blocks, int color, int comm_size)
 {
     return (color < glob_num_blocks % comm_size)
         ? (glob_num_blocks / comm_size + 1) * color

@@ -140,7 +140,7 @@ void check_collective_io(const HighFive::DataTransferProps& xfer_props);
  * @param comm_size The number of processes in the communicator.
  *
  */
-size_t get_start_index(int glob_num_blocks, int color, int comm_size);
+size_t get_start_index(size_t glob_num_blocks, int color, int comm_size);
 
 /**
  * @brief Get the global size of a vector.

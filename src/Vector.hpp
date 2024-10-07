@@ -18,7 +18,7 @@ class Matrix; // forward declaration
 class Vector {
 private:
     unsigned int num_blocks; /**< Number of blocks. */
-    unsigned int glob_num_blocks; /**< Global number of blocks. */
+    size_t glob_num_blocks; /**< Global number of blocks. */
     unsigned int padded_size; /**< Size of each block with padding. */
     unsigned int block_size; /**< Size of each block without padding. */
     bool SOTI_ordering; /**< Flag indicating whether to use SOTI ordering. */
@@ -70,11 +70,13 @@ public:
     Vector(Vector&& vec)
         : comm(vec.comm)
         , num_blocks(vec.num_blocks)
+        , glob_num_blocks(vec.glob_num_blocks)
         , padded_size(vec.padded_size)
         , block_size(vec.block_size)
         , d_vec(vec.d_vec)
         , row_or_col(vec.row_or_col)
         , initialized(vec.initialized)
+        , SOTI_ordering(vec.SOTI_ordering)
     {
         vec.d_vec = nullptr;
     }
@@ -114,6 +116,14 @@ public:
      *
      */
     Vector operator*(double alpha) { return wscale(alpha); }
+    friend Vector operator*(double alpha, Vector& x) { return x.wscale(alpha); }
+
+    /**
+     * @brief Dot product operator for the Vector class.
+     * @param x The Vector object with which to compute the dot product.
+     * @return The dot product of the two vectors.
+     */
+    double operator*(Vector& x) { return dot(x); }
 
     /**
      * @brief Scalar division operator for the Vector class.
@@ -179,7 +189,8 @@ public:
     /**
      * @brief Initializes the vector from a file.
      * @param filename The name of the file.
-     * @param QoI Flag indicating whether the vector is a quantity of interest or regular observation (if applicable).
+     * @param QoI Flag indicating whether the vector is a quantity of interest or regular
+     * observation (if applicable).
      */
     void init_vec_from_file(std::string filename, bool QoI = false);
 
@@ -335,13 +346,9 @@ public:
 
     /**
      * @brief Sets the pointer to the vector data.
-     * @param d_vec The pointer to the vector data.
+     * @param vec The pointer to the vector data. Must be allocated on the GPU.
      */
-    void set_d_vec(double* d_vec)
-    {
-        if (on_grid())
-            this->d_vec = d_vec;
-    }
+    void set_d_vec(double* vec);
 };
 
 #endif // __VECTOR_HPP__
