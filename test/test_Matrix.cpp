@@ -9,6 +9,9 @@
 #include <gtest/gtest.h>
 
 int proc_rows, proc_cols;
+int NUM_ROWS = 2;
+int NUM_COLS = 3;
+int BLOCK_SIZE = 4;
 
 class MatrixTest : public ::testing::Test {
 protected:
@@ -18,26 +21,23 @@ protected:
 
     static void SetUpTestSuite()
     {
-        int num_rows = 2;
-        int num_cols = 3;
-        int block_size = 4;
         if (comm == nullptr) {
             comm = new Comm(MPI_COMM_WORLD, proc_rows, proc_cols);
         }
         if (F == nullptr) {
-            F = new Matrix(*comm, num_cols, num_rows, block_size);
+            F = new Matrix(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE);
         }
         if (x == nullptr) {
-            x = new Vector(*comm, num_cols, block_size, "col");
+            x = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
         if (y == nullptr) {
-            y = new Vector(*comm, num_rows, block_size, "row");
+            y = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
         if (x2 == nullptr) {
-            x2 = new Vector(*comm, num_cols, block_size, "col");
+            x2 = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
         if (y2 == nullptr) {
-            y2 = new Vector(*comm, num_rows, block_size, "row");
+            y2 = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
     }
     static void TearDownTestSuite()
@@ -67,6 +67,62 @@ protected:
             y2 = nullptr;
         }
     }
+    static void check_element(
+        double elem, int b, int j, int Nt, int Nm, int Nd, bool conj, bool full)
+    {
+        double correct_elem;
+        if (conj) {
+            if (full) {
+                correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2;
+            } else {
+                correct_elem = (Nt - j) * Nd;
+            }
+        } else {
+            if (full) {
+                correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2;
+            } else {
+                correct_elem = (j + 1) * Nm;
+            }
+        }
+        ASSERT_NEAR(elem, correct_elem, 1e-10);
+    }
+
+    static void check_ones_matvec(Matrix& mat, Vector& vec, bool conj, bool full)
+    {
+
+        int proc_rows = comm->get_proc_rows();
+        int proc_cols = comm->get_proc_cols();
+
+        int Nt = mat.get_block_size();
+        int nm = mat.get_num_cols();
+        int nd = mat.get_num_rows();
+
+        int Nm = nm * proc_cols;
+        int Nd = nd * proc_rows;
+
+        if (vec.on_grid()) {
+            double* d_vec = vec.get_d_vec();
+            int num_blocks = vec.get_num_blocks();
+            double* h_vec = new double[num_blocks * Nt];
+
+            gpuErrchk(
+                cudaMemcpy(h_vec, d_vec, num_blocks * Nt * sizeof(double), cudaMemcpyDeviceToHost));
+
+            for (int i = 0; i < num_blocks; i++) {
+                for (int j = 0; j < Nt; j++) {
+                    check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
+                }
+            }
+
+            delete[] h_vec;
+        }
+    }
+
+    static std::string dirname(const std::string& fname)
+    {
+        size_t pos = fname.find_last_of("\\/");
+        return (std::string::npos == pos) ? "" : fname.substr(0, pos);
+    }
 };
 
 Comm* MatrixTest::comm = nullptr;
@@ -78,16 +134,13 @@ Vector* MatrixTest::y2 = nullptr;
 
 TEST_F(MatrixTest, MatrixConstructorLocal)
 {
-    int num_rows = 2;
-    int num_cols = 3;
-    int block_size = 4;
-    Matrix A = Matrix(*comm, num_cols, num_rows, block_size);
-    ASSERT_EQ(A.get_num_cols(), num_cols);
-    ASSERT_EQ(A.get_num_rows(), num_rows);
-    ASSERT_EQ(A.get_block_size(), block_size);
-    ASSERT_EQ(A.get_padded_size(), 2 * block_size);
-    ASSERT_EQ(A.get_glob_num_cols(), num_cols * proc_cols);
-    ASSERT_EQ(A.get_glob_num_rows(), num_rows * proc_rows);
+    Matrix A = Matrix(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE);
+    ASSERT_EQ(A.get_num_cols(), NUM_COLS);
+    ASSERT_EQ(A.get_num_rows(), NUM_ROWS);
+    ASSERT_EQ(A.get_block_size(), BLOCK_SIZE);
+    ASSERT_EQ(A.get_padded_size(), 2 * BLOCK_SIZE);
+    ASSERT_EQ(A.get_glob_num_cols(), NUM_COLS * proc_cols);
+    ASSERT_EQ(A.get_glob_num_rows(), NUM_ROWS * proc_rows);
     ASSERT_NE(A.get_col_vec_freq(), nullptr);
     ASSERT_NE(A.get_row_vec_freq(), nullptr);
     ASSERT_NE(A.get_col_vec_freq_TOSI(), nullptr);
@@ -111,12 +164,11 @@ TEST_F(MatrixTest, MatrixConstructorLocal)
 
 TEST_F(MatrixTest, MatrixConstructorGlobal)
 {
-    size_t glob_num_rows = 2;
-    size_t glob_num_cols = 3;
-    int block_size = 4;
-    Matrix A = Matrix(*comm, glob_num_cols, glob_num_rows, block_size, true);
-    ASSERT_EQ(A.get_block_size(), block_size);
-    ASSERT_EQ(A.get_padded_size(), 2 * block_size);
+    size_t glob_num_cols = NUM_COLS * proc_cols;
+    size_t glob_num_rows = NUM_ROWS * proc_rows;
+    Matrix A = Matrix(*comm, glob_num_cols, glob_num_rows, BLOCK_SIZE, true);
+    ASSERT_EQ(A.get_block_size(), BLOCK_SIZE);
+    ASSERT_EQ(A.get_padded_size(), 2 * BLOCK_SIZE);
     ASSERT_EQ(A.get_glob_num_cols(), glob_num_cols);
     ASSERT_EQ(A.get_glob_num_rows(), glob_num_rows);
     ASSERT_NE(A.get_col_vec_freq(), nullptr);
@@ -142,14 +194,11 @@ TEST_F(MatrixTest, MatrixConstructorGlobal)
 
 TEST_F(MatrixTest, MatrixConstructorP2Q)
 {
-    int num_rows = 2;
-    int num_cols = 3;
-    int block_size = 4;
-    Matrix A = Matrix(*comm, num_cols, num_rows, block_size, false, true);
-    ASSERT_EQ(A.get_block_size(), block_size);
-    ASSERT_EQ(A.get_padded_size(), 2 * block_size);
-    ASSERT_EQ(A.get_num_cols(), num_cols);
-    ASSERT_EQ(A.get_num_rows(), num_rows);
+    Matrix A = Matrix(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE, false, true);
+    ASSERT_EQ(A.get_block_size(), BLOCK_SIZE);
+    ASSERT_EQ(A.get_padded_size(), 2 * BLOCK_SIZE);
+    ASSERT_EQ(A.get_num_cols(), NUM_COLS);
+    ASSERT_EQ(A.get_num_rows(), NUM_ROWS);
     ASSERT_NE(A.get_col_vec_freq(), nullptr);
     ASSERT_NE(A.get_row_vec_freq(), nullptr);
     ASSERT_NE(A.get_col_vec_freq_TOSI(), nullptr);
@@ -175,10 +224,310 @@ TEST_F(MatrixTest, InitMatOnes)
 {
     F->init_mat_ones();
     ASSERT_TRUE(F->is_initialized());
-    // Complex* h_F = new Complex[F->get_num_cols() * F->get_num_rows() * F->get_padded_size()];
+    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    Complex* d_mat = F->get_mat_freq_TOSI();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+    cufftHandle plan;
+    cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
+    double* h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+        h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
+    }
+    double* d_vec;
+    gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
+    Complex* d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftDestroy(plan));
+    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+
+    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
+        for (int r = 0; r < NUM_ROWS; r++) {
+            for (int c = 0; c < NUM_COLS; c++) {
+                size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
+                ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
+                ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
+            }
+        }
+    }
+    delete[] h_mat;
+    delete[] h_vec;
+    delete[] h_fft;
+    gpuErrchk(cudaFree(d_vec));
+    gpuErrchk(cudaFree(d_fft));
 }
 
+TEST_F(MatrixTest, InitMatOnesAux)
+{
+    F->init_mat_ones();
+    F->init_mat_ones(true);
+    ASSERT_TRUE(F->is_initialized());
+    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    Complex* d_mat = F->get_mat_freq_TOSI_aux();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+    cufftHandle plan;
+    cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
+    double* h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+        h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
+    }
+    double* d_vec;
+    gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
+    Complex* d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
+
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftDestroy(plan));
+    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+
+    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
+        for (int r = 0; r < NUM_ROWS; r++) {
+            for (int c = 0; c < NUM_COLS; c++) {
+                size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
+                ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
+                ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
+            }
+        }
+    }
+    delete[] h_mat;
+    delete[] h_vec;
+    delete[] h_fft;
+    gpuErrchk(cudaFree(d_vec));
+    gpuErrchk(cudaFree(d_fft));
+}
+
+TEST_F(MatrixTest, GetVector)
+{
+    F->init_mat_ones();
+    Vector m = F->get_vec("input");
+    ASSERT_EQ(m.get_glob_num_blocks(), NUM_COLS * proc_cols);
+    ASSERT_EQ(m.get_num_blocks(), NUM_COLS);
+    ASSERT_EQ(m.get_block_size(), BLOCK_SIZE);
+    ASSERT_EQ(m.get_padded_size(), 2 * BLOCK_SIZE);
+    ASSERT_EQ(m.is_initialized(), false);
+    ASSERT_EQ(m.get_row_or_col(), "col");
+
+    Vector d = F->get_vec("output");
+    ASSERT_EQ(d.get_glob_num_blocks(), NUM_ROWS * proc_rows);
+    ASSERT_EQ(d.get_num_blocks(), NUM_ROWS);
+    ASSERT_EQ(d.get_block_size(), BLOCK_SIZE);
+    ASSERT_EQ(d.get_padded_size(), 2 * BLOCK_SIZE);
+    ASSERT_EQ(d.is_initialized(), false);
+    ASSERT_EQ(d.get_row_or_col(), "row");
+}
+
+TEST_F(MatrixTest, OnesMatvec)
+{
+    F->init_mat_ones();
+    x->init_vec_ones();
+    y->init_vec_ones();
+    F->matvec(*x, *y);
+    check_ones_matvec(*F, *y, false, false);
+}
+
+TEST_F(MatrixTest, OnesMatvecConj)
+{
+    F->init_mat_ones();
+    x->init_vec_ones();
+    y->init_vec_ones();
+    F->transpose_matvec(*y, *x);
+    check_ones_matvec(*F, *x, true, false);
+}
+
+TEST_F(MatrixTest, OnesMatvecFull)
+{
+    F->init_mat_ones();
+    x->init_vec_ones();
+    x2->init_vec_ones();
+    F->matvec(*x, *x2, false, true);
+    check_ones_matvec(*F, *x2, false, true);
+}
+
+TEST_F(MatrixTest, OnesMatvecFullConj)
+{
+    F->init_mat_ones();
+    y->init_vec_ones();
+    y2->init_vec_ones();
+    F->transpose_matvec(*y, *y2, false, true);
+    check_ones_matvec(*F, *y2, true, true);
+}
+
+TEST_F(MatrixTest, OnesMatvecAux)
+{
+    F->init_mat_ones();
+    F->init_mat_ones(true);
+    x->init_vec_ones();
+    y->init_vec_ones();
+    F->matvec(*x, *y, true);
+    check_ones_matvec(*F, *y, false, false);
+}
+
+TEST_F(MatrixTest, OnesMatvecConjAux)
+{
+    F->init_mat_ones();
+    F->init_mat_ones(true);
+    x->init_vec_ones();
+    y->init_vec_ones();
+    F->transpose_matvec(*y, *x, true);
+    check_ones_matvec(*F, *x, true, false);
+}
+
+TEST_F(MatrixTest, OnesMatvecFullAux)
+{
+    F->init_mat_ones();
+    F->init_mat_ones(true);
+    x->init_vec_ones();
+    x2->init_vec_ones();
+    F->matvec(*x, *x2, true, true);
+    check_ones_matvec(*F, *x2, false, true);
+}
+
+TEST_F(MatrixTest, OnesMatvecFullConjAux)
+{
+    F->init_mat_ones();
+    F->init_mat_ones(true);
+    y->init_vec_ones();
+    y2->init_vec_ones();
+    F->transpose_matvec(*y, *y2, true, true);
+    check_ones_matvec(*F, *y2, true, true);
+}
+
+TEST_F(MatrixTest, ReadFromFile)
+{
+    std::string path = dirname(__FILE__) + "/data/test_mat/";
+    Matrix F2 = Matrix(*comm, path);
+    size_t glob_num_cols = 289;
+    size_t glob_num_rows = 15;
+    int block_size = 10;
+    ASSERT_EQ(F2.get_glob_num_cols(), glob_num_cols);
+    ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
+    ASSERT_EQ(F2.get_block_size(), block_size);
+
+    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex* d_mat = F2.get_mat_freq_TOSI();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat,
+        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+
+    Complex result = { 0.0, 0.0 };
+    for (int t = 0; t < block_size + 1; t++) {
+        for (int r = 0; r < F2.get_num_rows(); r++) {
+            for (int c = 0; c < F2.get_num_cols(); c++) {
+                size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
+                result.x += h_mat[ind].x;
+                result.y += h_mat[ind].y;
+            }
+        }
+    }
+    double glob_result_x, glob_result_y;
+    MPICHECK(MPI_Allreduce(&result.x, &glob_result_x, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    MPICHECK(MPI_Allreduce(&result.y, &glob_result_y, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-12);
+    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-12);
+
+    delete[] h_mat;
+
+    std::string aux_path = dirname(__FILE__) + "/data/test_mat_2/binary/adj/vec_";
+    F2.init_mat_from_file(aux_path, true);
+
+    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
+        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+
+    Complex result_aux = { 0.0, 0.0 };
+    for (int t = 0; t < block_size + 1; t++) {
+        for (int r = 0; r < F2.get_num_rows(); r++) {
+            for (int c = 0; c < F2.get_num_cols(); c++) {
+                size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
+                result_aux.x += h_mat_aux[ind].x;
+                result_aux.y += h_mat_aux[ind].y;
+            }
+        }
+    }
+    double glob_result_x_aux, glob_result_y_aux;
+    MPICHECK(
+        MPI_Allreduce(&result_aux.x, &glob_result_x_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    MPICHECK(
+        MPI_Allreduce(&result_aux.y, &glob_result_y_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-12);
+    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-12);
+
+    delete[] h_mat_aux;
+}
+
+TEST_F(MatrixTest, ReadFromFileQoI)
+{
+    std::string path = dirname(__FILE__) + "/data/test_mat_qoi/";
+    std::string aux_path = dirname(__FILE__) + "/data/test_mat_qoi_2/";
+    Matrix F2 = Matrix(*comm, path, aux_path, true);
+    size_t glob_num_cols = 289;
+    size_t glob_num_rows = 15;
+    int block_size = 10;
+    ASSERT_EQ(F2.get_glob_num_cols(), glob_num_cols);
+    ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
+    ASSERT_EQ(F2.get_block_size(), block_size);
+
+    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex* d_mat = F2.get_mat_freq_TOSI();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat,
+        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+
+    Complex result = { 0.0, 0.0 };
+    for (int t = 0; t < block_size + 1; t++) {
+        for (int r = 0; r < F2.get_num_rows(); r++) {
+            for (int c = 0; c < F2.get_num_cols(); c++) {
+                size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
+                result.x += h_mat[ind].x;
+                result.y += h_mat[ind].y;
+            }
+        }
+    }
+    double glob_result_x, glob_result_y;
+    MPICHECK(MPI_Allreduce(&result.x, &glob_result_x, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    MPICHECK(MPI_Allreduce(&result.y, &glob_result_y, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-12);
+    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-12);
+
+    delete[] h_mat;
+
+    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
+        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+        cudaMemcpyDeviceToHost));
+
+    Complex result_aux = { 0.0, 0.0 };
+    for (int t = 0; t < block_size + 1; t++) {
+        for (int r = 0; r < F2.get_num_rows(); r++) {
+            for (int c = 0; c < F2.get_num_cols(); c++) {
+                size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
+                result_aux.x += h_mat_aux[ind].x;
+                result_aux.y += h_mat_aux[ind].y;
+            }
+        }
+    }
+    double glob_result_x_aux, glob_result_y_aux;
+    MPICHECK(
+        MPI_Allreduce(&result_aux.x, &glob_result_x_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    MPICHECK(
+        MPI_Allreduce(&result_aux.y, &glob_result_y_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
+    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-12);
+    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-12);
+
+    delete[] h_mat_aux;
+
+    ASSERT_EQ(F2.is_p2q_mat(), true);
+}
 
 int main(int argc, char** argv)
 {

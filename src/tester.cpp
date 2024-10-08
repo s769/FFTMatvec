@@ -7,7 +7,8 @@ bool double_equality(double a, double b, double tol)
     return (std::abs(a - b) <= tol * std::max(1.0, std::max(std::abs(a), std::abs(b))));
 }
 
-// Function to check if an element of the matrix-vector product with ones matrix and ones vector is correct
+// Function to check if an element of the matrix-vector product with ones matrix and ones vector is
+// correct
 void check_element(
     Comm& comm, double elem, int b, int j, int Nt, int Nm, int Nd, bool conj, bool full)
 {
@@ -16,13 +17,13 @@ void check_element(
     double correct_elem;
     if (conj) {
         if (full) {
-            correct_elem = (j + 1) / 2 * (2 * Nd * Nt - j * Nd);
+            correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2;
         } else {
             correct_elem = (Nt - j) * Nd;
         }
     } else {
         if (full) {
-            correct_elem = (Nt - j) / 2 * (2 * (j + 1) * Nm + (Nt - j - 1) * Nm) * Nd;
+            correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2;
         } else {
             correct_elem = (j + 1) * Nm;
         }
@@ -49,7 +50,6 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
 
     int Nm = nm * proc_cols;
     int Nd = nd * proc_rows;
-
 
     if (vec.on_grid()) {
         double* d_vec = vec.get_d_vec();

@@ -77,9 +77,10 @@ private:
 
     /**
      * @brief Set up the matrix and perform necessary initialization for matrix-vector operations.
-     * 
-     * This function sets up the matrix and performs necessary initialization for matrix-vector operations.
-     * 
+     *
+     * This function sets up the matrix and performs necessary initialization for matrix-vector
+     * operations.
+     *
      * @param d_mat_freq Pointer to the matrix in device memory.
      * @param h_mat Pointer to the matrix in host memory.
      * @param padded_size The block size for matrix operations.
@@ -87,14 +88,16 @@ private:
      * @param num_rows The number of rows in the matrix.
      * @param cublasHandle The handle for the cuBLAS library.
      */
-    void setup_matvec(Complex** d_mat_freq, const double* const h_mat, const unsigned int padded_size,
-        const unsigned int num_cols, const unsigned int num_rows, cublasHandle_t cublasHandle);
+    void setup_matvec(Complex** d_mat_freq, const double* const h_mat,
+        const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
+        cublasHandle_t cublasHandle);
 
     /**
      * @brief Perform local matrix-vector multiplication.
-     * 
-     * This function performs local matrix-vector multiplication using the provided matrix and vectors.
-     * 
+     *
+     * This function performs local matrix-vector multiplication using the provided matrix and
+     * vectors.
+     *
      * @param out_vec Pointer to the output vector.
      * @param in_vec Pointer to the input vector.
      * @param d_mat_freq Pointer to the matrix in device memory.
@@ -108,8 +111,10 @@ private:
      * @param inverse_plan The inverse FFT plan.
      * @param out_vec_pad Pointer to the padded output vector.
      * @param in_vec_freq Pointer to the input vector in frequency domain.
-     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of input, scaled).
-     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input, scaled).
+     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of
+     * input, scaled).
+     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input,
+     * scaled).
      * @param out_vec_freq Pointer to the output vector in frequency domain.
      * @param s The CUDA stream.
      * @param cublasHandle The handle for the cuBLAS library.
@@ -118,14 +123,14 @@ private:
         const unsigned int size, const unsigned int num_cols, const unsigned int num_rows,
         const bool conjugate, const bool unpad, const unsigned int device, cufftHandle forward_plan,
         cufftHandle inverse_plan, double* const out_vec_pad, Complex* const in_vec_freq,
-        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI, Complex* const out_vec_freq,
-        cudaStream_t s, cublasHandle_t cublasHandle);
+        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
+        Complex* const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle);
 
     /**
      * @brief Perform matrix-vector multiplication.
-     * 
+     *
      * This function performs matrix-vector multiplication using the provided matrix and vectors.
-     * 
+     *
      * @param out_vec Pointer to the output vector.
      * @param in_vec Pointer to the input vector.
      * @param mat_freq_TOSI Pointer to the matrix in frequency domain (transpose of input, scaled).
@@ -146,20 +151,25 @@ private:
      * @param inverse_plan_conj The inverse FFT plan for conjugate multiplication.
      * @param out_vec_pad Pointer to the padded output vector.
      * @param in_vec_freq Pointer to the input vector in frequency domain.
-     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of input, scaled).
-     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input, scaled).
+     * @param out_vec_freq_TOSI Pointer to the output vector in frequency domain (transpose of
+     * input, scaled).
+     * @param in_vec_freq_TOSI Pointer to the input vector in frequency domain (transpose of input,
+     * scaled).
      * @param out_vec_freq Pointer to the output vector in frequency domain.
      * @param cublasHandle The handle for the cuBLAS library.
-     * @param mat_freq_TOSI_aux Pointer to the matrix in frequency domain (transpose of input, scaled) on other devices.
+     * @param mat_freq_TOSI_aux Pointer to the matrix in frequency domain (transpose of input,
+     * scaled) on other devices.
      * @param res_pad Pointer to the padded result vector.
-     * @param use_aux_mat Flag indicating whether to use the auxiliary matrix for the full multiplication (i.e. FG^* or G^*F)
+     * @param use_aux_mat Flag indicating whether to use the auxiliary matrix for the full
+     * multiplication (i.e. FG^* or G^*F)
      */
-    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_TOSI, const unsigned int padded_size,
-        const unsigned int num_cols, const unsigned int num_rows, const bool conjugate, const bool full,
-        const unsigned int device, ncclComm_t nccl_row_comm, ncclComm_t nccl_col_comm,
-        cudaStream_t s, double* const in_vec_pad, cufftHandle forward_plan, cufftHandle inverse_plan,
-        cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj, double* const out_vec_pad,
-        Complex* const in_vec_freq, Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
+    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_TOSI,
+        const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
+        const bool conjugate, const bool full, const unsigned int device, ncclComm_t nccl_row_comm,
+        ncclComm_t nccl_col_comm, cudaStream_t s, double* const in_vec_pad,
+        cufftHandle forward_plan, cufftHandle inverse_plan, cufftHandle forward_plan_conj,
+        cufftHandle inverse_plan_conj, double* const out_vec_pad, Complex* const in_vec_freq,
+        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
         Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_TOSI_aux,
         double* const res_pad, bool use_aux_mat = false);
 
@@ -231,7 +241,8 @@ public:
     /**
      * @brief Get an input or output vector compatible with the matrix.
      * @param input_or_output The string "input" or "output". In the expression y = Fx, y is the
-     * output, and x is the input.
+     * output, and x is the input. x will have size glob_num_cols * block_size, and y will have size
+     * glob_num_rows * block_size.
      * @return The input or output vector.
      */
     Vector get_vec(std::string input_or_output);

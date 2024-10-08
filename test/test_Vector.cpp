@@ -11,7 +11,6 @@ int NUM_BLOCKS = 3, BLOCK_SIZE = 4;
 class VectorTest : public ::testing::Test {
 protected:
     static Comm* comm;
-    static Vector x, y, x2, y2;
     static void SetUpTestSuite()
     {
         if (comm == nullptr) {
@@ -26,7 +25,7 @@ protected:
         }
     }
 
-    std::string dirname(const std::string& fname)
+    static std::string dirname(const std::string& fname)
     {
         size_t pos = fname.find_last_of("\\/");
         return (std::string::npos == pos) ? "" : fname.substr(0, pos);
@@ -77,12 +76,13 @@ TEST_F(VectorTest, ConstructorTestRow)
     }
 }
 
-TEST_F(VectorTest, ConstructorTestGlob)
+TEST_F(VectorTest, ConstructorTestGlobal)
 {
-    Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col", true);
+    size_t glob_num_blocks = NUM_BLOCKS * proc_cols;
+    Vector x = Vector(*comm, glob_num_blocks, BLOCK_SIZE, "col", true);
     ASSERT_EQ(x.get_block_size(), BLOCK_SIZE);
     ASSERT_EQ(x.get_padded_size(), 2 * BLOCK_SIZE);
-    ASSERT_EQ(x.get_glob_num_blocks(), NUM_BLOCKS);
+    ASSERT_EQ(x.get_glob_num_blocks(), glob_num_blocks);
     ASSERT_EQ(x.get_row_or_col(), "col");
     ASSERT_EQ(x.is_SOTI_ordered(), true);
     ASSERT_EQ(x.is_initialized(), false);

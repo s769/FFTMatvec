@@ -109,7 +109,7 @@ Matrix::Matrix(Comm& comm, unsigned int cols, unsigned int rows, unsigned int bl
 }
 
 Matrix::Matrix(Comm& comm, std::string path, std::string aux_path, bool QoI)
-    : comm(comm)
+    : comm(comm), is_QoI(QoI)
 {
     if (aux_path != "" && path == "") {
         fprintf(stderr, "Primary matrix path must be provided when aux_path is provided.\n");

@@ -170,21 +170,6 @@ int main(int argc, char** argv)
             in_FS.print("in_FS");
         }
 
-        double in_F_norm_2 = in_F.norm(2);
-        double in_FS_norm_2 = in_FS.norm(2);
-        double in_F_norm_1 = in_F.norm(1);
-        double in_FS_norm_1 = in_FS.norm(1);
-        double in_F_norm_inf = in_F.norm(-1);
-        double in_FS_norm_inf = in_FS.norm(-1);
-        if (world_rank == 0) {
-            std::cout << "||in_F||_2 = " << in_F_norm_2 << std::endl;
-            std::cout << "||in_FS||_2 = " << in_FS_norm_2 << std::endl;
-            std::cout << "||in_F||_1 = " << in_F_norm_1 << std::endl;
-            std::cout << "||in_FS||_1 = " << in_FS_norm_1 << std::endl;
-            std::cout << "||in_F||_inf = " << in_F_norm_inf << std::endl;
-            std::cout << "||in_FS||_inf = " << in_FS_norm_inf << std::endl;
-        }
-
         if (world_rank == 0)
             printf("Initialized Vectors\n");
 
@@ -223,60 +208,6 @@ int main(int argc, char** argv)
             out_FS.print("out_FS");
         }
 
-        double out_F_norm_2 = out_F.norm(2);
-        double out_FS_norm_2 = out_FS.norm(2);
-        double out_F_norm_1 = out_F.norm(1);
-        double out_FS_norm_1 = out_FS.norm(1);
-        double out_F_norm_inf = out_F.norm(-1);
-        double out_FS_norm_inf = out_FS.norm(-1);
-        double dot_inF_outFS = in_F.dot(out_FS);
-        double dot_inFS_outF = in_FS.dot(out_F);
-
-        if (world_rank == 0) {
-            std::cout << "||out_F||_2 = " << out_F_norm_2 << std::endl;
-            std::cout << "||out_FS||_2 = " << out_FS_norm_2 << std::endl;
-            std::cout << "||out_F||_1 = " << out_F_norm_1 << std::endl;
-            std::cout << "||out_FS||_1 = " << out_FS_norm_1 << std::endl;
-            std::cout << "||out_F||_inf = " << out_F_norm_inf << std::endl;
-            std::cout << "||out_FS||_inf = " << out_FS_norm_inf << std::endl;
-            std::cout << "<in_F, out_FS> = " << dot_inF_outFS << std::endl;
-            std::cout << "<in_FS, out_F> = " << dot_inFS_outF << std::endl;
-        }
-
-        Vector test1(in_F, false);
-        Vector test2(in_F, false);
-
-        test1.init_vec_ones();
-        test2.init_vec_ones();
-
-        test1.scale(2.0);
-        if (print)
-            test1.print("2*test1");
-
-        test1.axpy(3.0, test2);
-        if (print)
-            test1.print("3*test2 + 2*test1");
-
-        test1.axpby(3.0, 2.0, test2);
-        if (print)
-            test1.print("9*test2 + 4*test1");
-
-        Vector test3 = test1.wscale(0.5);
-        if (print)
-            test3.print("0.5*test1");
-
-        Vector test_param(in_F, false);
-        Vector test_data(in_FS, false);
-
-        test_param.init_vec_from_file("test_param.h5");
-        test_data.init_vec_from_file("test_data.h5");
-
-        if (print) {
-            test_param.print("test_param");
-            test_data.print("test_data");
-        }
-
-        test1.save("test1.h5");
 
         Matrix F2(comm, "/global/homes/s/srvenkat/test_1_new/p2o_reindex/", "/global/homes/s/srvenkat/test_1_new/p2o_prior_reindex/");
 
@@ -298,9 +229,9 @@ int main(int argc, char** argv)
         double norm_true = true_out_F2.norm(2);
 
         if (world_rank == 0){
-            printf("||F*m -d|| %f\n", norm_diff);
-            printf("||d|| %f\n", norm_true);
-            printf("||F*m -d||/||d|| %f\n", norm_diff/norm_true);
+            printf("||F*m -d||_2 %f\n", norm_diff);
+            printf("||d||_2 %f\n", norm_true);
+            printf("||F*m -d||_2/||d||_2 %f\n", norm_diff/norm_true);
         }
 
 

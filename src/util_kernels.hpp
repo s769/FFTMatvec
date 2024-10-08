@@ -25,12 +25,12 @@ namespace UtilKernels {
  *
  * @param d_in      Pointer to the input vector.
  * @param d_pad     Pointer to the output padded vector.
- * @param num_cols  Number of columns in each block.
- * @param size      Total size of the vector.
+ * @param num_blocks  Number of blocks in the vector.
+ * @param padded_size Padded size of each block.
  * @param s         CUDA stream for asynchronous execution.
  */
-void pad_vector(const double* const d_in, double* const d_pad, const unsigned int num_cols,
-    const unsigned int size, cudaStream_t s);
+void pad_vector(const double* const d_in, double* const d_pad, const unsigned int num_blocks,
+    const unsigned int padded_size, cudaStream_t s);
 
 /**
  * @brief Unpads or repads a vector.
@@ -40,14 +40,14 @@ void pad_vector(const double* const d_in, double* const d_pad, const unsigned in
  *
  * @param d_in Pointer to the input vector.
  * @param d_out Pointer to the output vector.
- * @param num_cols The number of columns in the vector.
- * @param size The size of the vector.
+ * @param num_blocks Number of blocks in the vector.
+ * @param padded_size Padded size of each block.
  * @param unpad Flag indicating whether to unpad or repad the vector. If true, the vector will be
  * unpadded. If false, the second half of each block will be reset to zeros.
  * @param s The CUDA stream to use for the operation.
  */
-void unpad_repad_vector(const double* const d_in, double* const d_out, const unsigned int num_cols,
-    const unsigned int size, const bool unpad, cudaStream_t s);
+void unpad_repad_vector(const double* const d_in, double* const d_out, const unsigned int num_blocks,
+    const unsigned int padded_size, const bool unpad, cudaStream_t s);
 
 } // namespace UtilKernels
 
