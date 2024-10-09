@@ -33,6 +33,8 @@ cmake --build build
 
 **Note**: the `-DCUTENSOR_ROOT` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTENSOR 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTENSOR 2.x library must be provided to the build command.
 
+Tests will build by default. If you don't want to build the tests, you can disable them by adding `-DENABLE_TESTING=OFF` to the cmake command. To run the tests, use `ctest` in the `build` directory. Tests require a minimum of 2 GPUs to run.
+
 
 To build the documentation, the following dependencies are required:
 

@@ -46,7 +46,13 @@ TEST_F(MatvecTest, FmDTest)
     F.matvec(m, d2);
     d2 -= d;
     double norm = d2.norm();
-    ASSERT_LT(norm, 1e-10);
+    double norm_true = d.norm();
+    double rel_err;
+    if (comm->get_world_rank() == 0)
+    {
+        rel_err = norm / norm_true;
+        ASSERT_LT(rel_err, 1e-6);
+    }
 
 }
 

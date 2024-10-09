@@ -29,6 +29,9 @@ endif()
 add_subdirectory(src)
 
 
-enable_testing()
+option(ENABLE_TESTING "Enable testing" ON)
 
-add_subdirectory(test)
+if(ENABLE_TESTING)
+    enable_testing()
+    add_subdirectory(test)
+endif()

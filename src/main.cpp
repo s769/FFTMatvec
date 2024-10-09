@@ -209,34 +209,6 @@ int main(int argc, char** argv)
         }
 
 
-        Matrix F2(comm, "/global/homes/s/srvenkat/test_1_new/p2o_reindex/", "/global/homes/s/srvenkat/test_1_new/p2o_prior_reindex/");
-
-        Vector in_F2(comm, F2.get_glob_num_cols(), F2.get_block_size(), "col", true),
-            out_F2(comm, F2.get_glob_num_rows(), F2.get_block_size(), "row", true);
-
-        in_F2.init_vec_from_file("/global/homes/s/srvenkat/test_1_new/true_param_vec_reindex.h5");
-        out_F2.init_vec();
-
-        F2.matvec(in_F2, out_F2);
-
-        Vector true_out_F2(out_F2, false);
-
-        true_out_F2.init_vec_from_file("/global/homes/s/srvenkat/test_1_new/true_obs_vec_reindex.h5");
-
-        out_F2.axpy(-1.0, true_out_F2);
-
-        double norm_diff = out_F2.norm(2);
-        double norm_true = true_out_F2.norm(2);
-
-        if (world_rank == 0){
-            printf("||F*m -d||_2 %f\n", norm_diff);
-            printf("||d||_2 %f\n", norm_true);
-            printf("||F*m -d||_2/||d||_2 %f\n", norm_diff/norm_true);
-        }
-
-
-
-
 
 #if !TIME_MPI
 
