@@ -81,13 +81,13 @@ int main(int argc, char** argv)
         // Check that the number of processor rows and columns is valid
         if (world_size != proc_rows * proc_cols) {
             if (proc_rows == 1 && proc_cols == 1) {
-                proc_rows = 1;
-                proc_cols = world_size;
                 fprintf(stderr,
                     "Warning: Proc Rows x Proc Cols must equal the total number of MPI "
                     "ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead\n",
-                    proc_rows, proc_cols, proc_rows * proc_cols, world_size, proc_rows, proc_cols,
-                    proc_rows * proc_cols);
+                    proc_rows, proc_cols, proc_rows * proc_cols, world_size, 1, world_size,
+                    world_size);
+                proc_rows = 1;
+                proc_cols = world_size;
             } else if (world_rank == 0) {
                 fprintf(stderr,
                     "Proc Rows x Proc Cols must equal the total number of MPI ranks. Got %d x %d = "
@@ -207,8 +207,6 @@ int main(int argc, char** argv)
             out_F.print("out_F");
             out_FS.print("out_FS");
         }
-
-
 
 #if !TIME_MPI
 

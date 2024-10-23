@@ -103,7 +103,7 @@ class MPIMinimalistPrinter : public ::testing::EmptyTestEventListener
  MPIMinimalistPrinter() : ::testing::EmptyTestEventListener(),
     result_vector()
  {
-    int is_mpi_initialized;
+    int is_mpi_initialized = 0;
     assert(MPI_Initialized(&is_mpi_initialized) == MPI_SUCCESS);
     if (!is_mpi_initialized) {
       printf("MPI must be initialized before RUN_ALL_TESTS!\n");
@@ -118,7 +118,7 @@ class MPIMinimalistPrinter : public ::testing::EmptyTestEventListener
  MPIMinimalistPrinter(MPI_Comm comm_) : ::testing::EmptyTestEventListener(),
     result_vector()
  {
-   int is_mpi_initialized;
+   int is_mpi_initialized = 0;
    assert(MPI_Initialized(&is_mpi_initialized) == MPI_SUCCESS);
    if (!is_mpi_initialized) {
      printf("MPI must be initialized before RUN_ALL_TESTS!\n");
@@ -134,7 +134,7 @@ class MPIMinimalistPrinter : public ::testing::EmptyTestEventListener
   MPIMinimalistPrinter
     (const MPIMinimalistPrinter& printer) {
 
-    int is_mpi_initialized;
+    int is_mpi_initialized = 0;
     assert(MPI_Initialized(&is_mpi_initialized) == MPI_SUCCESS);
     if (!is_mpi_initialized) {
       printf("MPI must be initialized before RUN_ALL_TESTS!\n");
@@ -151,7 +151,7 @@ class MPIMinimalistPrinter : public ::testing::EmptyTestEventListener
   // Called before the Environment is torn down.
   void OnEnvironmentTearDownStart()
   {
-    int is_mpi_finalized;
+    int is_mpi_finalized = 0;
     assert(MPI_Finalized(&is_mpi_finalized) == MPI_SUCCESS);
     if (!is_mpi_finalized) {
       MPI_Comm_free(&comm);
@@ -280,7 +280,7 @@ class MPIWrapperPrinter : public ::testing::TestEventListener
 MPIWrapperPrinter(::testing::TestEventListener *l, MPI_Comm comm_) :
     ::testing::TestEventListener(), listener(l), result_vector()
  {
-   int is_mpi_initialized;
+   int is_mpi_initialized = 0;
    assert(MPI_Initialized(&is_mpi_initialized) == MPI_SUCCESS);
    if (!is_mpi_initialized) {
      printf("MPI must be initialized before RUN_ALL_TESTS!\n");
@@ -297,7 +297,7 @@ MPIWrapperPrinter
 (const MPIWrapperPrinter& printer) :
     listener(printer.listener), result_vector(printer.result_vector) {
 
-    int is_mpi_initialized;
+    int is_mpi_initialized = 0;
     assert(MPI_Initialized(&is_mpi_initialized) == MPI_SUCCESS);
     if (!is_mpi_initialized) {
       printf("MPI must be initialized before RUN_ALL_TESTS!\n");
@@ -473,7 +473,7 @@ virtual void OnTestPartResult
 // Called before the Environment is torn down.
 virtual void OnEnvironmentsTearDownStart(const ::testing::UnitTest &unit_test)
 {
-    int is_mpi_finalized;
+    int is_mpi_finalized = 0;
     assert(MPI_Finalized(&is_mpi_finalized) == MPI_SUCCESS);
     if (!is_mpi_finalized) {
         MPI_Comm_free(&comm);

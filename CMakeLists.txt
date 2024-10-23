@@ -22,7 +22,6 @@ endif()
 
 find_package(MPI REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(CUDA REQUIRED)
 find_package(HDF5 REQUIRED)
 
 
