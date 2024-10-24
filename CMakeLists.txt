@@ -4,6 +4,17 @@ project(fft_matvec LANGUAGES CXX CUDA C)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+message(STATUS "CMAKE_CUDA_ARCHITECTURES: ${CMAKE_CUDA_ARCHITECTURES}")
+
+if(NOT DEFINED CUDA_ARCH)
+  message(STATUS "CUDA_ARCH not specified. Setting CMAKE_CUDA_ARCHITECTURES to 80;90")
+  set(CMAKE_CUDA_ARCHITECTURES "80;90")
+else()
+  message(STATUS "Setting CMAKE_CUDA_ARCHITECTURES to ${CUDA_ARCH}")
+  set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
+endif()
+
+
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 # Update submodules as needed
@@ -41,6 +52,7 @@ if (NOT HDF5_IS_PARALLEL)
 endif()
 
 add_subdirectory(src)
+
 
 
 option(ENABLE_TESTING "Enable testing" ON)
