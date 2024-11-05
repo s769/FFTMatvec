@@ -62,6 +62,9 @@ Vector& Vector::operator=(Vector& vec)
 {
     // Copy assignment operator for the Vector class. Copy the data from vec.
     if (this != &vec) {
+        if (on_grid()) {
+            gpuErrchk(cudaFree(d_vec));
+        }
         comm = vec.comm;
         num_blocks = vec.num_blocks;
         glob_num_blocks = vec.glob_num_blocks;
@@ -83,10 +86,13 @@ Vector& Vector::operator=(Vector& vec)
     return *this;
 }
 
-Vector& Vector::operator=(Vector&& vec)
+Vector& Vector::operator=(Vector&& vec) noexcept
 {
     // Move assignment operator for the Vector class. Move the data from vec.
     if (this != &vec) {
+        if (on_grid()) {
+            gpuErrchk(cudaFree(d_vec));
+        }
         comm = vec.comm;
         num_blocks = vec.num_blocks;
         glob_num_blocks = vec.glob_num_blocks;

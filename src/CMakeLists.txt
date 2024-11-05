@@ -7,7 +7,7 @@ add_compile_options($<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
 add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-fopenmp>)
 
 
-add_library(FFT_mvec SHARED ${SOURCE_FILES})
+add_library(FFT_mvec STATIC ${SOURCE_FILES})
 
 
 add_executable(fft_matvec main.cpp)
