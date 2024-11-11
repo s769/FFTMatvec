@@ -326,14 +326,14 @@ void Matrix::init_mat_from_file(std::string dirname, bool aux_mat)
 
         size_t row_start
             = Utils::get_start_index(glob_num_rows, comm.get_row_color(), comm.get_proc_rows());
-
+        std::vector<double> vec(block_size * num_cols);
         for (int r = 0; r < num_rows; r++) {
             std::string zero_pad_vec_str = Utils::zero_pad(r + row_start, 6);
             std::string vec_filename = dirname + zero_pad_vec_str + ".h5";
             File file(vec_filename, File::ReadOnly, fapl);
 
             auto dataset = file.getDataSet("vec");
-            std::vector<double> vec;
+            
 
             int reindex, n_blocks, steps;
             dataset.getAttribute("reindex").read<int>(reindex);
