@@ -31,8 +31,9 @@ void Utils::get_host_name(char* hostname, int maxlen)
 void Utils::print_vec(double* vec, int len, int block_size, std::string name)
 {
     double* h_vec;
-    h_vec = (double*)malloc((size_t) len * block_size * sizeof(double));
-    gpuErrchk(cudaMemcpy(h_vec, vec, (size_t) len * block_size * sizeof(double), cudaMemcpyDeviceToHost));
+    h_vec = (double*)malloc((size_t)len * block_size * sizeof(double));
+    gpuErrchk(
+        cudaMemcpy(h_vec, vec, (size_t)len * block_size * sizeof(double), cudaMemcpyDeviceToHost));
     printf("%s:\n", name.c_str());
 
     for (size_t i = 0; i < len; i++) {
@@ -63,8 +64,9 @@ void Utils::print_vec_complex(Complex* vec, int len, int block_size, std::string
 {
 
     Complex* h_vec;
-    h_vec = (Complex*)malloc((size_t) len * block_size * sizeof(Complex));
-    gpuErrchk(cudaMemcpy(h_vec, vec, (size_t) len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+    h_vec = (Complex*)malloc((size_t)len * block_size * sizeof(Complex));
+    gpuErrchk(
+        cudaMemcpy(h_vec, vec, (size_t)len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
 
     printf("%s:\n", name.c_str());
 
@@ -372,15 +374,8 @@ int Utils::global_to_local_size(int global_size, int color, int comm_size)
 
 int Utils::local_to_global_size(int local_size, int comm_size) { return local_size * comm_size; }
 
-void Utils::alltoall_v(ncclComm_t gpu_comm, double* sendbuf, int* sendcounts, int* sdispls,
-    double* recvbuf, int* recvcounts, int* rdispls, int size, int rank, cudaStream_t stream) {
-
-    // AlltoAll_v operation using NCCL
-    NCCLCHECK(ncclGroupStart());
-    for (int i = 0; i < size; i++) {
-        NCCLCHECK(ncclSend(sendbuf + sdispls[i], sendcounts[i], ncclDouble, i, gpu_comm, stream));
-        NCCLCHECK(ncclRecv(recvbuf + rdispls[i], recvcounts[i], ncclDouble, i, gpu_comm, stream));
-    }
-    NCCLCHECK(ncclGroupEnd());
-    
+std::string Utils::zero_pad(size_t num, size_t width)
+{
+    std::string num_str = std::to_string(num);
+    return std::string(width - std::min(width, num_str.length()), '0') + num_str;
 }

@@ -81,7 +81,6 @@ public:
         vec.d_vec = nullptr;
     }
 
-
     /**
      * @brief Copy assignment operator for the Vector class.
      * @param vec The Vector object to be copied.
@@ -94,7 +93,7 @@ public:
      * @param vec The Vector object to be moved.
      * @return The moved Vector object.
      */
-    Vector& operator=(Vector&& vec) noexcept;
+    Vector& operator=(Vector&& vec);
 
     /**
      * @brief Addition operator for the Vector class.
@@ -139,28 +138,44 @@ public:
      * @param x The Vector object to be added.
      * @return The sum of the two vectors.
      */
-    Vector& operator+=(Vector& x) { this->axpy(1.0, x); return *this; }
+    Vector& operator+=(Vector& x)
+    {
+        this->axpy(1.0, x);
+        return *this;
+    }
 
     /**
      * @brief Subtractive assignment operator for the Vector class.
      * @param x The Vector object to be subtracted.
      * @return The difference of the two vectors.
      */
-    Vector& operator-=(Vector& x) { this->axpy(-1.0, x); return *this; }
+    Vector& operator-=(Vector& x)
+    {
+        this->axpy(-1.0, x);
+        return *this;
+    }
 
     /**
      * @brief Scalar Multiplicative assignment operator for the Vector class.
      * @param alpha The constant by which to scale the vector.
      * @return The scaled vector.
      */
-    Vector& operator*=(double alpha) { this->scale(alpha); return *this; }
+    Vector& operator*=(double alpha)
+    {
+        this->scale(alpha);
+        return *this;
+    }
 
     /**
      * @brief Scalar Division assignment operator for the Vector class.
      * @param alpha The constant by which to divide the vector.
      * @return The scaled vector.
      */
-    Vector& operator/=(double alpha) { this->scale(1.0 / alpha); return *this; }
+    Vector& operator/=(double alpha)
+    {
+        this->scale(1.0 / alpha);
+        return *this;
+    }
 
     /**
      * @brief Destructor for the Vector class. Frees the memory allocated for the vector data.
@@ -206,9 +221,9 @@ public:
         } else if (row_or_col == "row") {
             return comm.get_col_color() == 0;
         } else {
-            fprintf(stderr, "Invalid grid descriptor: %s\n", row_or_col.c_str());
+            if (comm.get_world_rank() == 0)
+                fprintf(stderr, "Invalid grid descriptor: %s\n", row_or_col.c_str());
             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
-            exit(1);
         }
     }
 

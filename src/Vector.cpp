@@ -13,7 +13,8 @@ Vector::Vector(Comm& comm, unsigned int blocks, unsigned int block_size, std::st
     // and for column vectors, initialize only on col_color == 0.
 
     if (row_or_col != "row" && row_or_col != "col") {
-        fprintf(stderr, "row_or_col must be either 'row' or 'col'\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "row_or_col must be either 'row' or 'col'\n");
         MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
     }
 
@@ -62,9 +63,6 @@ Vector& Vector::operator=(Vector& vec)
 {
     // Copy assignment operator for the Vector class. Copy the data from vec.
     if (this != &vec) {
-        if (on_grid()) {
-            gpuErrchk(cudaFree(d_vec));
-        }
         comm = vec.comm;
         num_blocks = vec.num_blocks;
         glob_num_blocks = vec.glob_num_blocks;
@@ -86,13 +84,10 @@ Vector& Vector::operator=(Vector& vec)
     return *this;
 }
 
-Vector& Vector::operator=(Vector&& vec) noexcept
+Vector& Vector::operator=(Vector&& vec)
 {
     // Move assignment operator for the Vector class. Move the data from vec.
     if (this != &vec) {
-        if (on_grid()) {
-            gpuErrchk(cudaFree(d_vec));
-        }
         comm = vec.comm;
         num_blocks = vec.num_blocks;
         glob_num_blocks = vec.glob_num_blocks;
@@ -138,7 +133,7 @@ void Vector::init_vec_ones()
     // make double array on host
 
     if (on_grid()) {
-        double* h_vec = new double[(size_t) num_blocks * block_size];
+        double* h_vec = new double[(size_t)num_blocks * block_size];
 #pragma omp parallel for
         for (size_t i = 0; i < (size_t)num_blocks * block_size; i++) {
             h_vec[i] = 1.0;
@@ -156,7 +151,7 @@ void Vector::init_vec_consecutive()
     // Initialize the vector with consecutive integers (global across all processes containing the
     // vector)
     if (on_grid()) {
-        double* h_vec = new double[(size_t) num_blocks * block_size];
+        double* h_vec = new double[(size_t)num_blocks * block_size];
         size_t start = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
         start *= num_blocks * block_size;
 #pragma omp parallel for
@@ -202,7 +197,9 @@ void Vector::init_vec_from_file(std::string filename, bool QoI)
                 if (QoI) {
                     dataset.getAttribute("qoi").read<int>(QoI_flag);
                     if (QoI_flag != 1) {
-                        fprintf(stderr, "qoi attribute must be 1. Got qoi attribute = %d.\n", QoI_flag);
+                        if (comm.get_world_rank() == 0)
+                            fprintf(stderr, "qoi attribute must be 1. Got qoi attribute = %d.\n",
+                                QoI_flag);
                         MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
                     }
                 }
@@ -210,21 +207,25 @@ void Vector::init_vec_from_file(std::string filename, bool QoI)
             dataset.getAttribute("reindex").read<int>(reindex);
 
             if ((bool)reindex != SOTI_ordering) {
-                fprintf(stderr,
-                    "reindex must match SOTI_ordering. Got reindex = %d, SOTI_ordering "
-                    "= %d.\n",
-                    reindex, SOTI_ordering);
+                if (comm.get_world_rank() == 0)
+                    fprintf(stderr,
+                        "reindex must match SOTI_ordering. Got reindex = %d, SOTI_ordering "
+                        "= %d.\n",
+                        reindex, SOTI_ordering);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (n_blocks != glob_num_blocks) {
-                fprintf(stderr,
-                    "n_blocks must be equal to glob_num_blocks. Got n_blocks = %d, glob_num_blocks "
-                    "= %d.\n",
-                    n_blocks, glob_num_blocks);
+                if (comm.get_world_rank() == 0)
+                    fprintf(stderr,
+                        "n_blocks must be equal to glob_num_blocks. Got n_blocks = %d, "
+                        "glob_num_blocks "
+                        "= %d.\n",
+                        n_blocks, glob_num_blocks);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             } else if (steps != block_size) {
-                fprintf(stderr,
-                    "steps must be equal to block_size. Got steps = %d, block_size = %d.\n", steps,
-                    block_size);
+                if (comm.get_world_rank() == 0)
+                    fprintf(stderr,
+                        "steps must be equal to block_size. Got steps = %d, block_size = %d.\n",
+                        steps, block_size);
                 MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
             }
 
@@ -257,7 +258,7 @@ void Vector::print(std::string name)
 
     double* h_vec;
     if (on_grid()) {
-        h_vec = new double[(size_t) num_blocks * block_size];
+        h_vec = new double[(size_t)num_blocks * block_size];
         gpuErrchk(cudaMemcpy(h_vec, d_vec, (size_t)num_blocks * block_size * sizeof(double),
             cudaMemcpyDeviceToHost));
     }
@@ -293,7 +294,8 @@ double Vector::norm(int order)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
     double norm, global_norm = 0.0;
@@ -306,7 +308,8 @@ double Vector::norm(int order)
         switch (order) {
         case 1:
 #if !INDICES_64_BIT
-            cublasSafeCall(cublasDasum(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &norm));
+            cublasSafeCall(
+                cublasDasum(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
                 cublasDasum_64(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
@@ -316,7 +319,8 @@ double Vector::norm(int order)
             break;
         case 2:
 #if !INDICES_64_BIT
-            cublasSafeCall(cublasDnrm2(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &norm));
+            cublasSafeCall(
+                cublasDnrm2(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
 #else
             cublasSafeCall(
                 cublasDnrm2_64(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
@@ -329,12 +333,12 @@ double Vector::norm(int order)
 #if !INDICES_64_BIT
             int max_index;
             cublasSafeCall(
-                cublasIdamax(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &max_index));
+                cublasIdamax(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &max_index));
             cublasSafeCall(cublasGetVector(1, sizeof(double), d_vec + max_index - 1, 1, &norm, 1));
 #else
             size_t max_index;
             cublasSafeCall(cublasIdamax_64(
-                cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, &max_index));
+                cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &max_index));
             cublasSafeCall(
                 cublasGetVector_64(1, sizeof(double), d_vec + max_index - 1, 1, &norm, 1));
 #endif
@@ -342,7 +346,8 @@ double Vector::norm(int order)
 
             break;
         default:
-            fprintf(stderr, "Invalid vector norm order: %d\n", order);
+            if (comm.get_world_rank() == 0)
+                fprintf(stderr, "Invalid vector norm order: %d\n", order);
             MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
         }
     }
@@ -356,7 +361,8 @@ void Vector::scale(double alpha)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
@@ -364,10 +370,11 @@ void Vector::scale(double alpha)
         // use cuBLAS to scale the vector
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
-        cublasSafeCall(cublasDscal(cublasHandle, (size_t) num_blocks * block_size, &alpha, d_vec, 1));
+        cublasSafeCall(
+            cublasDscal(cublasHandle, (size_t)num_blocks * block_size, &alpha, d_vec, 1));
 #else
         cublasSafeCall(
-            cublasDscal_64(cublasHandle, (size_t) num_blocks * block_size, &alpha, d_vec, 1));
+            cublasDscal_64(cublasHandle, (size_t)num_blocks * block_size, &alpha, d_vec, 1));
 #endif
     }
 }
@@ -378,7 +385,8 @@ Vector Vector::wscale(double alpha)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
@@ -395,12 +403,14 @@ void Vector::axpy(double alpha, Vector& x)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
     if (!x.is_initialized()) {
-        fprintf(stderr, "Vector x (to be added) not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector x (to be added) not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
@@ -408,11 +418,11 @@ void Vector::axpy(double alpha, Vector& x)
         // use cuBLAS to compute the axpy operation
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
-        cublasSafeCall(
-            cublasDaxpy(cublasHandle, (size_t) num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
+        cublasSafeCall(cublasDaxpy(
+            cublasHandle, (size_t)num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
 #else
         cublasSafeCall(cublasDaxpy_64(
-            cublasHandle, (size_t) num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
+            cublasHandle, (size_t)num_blocks * block_size, &alpha, x.get_d_vec(), 1, d_vec, 1));
 #endif
     }
 }
@@ -423,12 +433,14 @@ Vector Vector::waxpy(double alpha, Vector& x)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
     if (!x.is_initialized()) {
-        fprintf(stderr, "Vector x (to be added) not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector x (to be added) not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
@@ -460,12 +472,14 @@ double Vector::dot(Vector& x)
     // If the vector is not initialized, print an error message and abort the program.
 
     if (!initialized) {
-        fprintf(stderr, "Vector not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
     if (!x.is_initialized()) {
-        fprintf(stderr, "Vector x (to be dotted) not initialized.\n");
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector x (to be dotted) not initialized.\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
@@ -475,11 +489,11 @@ double Vector::dot(Vector& x)
         // use cuBLAS to compute the dot product
         cublasHandle_t cublasHandle = comm.get_cublasHandle();
 #if !INDICES_64_BIT
-        cublasSafeCall(
-            cublasDdot(cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
+        cublasSafeCall(cublasDdot(
+            cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
 #else
         cublasSafeCall(cublasDdot_64(
-            cublasHandle, (size_t) num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
+            cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, x.get_d_vec(), 1, &dot));
 #endif
 
         // use MPI to compute the global dot product
@@ -511,11 +525,11 @@ void Vector::save(std::string filename)
             fapl.add(MPIOCollectiveMetadata {});
 
             File file(filename, File::Overwrite, fapl);
-            std::vector<double> vec((size_t) num_blocks * block_size);
+            std::vector<double> vec((size_t)num_blocks * block_size);
 
             // copy to host
             gpuErrchk(cudaMemcpy(vec.data(), d_vec,
-                (size_t) num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
+                (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToHost));
 
             auto xfer_props = DataTransferProps {};
             xfer_props.add(UseCollectiveIO {});
@@ -525,10 +539,10 @@ void Vector::save(std::string filename)
                                                  : Utils::get_start_index(glob_num_blocks,
                                                        comm.get_row_color(), comm.get_proc_rows());
 
-            std::vector<size_t> dims = { (size_t) glob_num_blocks * block_size };
+            std::vector<size_t> dims = { (size_t)glob_num_blocks * block_size };
 
             DataSet dataset = file.createDataSet<double>("vec", DataSpace(dims));
-            dataset.select({ start * block_size }, { (size_t) num_blocks * block_size })
+            dataset.select({ start * block_size }, { (size_t)num_blocks * block_size })
                 .write(vec, xfer_props);
             Utils::check_collective_io(xfer_props);
 
@@ -552,7 +566,8 @@ void Vector::save(std::string filename)
     }
 }
 
-void Vector::set_d_vec(double * vec) {
+void Vector::set_d_vec(double* vec)
+{
     if (on_grid()) {
         // get pointer attribute to check if it is a device pointer
         cudaPointerAttributes attributes;
@@ -564,150 +579,3 @@ void Vector::set_d_vec(double * vec) {
         d_vec = vec;
     }
 }
-
-// void Vector::to_TOSI_local()
-// {
-//     cublasHandle_t cublasHandle = comm.get_cublasHandle();
-//     double alpha = 1.0;
-//     double beta = 0.0;
-
-//     double* d_vec_TOSI;
-//     gpuErrchk(cudaMalloc((void**)&d_vec_TOSI, (size_t)num_blocks * block_size * sizeof(double)));
-
-// #if !INDICES_64_BIT
-//     cublasSafeCall(cublasDgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_blocks, block_size,
-//         &alpha, d_vec, block_size, &beta, NULL, num_blocks, d_vec_TOSI, num_blocks));
-
-// #else
-//     cublasSafeCall(cublasDgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, num_blocks, block_size,
-//         &alpha, d_vec, block_size, &beta, NULL, num_blocks, d_vec_TOSI, num_blocks));
-// #endif
-
-//     gpuErrchk(cudaFree(d_vec));
-//     d_vec = d_vec_TOSI;
-//     SOTI_ordering = false;
-// }
-
-// void Vector::to_SOTI_local()
-// {
-//     cublasHandle_t cublasHandle = comm.get_cublasHandle();
-//     double alpha = 1.0;
-//     double beta = 0.0;
-
-//     double* d_vec_SOTI;
-//     gpuErrchk(cudaMalloc((void**)&d_vec_SOTI, (size_t)num_blocks * block_size * sizeof(double)));
-
-// #if !INDICES_64_BIT
-//     cublasSafeCall(cublasDgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, block_size, num_blocks,
-//         &alpha, d_vec, num_blocks, &beta, NULL, block_size, d_vec_SOTI, block_size));
-// #else
-//     cublasSafeCall(cublasDgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, block_size, num_blocks,
-//         &alpha, d_vec, num_blocks, &beta, NULL, block_size, d_vec_SOTI, block_size));
-// #endif
-
-//     gpuErrchk(cudaFree(d_vec));
-//     d_vec = d_vec_SOTI;
-//     SOTI_ordering = true;
-// }
-
-// void Vector::switch_ordering()
-// {
-//     int distribute_procs = (row_or_col == "col") ? comm.get_proc_cols() : comm.get_proc_rows();
-//     int distribute_rank = (row_or_col == "col") ? comm.get_col_color() : comm.get_row_color();
-//     printf("rank: %d, distribute_procs: %d, distribute_rank: %d\n", comm.get_world_rank(),
-//         distribute_procs, distribute_rank);
-
-//     unsigned int new_block_size = (distribute_rank < block_size % distribute_procs)
-//         ? block_size / distribute_procs + 1
-//         : block_size / distribute_procs;
-//     std::vector<int> sendcounts(distribute_procs), recvcounts(distribute_procs),
-//         sdispls(distribute_procs), rdispls(distribute_procs);
-//     int send_offset = 0, recv_offset = 0;
-
-//     for (int i = 0; i < distribute_procs; i++) {
-//         sendcounts[i] = (i < (distribute_procs < block_size % distribute_procs))
-//             ? (block_size / distribute_procs + 1) * num_blocks
-//             : (block_size / distribute_procs) * num_blocks;
-//         sdispls[i] = send_offset;
-//         send_offset += sendcounts[i];
-//     }
-
-//     for (int i = 0; i < distribute_procs; ++i) {
-//         recvcounts[i] = (i < (block_size % distribute_procs))
-//             ? (block_size / distribute_procs + 1) * glob_num_blocks
-//             : (block_size / distribute_procs) * glob_num_blocks;
-//         rdispls[i] = recv_offset;
-//         recv_offset += recvcounts[i];
-//     }
-
-//     double *sendbuf, *recvbuf;
-
-//     gpuErrchk(cudaMalloc((void**)&sendbuf, (size_t)send_offset * sizeof(double)));
-//     gpuErrchk(
-//         cudaMemcpy(sendbuf, d_vec, (size_t)send_offset * sizeof(double), cudaMemcpyDeviceToDevice));
-//     gpuErrchk(cudaMalloc((void**)&recvbuf, (size_t)recv_offset * sizeof(double)));
-
-//     ncclComm_t gpu_comm = (row_or_col == "col") ? comm.get_gpu_row_comm() : comm.get_gpu_col_comm();
-//     cudaStream_t stream = comm.get_stream();
-
-//     Utils::alltoall_v(gpu_comm, sendbuf, sendcounts.data(), sdispls.data(), recvbuf,
-//         recvcounts.data(), rdispls.data(), distribute_procs, distribute_rank, stream);
-
-//     double * h_vec = new double[recv_offset];
-//     gpuErrchk(cudaMemcpy(h_vec, recvbuf, (size_t)recv_offset * sizeof(double), cudaMemcpyDeviceToHost));
-//     for (int i = 0; i < recv_offset; i++) {
-//         printf("rank: %d, recvbuf[%d] = %f\n", distribute_rank, i, h_vec[i]);
-//     }
-
-//     gpuErrchk(cudaFree(sendbuf));
-//     gpuErrchk(cudaFree(d_vec));
-//     d_vec = recvbuf;
-//     int temp = block_size;
-//     num_blocks = new_block_size;
-//     block_size = glob_num_blocks;
-//     glob_num_blocks = temp;
-//     gpuErrchk(cudaFree(recvbuf));
-// }
-
-// void Vector::to_TOSI()
-// {
-//     if (!initialized) {
-//         fprintf(stderr, "Vector not initialized.\n");
-//         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
-//     }
-//     if (!SOTI_ordering) {
-//         if (comm.get_world_rank() == 0) {
-//             fprintf(stderr, "Vector is already in TOSI ordering.\n");
-//         }
-//         return;
-//     }
-//     printf("HERE1: rank: %d, col: %d, row: %d\n", comm.get_world_rank(), comm.get_col_color(),
-//         comm.get_row_color());
-//     if (on_grid()) {
-//         printf("rank: %d, col: %d, row: %d\n", comm.get_world_rank(), comm.get_col_color(),
-//             comm.get_row_color());
-//         to_TOSI_local();
-//         switch_ordering();
-//         SOTI_ordering = false;
-//     }
-// }
-
-// // void Vector::to_SOTI()
-// {
-//     if (!initialized) {
-//         fprintf(stderr, "Vector not initialized.\n");
-//         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
-//     }
-//     if (SOTI_ordering) {
-//         if (comm.get_world_rank() == 0) {
-//             fprintf(stderr, "Vector is already in SOTI ordering.\n");
-//         }
-//         return;
-//     }
-
-//     if (on_grid()) {
-//         switch_ordering();
-//         to_SOTI_local();
-//         SOTI_ordering = true;
-//     }
-// }
