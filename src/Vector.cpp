@@ -241,7 +241,8 @@ void Vector::init_vec_from_file(std::string filename, bool QoI)
             gpuErrchk(cudaMemcpy(d_vec, vec.data(),
                 (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyHostToDevice));
         } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
+            if (comm.get_world_rank() == 0)
+                fprintf(stderr, "Error reading vector from file: %s\n", e.what());
             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
         }
     }
@@ -560,7 +561,8 @@ void Vector::save(std::string filename)
             if (comm.get_world_rank() == 0)
                 printf("Saved vector to %s\n", filename.c_str());
         } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
+            if (comm.get_world_rank() == 0)
+                fprintf(stderr, "Error saving vector to file: %s\n", e.what());
             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
         }
     }
