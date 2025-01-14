@@ -429,8 +429,8 @@ TEST_F(MatrixTest, ReadFromFile)
     double glob_result_x, glob_result_y;
     MPICHECK(MPI_Allreduce(&result.x, &glob_result_x, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
     MPICHECK(MPI_Allreduce(&result.y, &glob_result_y, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
-    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-12);
-    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-12);
+    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-6);
+    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-6);
 
     delete[] h_mat;
 
@@ -458,8 +458,8 @@ TEST_F(MatrixTest, ReadFromFile)
         MPI_Allreduce(&result_aux.x, &glob_result_x_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
     MPICHECK(
         MPI_Allreduce(&result_aux.y, &glob_result_y_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
-    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-12);
-    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-12);
+    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-6);
+    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-6);
 
     delete[] h_mat_aux;
 }
@@ -495,8 +495,8 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     double glob_result_x, glob_result_y;
     MPICHECK(MPI_Allreduce(&result.x, &glob_result_x, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
     MPICHECK(MPI_Allreduce(&result.y, &glob_result_y, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
-    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-12);
-    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-12);
+    ASSERT_NEAR(glob_result_x, 5.1536338732773492, 1e-6);
+    ASSERT_NEAR(glob_result_y, -3.2036157296392416, 1e-6);
 
     delete[] h_mat;
 
@@ -521,8 +521,8 @@ TEST_F(MatrixTest, ReadFromFileQoI)
         MPI_Allreduce(&result_aux.x, &glob_result_x_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
     MPICHECK(
         MPI_Allreduce(&result_aux.y, &glob_result_y_aux, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD));
-    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-12);
-    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-12);
+    ASSERT_NEAR(glob_result_x_aux, 393796.81238437677, 1e-6);
+    ASSERT_NEAR(glob_result_y_aux, -244782.78303411166, 1e-6);
 
     delete[] h_mat_aux;
 

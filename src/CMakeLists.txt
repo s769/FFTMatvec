@@ -17,3 +17,4 @@ set(LIBS FFT_mvec cufft cublas nccl cutensor OpenMP::OpenMP_CXX OpenMP::OpenMP_C
 
 target_link_libraries(fft_matvec PUBLIC ${LIBS})
 
+

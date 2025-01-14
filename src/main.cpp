@@ -26,7 +26,10 @@
 #if TIME_MPI
 #define WARMUP 10
 bool warmup;
+#else
+#define WARMUP 0
 #endif
+
 
 /**
  * @brief Configures the parser.
@@ -209,17 +212,6 @@ int main(int argc, char** argv)
             out_FS.print("out_FS");
         }
 
-#if !TIME_MPI
-
-        F.matvec(in_F, out_FS, true);
-        F.transpose_matvec(in_FS, out_F, true);
-
-        if (print) {
-            out_F.print("out_F");
-            out_FS.print("out_FS");
-        }
-
-#endif
         // Print timing results
         auto print_raw = parser.get<bool>("raw");
         if (world_rank == 0)
