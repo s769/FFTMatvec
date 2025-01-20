@@ -1,7 +1,9 @@
 #include "Comm.hpp"
 
-
-Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), proc_rows(proc_rows), proc_cols(proc_cols)
+Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
+    : global_comm(comm)
+    , proc_rows(proc_rows)
+    , proc_cols(proc_cols)
 {
     int local_rank = 0;
     global_comm = comm;
@@ -19,13 +21,34 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), pro
     char hostname[1024];
     Utils::get_host_name(hostname, 1024);
     hostHashs[world_rank] = Utils::get_host_hash(hostname);
-    MPICHECK(MPI_Allgather(MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
-    for (int p = 0; p < world_size; p++)
-    {
+    MPICHECK(MPI_Allgather(
+        MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
+    for (int p = 0; p < world_size; p++) {
         if (p == world_rank)
             break;
         if (hostHashs[p] == hostHashs[world_rank])
             local_rank++;
+    }
+
+    if (stream != 0) {
+        int dev;
+        gpuErrchk(cudaGetDevice(&dev));
+        if (dev != local_rank) {
+            if (world_rank == 0) {
+                fprintf(stderr, "Warning: rank %d is on device %d, but should be on device %d\n",
+                    world_rank, dev, local_rank);
+                MPICHECK(MPI_Abort(global_comm, 1));
+            }
+        }
+        s = stream;
+        device = local_rank;
+        external_stream = true;
+    } else {
+        // picking a GPU based on local_rank, make stream
+        device = local_rank;
+        gpuErrchk(cudaSetDevice(local_rank));
+        gpuErrchk(cudaStreamCreate(&s));
+        external_stream = false;
     }
 
     ncclUniqueId row_id;
@@ -33,12 +56,7 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), pro
     if (row_group_rank == 0)
         ncclGetUniqueId(&row_id);
 
-    MPICHECK(MPI_Bcast((void *)&row_id, sizeof(row_id), MPI_BYTE, 0, row_comm));
-
-    // picking a GPU based on local_rank, make stream
-    device = local_rank;
-    gpuErrchk(cudaSetDevice(local_rank));
-    gpuErrchk(cudaStreamCreate(&s));
+    MPICHECK(MPI_Bcast((void*)&row_id, sizeof(row_id), MPI_BYTE, 0, row_comm));
 
     NCCLCHECK(ncclCommInitRank(&gpu_row_comm, row_group_size, row_id, row_group_rank));
 
@@ -53,15 +71,13 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols) : global_comm(comm), pro
 
     if (col_group_rank == 0)
         ncclGetUniqueId(&col_id);
-    MPICHECK(MPI_Bcast((void *)&col_id, sizeof(col_id), MPI_BYTE, 0, col_comm));
+    MPICHECK(MPI_Bcast((void*)&col_id, sizeof(col_id), MPI_BYTE, 0, col_comm));
 
     NCCLCHECK(ncclCommInitRank(&gpu_col_comm, col_group_size, col_id, col_group_rank));
 
     cublasSafeCall(cublasCreate(&(cublasHandle)));
     cublasSafeCall(cublasSetStream(cublasHandle, s));
 }
-
-
 
 Comm::~Comm()
 {
@@ -70,5 +86,7 @@ Comm::~Comm()
     NCCLCHECK(ncclCommDestroy(gpu_row_comm));
     NCCLCHECK(ncclCommDestroy(gpu_col_comm));
     cublasSafeCall(cublasDestroy(cublasHandle));
-}
+    if (!external_stream)
+        gpuErrchk(cudaStreamDestroy(s));
 
+}

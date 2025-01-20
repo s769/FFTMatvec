@@ -29,6 +29,7 @@ private:
     ncclComm_t gpu_col_comm; /**< NCCL communicator for GPU column communication */
     cudaStream_t s; /**< CUDA stream */
     cublasHandle_t cublasHandle; /**< cuBLAS handle */
+    bool external_stream; /**< Flag indicating if an external stream was provided */
 
 public:
     /**
@@ -36,8 +37,9 @@ public:
      * @param comm The MPI global communicator.
      * @param proc_rows Number of process rows.
      * @param proc_cols Number of process columns.
+     * @param stream CUDA stream (default is 0 - will create a new stream).
      */
-    Comm(MPI_Comm comm, int proc_rows, int proc_cols);
+    Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream = 0);
 
     /**
      * @brief Copy constructor for the Comm class.
@@ -149,6 +151,12 @@ public:
      * @return The cuBLAS handle.
      */
     cublasHandle_t get_cublasHandle() { return cublasHandle; }
+
+    /**
+     * @brief Check if an external stream was provided.
+     * @return True if an external stream was provided, false otherwise.
+     */
+    bool has_external_stream() { return external_stream; }
 };
 
 #endif // __COMM_HPP__
