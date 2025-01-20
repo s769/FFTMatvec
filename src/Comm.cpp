@@ -21,13 +21,6 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     if (stream != 0) {
         int dev;
         gpuErrchk(cudaGetDevice(&dev));
-        if (dev != local_rank) {
-            if (world_rank == 0) {
-                fprintf(stderr, "Warning: rank %d is on device %d, but should be on device %d\n",
-                    world_rank, dev, local_rank);
-                MPICHECK(MPI_Abort(global_comm, 1));
-            }
-        }
         s = stream;
         device = dev;
         local_rank = dev;
