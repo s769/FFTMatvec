@@ -17,18 +17,6 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     MPI_Comm_rank(row_comm, &row_group_rank);
     MPI_Comm_size(row_comm, &row_group_size);
 
-    uint64_t hostHashs[world_size];
-    char hostname[1024];
-    Utils::get_host_name(hostname, 1024);
-    hostHashs[world_rank] = Utils::get_host_hash(hostname);
-    MPICHECK(MPI_Allgather(
-        MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
-    for (int p = 0; p < world_size; p++) {
-        if (p == world_rank)
-            break;
-        if (hostHashs[p] == hostHashs[world_rank])
-            local_rank++;
-    }
 
     if (stream != 0) {
         int dev;
@@ -41,10 +29,24 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
             }
         }
         s = stream;
-        device = local_rank;
+        device = dev;
+        local_rank = dev;
         external_stream = true;
     } else {
         // picking a GPU based on local_rank, make stream
+        uint64_t hostHashs[world_size];
+        char hostname[1024];
+        Utils::get_host_name(hostname, 1024);
+        hostHashs[world_rank] = Utils::get_host_hash(hostname);
+        MPICHECK(MPI_Allgather(
+            MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
+        for (int p = 0; p < world_size; p++) {
+            if (p == world_rank)
+                break;
+            if (hostHashs[p] == hostHashs[world_rank])
+                local_rank++;
+        }
+    
         device = local_rank;
         gpuErrchk(cudaSetDevice(local_rank));
         gpuErrchk(cudaStreamCreate(&s));
