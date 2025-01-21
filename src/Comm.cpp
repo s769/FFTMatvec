@@ -17,7 +17,6 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     MPI_Comm_rank(row_comm, &row_group_rank);
     MPI_Comm_size(row_comm, &row_group_size);
 
-
     if (stream != 0) {
         int dev;
         gpuErrchk(cudaGetDevice(&dev));
@@ -31,15 +30,29 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
         char hostname[1024];
         Utils::get_host_name(hostname, 1024);
         hostHashs[world_rank] = Utils::get_host_hash(hostname);
-        MPICHECK(MPI_Allgather(
-            MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t), MPI_BYTE, global_comm));
+        MPICHECK(MPI_Allgather(MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t),
+            MPI_BYTE, global_comm));
         for (int p = 0; p < world_size; p++) {
             if (p == world_rank)
                 break;
             if (hostHashs[p] == hostHashs[world_rank])
                 local_rank++;
         }
-    
+
+        int mpi_world_comm_size;
+        MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &mpi_world_comm_size));
+
+        int size_diff = mpi_world_comm_size - world_size;
+        if (size_diff > 0) {
+            int device_count;
+            gpuErrchk(cudaGetDeviceCount(&device_count));
+            int offset = size_diff % device_count;
+            int node_num = size_diff / device_count;
+            if (world_rank / node_num == node_num) {
+                local_rank += offset;
+            }
+        }
+
         device = local_rank;
         gpuErrchk(cudaSetDevice(local_rank));
         gpuErrchk(cudaStreamCreate(&s));
@@ -83,5 +96,4 @@ Comm::~Comm()
     cublasSafeCall(cublasDestroy(cublasHandle));
     if (!external_stream)
         gpuErrchk(cudaStreamDestroy(s));
-
 }
