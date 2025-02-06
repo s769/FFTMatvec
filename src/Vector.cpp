@@ -358,7 +358,7 @@ double Vector::norm(int order, std::string name)
     if (!name.empty() && comm.get_world_rank() == 0)
     {
         std::string norm_type = (order == -1) ? "INF" : std::to_string(order);
-        printf("||%s||_%s = %f\n", name.c_str(), norm_type.c_str(), global_norm);
+        printf("||%s||_%s = %E\n", name.c_str(), norm_type.c_str(), global_norm);
     }
 
 
