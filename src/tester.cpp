@@ -45,11 +45,9 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
     int proc_cols = comm.get_proc_cols();
 
     int Nt = mat.get_block_size();
-    int nm = mat.get_num_cols();
-    int nd = mat.get_num_rows();
 
-    int Nm = nm * proc_cols;
-    int Nd = nd * proc_rows;
+    int Nm = mat.get_glob_num_cols();
+    int Nd = mat.get_glob_num_rows();
 
     if (vec.on_grid()) {
         double* d_vec = vec.get_d_vec();
