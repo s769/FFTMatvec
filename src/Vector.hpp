@@ -237,9 +237,10 @@ public:
      * @brief Computes the norm of the vector.
      * @param order The order of the norm (e.g., "2" for the 2-norm, "1" for the 1-norm, "-1" for
      * the infinity norm).
+     * @param name The name of the vector. Prints the norm if name is not empty.
      * @return The norm of the vector. Only rank 0 has the global norm.
      */
-    double norm(int order = 2);
+    double norm(int order = 2, std::string name = "");
 
     /**
      * @brief Scales the vector by a constant (in-place).

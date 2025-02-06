@@ -288,7 +288,7 @@ void Vector::print(std::string name)
         delete[] h_vec;
 }
 
-double Vector::norm(int order)
+double Vector::norm(int order, std::string name)
 {
     // Compute the norm of the vector
     // order is the order of the norm (e.g., "2" for the 2-norm)
@@ -336,6 +336,8 @@ double Vector::norm(int order)
             cublasSafeCall(
                 cublasIdamax(cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &max_index));
             cublasSafeCall(cublasGetVector(1, sizeof(double), d_vec + max_index - 1, 1, &norm, 1));
+            // take absolute value of max element
+            norm = std::abs(norm);
 #else
             size_t max_index;
             cublasSafeCall(cublasIdamax_64(
@@ -352,6 +354,13 @@ double Vector::norm(int order)
             MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
         }
     }
+
+    if (!name.empty() && comm.get_world_rank() == 0)
+    {
+        std::string norm_type = (order == -1) ? "INF" : std::to_string(order);
+        printf("||%s||_%s = %f\n", name.c_str(), norm_type.c_str(), global_norm);
+    }
+
 
     return global_norm; // only rank 0 has the global norm
 }
