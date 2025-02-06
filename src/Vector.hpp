@@ -299,6 +299,12 @@ public:
      */
     void save(std::string filename);
 
+    /**
+     * @brief Copies a vector to another vector.
+     * @param x The vector to be copied to.
+     */
+    void copy(Vector& x);
+
     // /**
     //  * @brief Converts from SOTI to TOSI ordering.
     //  */

@@ -590,3 +590,27 @@ void Vector::set_d_vec(double* vec)
         d_vec = vec;
     }
 }
+
+void Vector::copy(Vector& x)
+{
+    // Copy the data from x
+    // If the vector is not initialized, print an error message and abort the program.
+
+    if (!initialized) {
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector not initialized.\n");
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
+
+    if (!x.is_initialized()) {
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Vector x (to be copied) not initialized.\n");
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
+
+    if (on_grid()) {
+        // copy the data from x
+        gpuErrchk(cudaMemcpy(d_vec, x.get_d_vec(),
+            (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToDevice));
+    }
+}

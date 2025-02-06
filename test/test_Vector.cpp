@@ -697,6 +697,26 @@ TEST_F(VectorTest, DotOperator)
     }
 }
 
+TEST_F(VectorTest, CopyToVector)
+{
+    
+    Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+    x.init_vec_ones();
+    Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+    y.init_vec();
+    x.copy(y);
+    if (y.on_grid()) {
+        double* h_vec = new double[(size_t)y.get_num_blocks() * y.get_block_size()];
+        gpuErrchk(cudaMemcpy(h_vec, y.get_d_vec(),
+            (size_t)y.get_num_blocks() * y.get_block_size() * sizeof(double),
+            cudaMemcpyDeviceToHost));
+        for (size_t i = 0; i < y.get_num_blocks() * y.get_block_size(); i++) {
+            ASSERT_EQ(h_vec[i], 1.0);
+        }
+        delete[] h_vec;
+    }
+}
+
 TEST_F(VectorTest, ReadFromFile)
 {
     std::string filename_param = dirname(__FILE__) + "/data/test_param_vec_SOTI.h5";
@@ -803,3 +823,4 @@ int main(int argc, char** argv)
 
     return result; // Run tests, then clean up and exit
 }
+
