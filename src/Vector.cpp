@@ -165,7 +165,7 @@ void Vector::init_vec_consecutive()
     }
     initialized = true;
 }
-void Vector::init_vec_from_file(std::string filename, bool QoI)
+void Vector::init_vec_from_file(std::string filename, int checksum, bool QoI)
 {
     // Use HighFive to read in the vector from a file
     // Initialize the vector with the data from the file
@@ -191,6 +191,18 @@ void Vector::init_vec_from_file(std::string filename, bool QoI)
             if (row_or_col == "col") {
                 dataset.getAttribute("n_param").read<int>(n_blocks);
                 dataset.getAttribute("param_steps").read<int>(steps);
+                if (checksum != 0) {
+                    int checksum_read;
+                    dataset.getAttribute("checksum").read<int>(checksum_read);
+                    if (checksum_read != checksum) {
+                        if (comm.get_world_rank() == 0) {
+                            fprintf(stderr,
+                                "Checksum mismatch in vector. Expected %d, got %d.\n", checksum,
+                                checksum_read);
+                            MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+                        }
+                    }
+                }
             } else {
                 dataset.getAttribute("n_obs").read<int>(n_blocks);
                 dataset.getAttribute("obs_steps").read<int>(steps);
@@ -559,6 +571,8 @@ void Vector::save(std::string filename)
             if (row_or_col == "col") {
                 dataset.createAttribute<int>("n_param", glob_num_blocks);
                 dataset.createAttribute<int>("param_steps", block_size);
+                if (checksum != 0)
+                    dataset.createAttribute<int>("checksum", checksum);
             } else {
                 dataset.createAttribute<int>("n_obs", glob_num_blocks);
                 dataset.createAttribute<int>("obs_steps", block_size);

@@ -25,6 +25,7 @@ private:
     double* d_vec; /**< Pointer to the vector data. */
     std::string row_or_col; /**< Indicates whether the vector is row or column. */
     bool initialized = false; /**< Flag indicating if the vector is initialized. */
+    int checksum = 0; /**< Checksum for the vector. */
 
     // void to_TOSI_local(); /**< Reorder the vector to TOSI ordering (locally). */
     // void to_SOTI_local(); /**< Reorder the vector to SOTI ordering (locally). */
@@ -205,10 +206,11 @@ public:
     /**
      * @brief Initializes the vector from a file.
      * @param filename The name of the file.
+     * @param checksum Checksum for the vector (if applicable).
      * @param QoI Flag indicating whether the vector is a quantity of interest or regular
      * observation (if applicable).
      */
-    void init_vec_from_file(std::string filename, bool QoI = false);
+    void init_vec_from_file(std::string filename, int checksum = 0, bool QoI = false);
 
     /**
      * @brief Checks if the calling process has the vector data.
@@ -365,6 +367,8 @@ public:
      */
     bool is_SOTI_ordered() { return SOTI_ordering; }
 
+    int get_checksum() { return checksum; } /**< Returns the checksum for the vector. */
+
     // Setters
 
     /**
@@ -372,6 +376,10 @@ public:
      * @param vec The pointer to the vector data. Must be allocated on the GPU.
      */
     void set_d_vec(double* vec);
+
+    void set_checksum(int checksum) { this->checksum = checksum; } /**< Sets the checksum for the vector. */
+
+
 };
 
 #endif // __VECTOR_HPP__

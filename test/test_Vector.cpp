@@ -735,7 +735,7 @@ TEST_F(VectorTest, ReadFromFile)
     }
     std::string filename_qoi = dirname(__FILE__) + "/data/test_qoi_vec_SOTI.h5";
     Vector z = Vector(*comm, 15, 10, "row",true);
-    z.init_vec_from_file(filename_qoi,true);
+    z.init_vec_from_file(filename_qoi, 0, true);
     double norm3 = z.norm();
     if (comm->get_world_rank() == 0) {
         ASSERT_NEAR(norm3, 0.0004194688794230295, 1e-10);
@@ -785,6 +785,16 @@ TEST_F(VectorTest, WriteToFile)
         }
         delete[] h_vec;
         delete[] h_vec2;
+    }
+}
+
+TEST_F(VectorTest, Checksum)
+{
+    Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+    x.init_vec_ones();
+    x.set_checksum(10);
+    if (comm->get_world_rank() == 0) {
+        ASSERT_EQ(x.get_checksum(), 10);
     }
 }
 

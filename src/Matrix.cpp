@@ -231,6 +231,8 @@ std::string Matrix::read_meta(std::string meta_filename, bool QoI, bool aux_mat)
         case 7:
             reverse_dof = std::stoi(line);
             break;
+        case 8:
+            checksum = std::stoi(line);
         default:
             break;
         }
@@ -333,12 +335,23 @@ void Matrix::init_mat_from_file(std::string dirname, bool aux_mat)
             File file(vec_filename, File::ReadOnly, fapl);
 
             auto dataset = file.getDataSet("vec");
-            
 
             int reindex, n_blocks, steps;
             dataset.getAttribute("reindex").read<int>(reindex);
             dataset.getAttribute("n_param").read<int>(n_blocks);
             dataset.getAttribute("param_steps").read<int>(steps);
+            if (checksum != 0) {
+                int checksum_read;
+                dataset.getAttribute("checksum").read<int>(checksum_read);
+                if (checksum_read != checksum) {
+                    if (comm.get_world_rank() == 0) {
+                        fprintf(stderr,
+                            "Checksum mismatch in matrix row %d. Expected %d, got %d.\n",
+                            r + row_start, checksum, checksum_read);
+                        MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+                    }
+                }
+            }
 
             if (!reindex) {
                 if (comm.get_world_rank() == 0)
@@ -353,7 +366,8 @@ void Matrix::init_mat_from_file(std::string dirname, bool aux_mat)
             } else if (n_blocks != glob_num_cols) {
                 if (comm.get_world_rank() == 0)
                     fprintf(stderr,
-                        "n_blocks must be equal to glob_num_cols. Got n_blocks = %d, glob_num_cols "
+                        "n_blocks must be equal to glob_num_cols. Got n_blocks = %d, "
+                        "glob_num_cols "
                         "= "
                         "%d.\n",
                         n_blocks, glob_num_cols);
@@ -580,7 +594,8 @@ void Matrix::check_matvec(Vector& x, Vector& y, bool transpose, bool full, bool 
     } else if (y.get_num_blocks() != out_size) {
         if (comm.get_world_rank() == 0)
             fprintf(stderr,
-                "Number of blocks in y must match output size of matrix. Got y num blocks = %d, "
+                "Number of blocks in y must match output size of matrix. Got y num blocks = "
+                "%d, "
                 "matrix "
                 "output size = %d.\n",
                 y.get_num_blocks(), out_size);

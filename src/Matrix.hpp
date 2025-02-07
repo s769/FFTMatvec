@@ -45,6 +45,7 @@ private:
     bool has_mat_freq_TOSI_aux
         = false; /**< Flag indicating if the other matrix frequency in TOSI format exists. */
     bool is_QoI = false; /**< Flag indicating if the matrix is the p2q map. */
+    int checksum = 0; /**< Checksum for the matrix. */
     /**
      * @brief Reads the meta file to get the matrix dimensions.
      * @param meta_filename The name of the meta file.
@@ -330,6 +331,7 @@ public:
     {
         return is_QoI;
     } /**< Returns true if the matrix is the p2q map, false otherwise. */
+    int get_checksum() { return checksum; } /**< Returns the checksum for the matrix. */
 };
 
 #endif // __MATRIX_HPP__
