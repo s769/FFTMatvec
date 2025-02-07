@@ -196,9 +196,8 @@ void Vector::init_vec_from_file(std::string filename, int checksum, bool QoI)
                     dataset.getAttribute("checksum").read<int>(checksum_read);
                     if (checksum_read != checksum) {
                         if (comm.get_world_rank() == 0) {
-                            fprintf(stderr,
-                                "Checksum mismatch in vector. Expected %d, got %d.\n", checksum,
-                                checksum_read);
+                            fprintf(stderr, "Checksum mismatch in vector. Expected %d, got %d.\n",
+                                checksum, checksum_read);
                             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
                         }
                     }
@@ -367,12 +366,10 @@ double Vector::norm(int order, std::string name)
         }
     }
 
-    if (!name.empty() && comm.get_world_rank() == 0)
-    {
+    if (!name.empty() && comm.get_world_rank() == 0) {
         std::string norm_type = (order == -1) ? "INF" : std::to_string(order);
         printf("||%s||_%s = %E\n", name.c_str(), norm_type.c_str(), global_norm);
     }
-
 
     return global_norm; // only rank 0 has the global norm
 }
@@ -527,7 +524,7 @@ double Vector::dot(Vector& x)
     return global_dot; // only rank 0 has the global dot product
 }
 
-void Vector::save(std::string filename)
+void Vector::save(std::string filename, bool QoI)
 {
     // Use HighFive to save the vector to a file
     // If the vector is not initialized, print an error message and abort the program.
@@ -574,6 +571,9 @@ void Vector::save(std::string filename)
                 if (checksum != 0)
                     dataset.createAttribute<int>("checksum", checksum);
             } else {
+                if (QoI)
+                    dataset.createAttribute<int>("qoi", 1);
+
                 dataset.createAttribute<int>("n_obs", glob_num_blocks);
                 dataset.createAttribute<int>("obs_steps", block_size);
             }
@@ -624,7 +624,7 @@ void Vector::copy(Vector& x)
 
     if (on_grid()) {
         // copy the data from x
-        gpuErrchk(cudaMemcpy(d_vec, x.get_d_vec(),
-            (size_t)num_blocks * block_size * sizeof(double), cudaMemcpyDeviceToDevice));
+        gpuErrchk(cudaMemcpy(d_vec, x.get_d_vec(), (size_t)num_blocks * block_size * sizeof(double),
+            cudaMemcpyDeviceToDevice));
     }
 }

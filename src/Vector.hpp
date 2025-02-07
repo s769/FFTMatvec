@@ -298,8 +298,9 @@ public:
     /**
      * @brief Saves the vector to a file (HDF5 format).
      * @param filename The name of the file.
+     * @param QoI Flag indicating whether the vector is a quantity of interest vector.
      */
-    void save(std::string filename);
+    void save(std::string filename, bool QoI = false);
 
     /**
      * @brief Copies a vector to another vector.
