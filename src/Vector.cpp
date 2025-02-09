@@ -201,6 +201,7 @@ void Vector::init_vec_from_file(std::string filename, int checksum, bool QoI)
                             MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
                         }
                     }
+                    this->checksum = checksum_read;
                 }
             } else {
                 dataset.getAttribute("n_obs").read<int>(n_blocks);
