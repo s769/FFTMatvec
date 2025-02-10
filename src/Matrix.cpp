@@ -129,8 +129,16 @@ Matrix::Matrix(Comm& comm, std::string path, std::string aux_path, bool QoI)
         std::string aux_meta_filename = aux_path + "/binary/meta_adj";
         std::string aux_prefix = read_meta(aux_meta_filename, QoI, true);
         init_mat_from_file(aux_path + "/binary/" + aux_prefix, true);
+        int tmp_checksum = checksum;
         if (comm.get_world_rank() == 0)
             printf("Initialized aux matrix from %s\n", aux_path.c_str());
+        if (tmp_checksum != checksum) {
+            if (comm.get_world_rank() == 0)
+                fprintf(stderr, "Checksums do not match for primary and aux matrices. Got primary "
+                                "checksum = %d, aux checksum = %d\n",
+                    tmp_checksum, checksum);
+            MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+        }
     }
 }
 
