@@ -798,6 +798,7 @@ TEST_F(VectorTest, Checksum)
     }
 }
 
+
 int main(int argc, char** argv)
 {
     // Filter out Google Test arguments
