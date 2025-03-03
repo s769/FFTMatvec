@@ -626,7 +626,7 @@ void Vector::copy(Vector& x)
     if (on_grid()) {
         // copy the data from x
         double * d_vec2 = x.get_d_vec();
-        gpuErrchk(cudaMemcpy(d_vec, d_vec2, (size_t)num_blocks * block_size * sizeof(double),
+        gpuErrchk(cudaMemcpy(d_vec2, d_vec, (size_t)num_blocks * block_size * sizeof(double),
             cudaMemcpyDeviceToDevice));
         x.set_d_vec(d_vec2);
     }
