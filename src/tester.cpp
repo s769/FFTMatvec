@@ -10,20 +10,20 @@ bool double_equality(double a, double b, double tol)
 // Function to check if an element of the matrix-vector product with ones matrix and ones vector is
 // correct
 void check_element(
-    Comm& comm, double elem, int b, int j, int Nt, int Nm, int Nd, bool conj, bool full)
+    Comm& comm, double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full)
 {
     // use double_equality to check for equality
     double tol = 1e-6;
     double correct_elem;
     if (conj) {
         if (full) {
-            correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2;
+            correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2.0;
         } else {
             correct_elem = (Nt - j) * Nd;
         }
     } else {
         if (full) {
-            correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2;
+            correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2.0;
         } else {
             correct_elem = (j + 1) * Nm;
         }
@@ -57,8 +57,8 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
         gpuErrchk(
             cudaMemcpy(h_vec, d_vec, num_blocks * Nt * sizeof(double), cudaMemcpyDeviceToHost));
 
-        for (int i = 0; i < num_blocks; i++) {
-            for (int j = 0; j < Nt; j++) {
+        for (size_t i = 0; i < num_blocks; i++) {
+            for (size_t j = 0; j < Nt; j++) {
                 check_element(comm, h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
             }
         }
