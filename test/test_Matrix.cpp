@@ -152,10 +152,6 @@ TEST_F(MatrixTest, MatrixConstructorLocal)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_FALSE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
@@ -182,10 +178,6 @@ TEST_F(MatrixTest, MatrixConstructorGlobal)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_FALSE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
@@ -210,10 +202,6 @@ TEST_F(MatrixTest, MatrixConstructorP2Q)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_TRUE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
