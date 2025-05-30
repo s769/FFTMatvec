@@ -25,7 +25,7 @@ TEST(UtilsTest, SwapAxes)
     gpuErrchk(cudaMalloc(&d_in, (size_t) num_cols * num_rows * padded_size * sizeof(Complex)));
     Complex* h_in = new Complex[(size_t) num_cols * num_rows * padded_size * 2];
     for (size_t i = 0; i < (size_t) num_cols * num_rows * padded_size * 2; i++) {
-        h_in[i] = { i, i + 1 };
+        h_in[i] = { i*1.0, i*1.0 + 1 };
     }
     gpuErrchk(cudaMemcpy(
         d_in, h_in, (size_t) num_cols * num_rows * padded_size * sizeof(Complex), cudaMemcpyHostToDevice));
