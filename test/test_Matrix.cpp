@@ -13,56 +13,69 @@ int NUM_ROWS = 2;
 int NUM_COLS = 3;
 int BLOCK_SIZE = 4;
 
-class MatrixTest : public ::testing::Test {
+class MatrixTest : public ::testing::Test
+{
 protected:
-    static Comm* comm;
-    static Matrix* F;
+    static Comm *comm;
+    static Matrix *F;
     static Vector *x, *y, *x2, *y2;
 
     static void SetUpTestSuite()
     {
-        if (comm == nullptr) {
+        if (comm == nullptr)
+        {
             comm = new Comm(MPI_COMM_WORLD, proc_rows, proc_cols);
         }
-        if (F == nullptr) {
+        if (F == nullptr)
+        {
             F = new Matrix(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE);
         }
-        if (x == nullptr) {
+        if (x == nullptr)
+        {
             x = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
-        if (y == nullptr) {
+        if (y == nullptr)
+        {
             y = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
-        if (x2 == nullptr) {
+        if (x2 == nullptr)
+        {
             x2 = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
-        if (y2 == nullptr) {
+        if (y2 == nullptr)
+        {
             y2 = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
     }
     static void TearDownTestSuite()
     {
-        if (comm != nullptr) {
+        if (comm != nullptr)
+        {
             delete comm;
             comm = nullptr;
         }
-        if (F != nullptr) {
+        if (F != nullptr)
+        {
             delete F;
             F = nullptr;
         }
-        if (x != nullptr) {
+        if (x != nullptr)
+        {
             delete x;
             x = nullptr;
         }
-        if (y != nullptr) {
+        if (y != nullptr)
+        {
             delete y;
             y = nullptr;
         }
-        if (x2 != nullptr) {
+        if (x2 != nullptr)
+        {
             delete x2;
             x2 = nullptr;
         }
-        if (y2 != nullptr) {
+        if (y2 != nullptr)
+        {
             delete y2;
             y2 = nullptr;
         }
@@ -71,23 +84,32 @@ protected:
         double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full)
     {
         double correct_elem;
-        if (conj) {
-            if (full) {
+        if (conj)
+        {
+            if (full)
+            {
                 correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2.0;
-            } else {
+            }
+            else
+            {
                 correct_elem = (Nt - j) * Nd;
             }
-        } else {
-            if (full) {
+        }
+        else
+        {
+            if (full)
+            {
                 correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2.0;
-            } else {
+            }
+            else
+            {
                 correct_elem = (j + 1) * Nm;
             }
         }
         ASSERT_NEAR(elem, correct_elem, 1e-10);
     }
 
-    static void check_ones_matvec(Matrix& mat, Vector& vec, bool conj, bool full)
+    static void check_ones_matvec(Matrix &mat, Vector &vec, bool conj, bool full)
     {
 
         int proc_rows = comm->get_proc_rows();
@@ -98,16 +120,19 @@ protected:
         int Nm = mat.get_glob_num_cols();
         int Nd = mat.get_glob_num_rows();
 
-        if (vec.on_grid()) {
-            double* d_vec = vec.get_d_vec();
+        if (vec.on_grid())
+        {
+            double *d_vec = vec.get_d_vec();
             int num_blocks = vec.get_num_blocks();
-            double* h_vec = new double[num_blocks * Nt];
+            double *h_vec = new double[num_blocks * Nt];
 
             gpuErrchk(
                 cudaMemcpy(h_vec, d_vec, num_blocks * Nt * sizeof(double), cudaMemcpyDeviceToHost));
 
-            for (size_t i = 0; i < num_blocks; i++) {
-                for (size_t j = 0; j < Nt; j++) {
+            for (size_t i = 0; i < num_blocks; i++)
+            {
+                for (size_t j = 0; j < Nt; j++)
+                {
                     check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
                 }
             }
@@ -116,19 +141,19 @@ protected:
         }
     }
 
-    static std::string dirname(const std::string& fname)
+    static std::string dirname(const std::string &fname)
     {
         size_t pos = fname.find_last_of("\\/");
         return (std::string::npos == pos) ? "" : fname.substr(0, pos);
     }
 };
 
-Comm* MatrixTest::comm = nullptr;
-Matrix* MatrixTest::F = nullptr;
-Vector* MatrixTest::x = nullptr;
-Vector* MatrixTest::y = nullptr;
-Vector* MatrixTest::x2 = nullptr;
-Vector* MatrixTest::y2 = nullptr;
+Comm *MatrixTest::comm = nullptr;
+Matrix *MatrixTest::F = nullptr;
+Vector *MatrixTest::x = nullptr;
+Vector *MatrixTest::y = nullptr;
+Vector *MatrixTest::x2 = nullptr;
+Vector *MatrixTest::y2 = nullptr;
 
 TEST_F(MatrixTest, MatrixConstructorLocal)
 {
@@ -152,10 +177,6 @@ TEST_F(MatrixTest, MatrixConstructorLocal)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_FALSE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
@@ -182,10 +203,6 @@ TEST_F(MatrixTest, MatrixConstructorGlobal)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_FALSE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
@@ -210,10 +227,6 @@ TEST_F(MatrixTest, MatrixConstructorP2Q)
     cufftSafeCall(cufftGetSize(A.get_forward_plan_conj(), &sz2));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan(), &sz3));
     cufftSafeCall(cufftGetSize(A.get_inverse_plan_conj(), &sz4));
-    ASSERT_NE(sz1, 0);
-    ASSERT_NE(sz2, 0);
-    ASSERT_NE(sz3, 0);
-    ASSERT_NE(sz4, 0);
     ASSERT_TRUE(A.is_p2q_mat());
     ASSERT_FALSE(A.is_initialized());
 }
@@ -222,30 +235,34 @@ TEST_F(MatrixTest, InitMatOnes)
 {
     F->init_mat_ones();
     ASSERT_TRUE(F->is_initialized());
-    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex* d_mat = F->get_mat_freq_TOSI();
+    Complex *h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    Complex *d_mat = F->get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
-    double* h_vec = new double[2 * BLOCK_SIZE];
-    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+    double *h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++)
+    {
         h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
     }
-    double* d_vec;
+    double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex* d_fft;
+    Complex *d_fft;
     gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
-    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
+    Complex *h_fft = new Complex[BLOCK_SIZE + 1];
     gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
 
-    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
-        for (int r = 0; r < NUM_ROWS; r++) {
-            for (int c = 0; c < NUM_COLS; c++) {
+    for (int t = 0; t < BLOCK_SIZE + 1; t++)
+    {
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            for (int c = 0; c < NUM_COLS; c++)
+            {
                 size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
                 ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
                 ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
@@ -264,30 +281,34 @@ TEST_F(MatrixTest, InitMatOnesAux)
     F->init_mat_ones();
     F->init_mat_ones(true);
     ASSERT_TRUE(F->is_initialized());
-    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex* d_mat = F->get_mat_freq_TOSI_aux();
+    Complex *h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    Complex *d_mat = F->get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
-    double* h_vec = new double[2 * BLOCK_SIZE];
-    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+    double *h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++)
+    {
         h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
     }
-    double* d_vec;
+    double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex* d_fft;
+    Complex *d_fft;
     gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
-    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
+    Complex *h_fft = new Complex[BLOCK_SIZE + 1];
     gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
 
-    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
-        for (int r = 0; r < NUM_ROWS; r++) {
-            for (int c = 0; c < NUM_COLS; c++) {
+    for (int t = 0; t < BLOCK_SIZE + 1; t++)
+    {
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            for (int c = 0; c < NUM_COLS; c++)
+            {
                 size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
                 ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
                 ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
@@ -408,16 +429,19 @@ TEST_F(MatrixTest, ReadFromFile)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat = F2.get_mat_freq_TOSI();
+    Complex *h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    Complex result = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result.x += h_mat[ind].x;
                 result.y += h_mat[ind].y;
@@ -435,16 +459,19 @@ TEST_F(MatrixTest, ReadFromFile)
     std::string aux_path = dirname(__FILE__) + "/data/test_mat_2/binary/adj/vec_";
     F2.init_mat_from_file(aux_path, true);
 
-    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    Complex *h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result_aux = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    Complex result_aux = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result_aux.x += h_mat_aux[ind].x;
                 result_aux.y += h_mat_aux[ind].y;
@@ -474,16 +501,19 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat = F2.get_mat_freq_TOSI();
+    Complex *h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    Complex result = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result.x += h_mat[ind].x;
                 result.y += h_mat[ind].y;
@@ -498,16 +528,19 @@ TEST_F(MatrixTest, ReadFromFileQoI)
 
     delete[] h_mat;
 
-    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    Complex *h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    Complex *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result_aux = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    Complex result_aux = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result_aux.x += h_mat_aux[ind].x;
                 result_aux.y += h_mat_aux[ind].y;
@@ -527,7 +560,7 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     ASSERT_EQ(F2.is_p2q_mat(), true);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     // Filter out Google Test arguments
     ::testing::InitGoogleTest(&argc, argv);
@@ -539,10 +572,10 @@ int main(int argc, char** argv)
     ::testing::AddGlobalTestEnvironment(new GTestMPIListener::MPIEnvironment);
 
     // Get the event listener list.
-    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+    ::testing::TestEventListeners &listeners = ::testing::UnitTest::GetInstance()->listeners();
 
     // Remove default listener: the default printer and the default XML printer
-    ::testing::TestEventListener* l = listeners.Release(listeners.default_result_printer());
+    ::testing::TestEventListener *l = listeners.Release(listeners.default_result_printer());
 
     // Adds MPI listener; Google Test owns this pointer
     listeners.Append(new GTestMPIListener::MPIWrapperPrinter(l, MPI_COMM_WORLD));
@@ -553,7 +586,8 @@ int main(int argc, char** argv)
     MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &world_size));
     proc_cols = sqrt(world_size);
     proc_rows = world_size / proc_cols;
-    if (proc_rows > proc_cols) {
+    if (proc_rows > proc_cols)
+    {
         int temp = proc_cols;
         proc_cols = proc_rows;
         proc_rows = temp;

@@ -11,35 +11,43 @@ if(BUILD_WITH_HIP)
     message(STATUS "Selected GPU Platform: HIP")
     enable_language(HIP)
     find_package(HIP REQUIRED) # Finds hipcc, HIP_LIBRARIES, HIP_INCLUDE_DIRS
+    message(STATUS "HIP_INCLUDE_DIRS ${HIP_INCLUDE_DIRS}")
     include(HipifyHelpers) # Include our custom module
 
     # User needs to set AMDGPU_TARGETS, e.g., "gfx900;gfx906;gfx908;gfx1030"
     # You can set it via cmake -DAMDGPU_TARGETS="gfx908" or an environment variable
     if(NOT DEFINED AMDGPU_TARGETS)
         message(WARNING "AMDGPU_TARGETS not defined for HIP build. Set this to your target AMD GPU architectures (e.g., \"gfx908;gfx90a\"). Defaulting to gfx908 for example.")
-        set(AMDGPU_TARGETS "gfx908")
+        set(AMDGPU_TARGETS "gfx942")
     endif()
     set(CMAKE_HIP_ARCHITECTURES ${AMDGPU_TARGETS})
     message(STATUS "CMAKE_HIP_ARCHITECTURES: ${CMAKE_HIP_ARCHITECTURES}")
+
+    set(HIPIFY_CLANG_CUDA_INCLUDE_DIRS "")
+
+    find_package(CUDAToolkit QUIET)
+    if(CUDAToolkit_FOUND AND CUDAToolkit_INCLUDE_DIRS)
+        list(APPEND HIPIFY_CLANG_CUDA_INCLUDE_DIRS ${CUDAToolkit_INCLUDE_DIRS})
+        # Some hipify-clang versions also benefit from knowing the CUDA root
+        # set(HIPIFY_CLANG_CUDA_ROOT_ARG --cuda-path=${CUDAToolkit_TOOLKIT_ROOT_DIR}) # We'll pass this to hipify_helpers if needed
+    else()
+        message(STATUS "CUDAToolkit not found or include_dirs not set. Hipify-clang might have trouble finding standard CUDA headers.")
+    endif()
+
+    list(APPEND HIPIFY_CLANG_CUDA_INCLUDE_DIRS ${NCCL_INCLUDE_DIRS})
+
+
 
     # Global target to trigger all hipification (optional, dependencies are usually file-based)
     # add_custom_target(HipifyAll COMMENT "Running all hipify commands")
 
     # Find HIP equivalent libraries (rocBLAS, rocFFT, RCCL, hipTensor etc.)
-    find_package(rocblas) # Provides roc::rocblas target
-    find_package(rocfft) # Provides roc::rocfft target
-    find_package(rccl) # Provides rccl::rccl target (or similar)
+    find_package(rocblas REQUIRED) # Provides roc::rocblas target
+    find_package(rocfft REQUIRED) # Provides roc::rocfft target
+    find_package(rccl REQUIRED) # Provides rccl::rccl target (or similar)
     # find_package(hipTensor) # If used and available
 
-    if(NOT rocblas_FOUND)
-        message(WARNING "rocblas not found for HIP build.")
-    endif()
-    if(NOT rocfft_FOUND)
-        message(WARNING "rocfft not found for HIP build.")
-    endif()
-    if(NOT rccl_FOUND)
-        message(WARNING "rccl not found for HIP build.")
-    endif()
+
 
 else() # CUDA Build
     message(STATUS "Selected GPU Platform: CUDA")
@@ -54,6 +62,15 @@ else() # CUDA Build
         set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
     endif()
     message(STATUS "CMAKE_CUDA_ARCHITECTURES: ${CMAKE_CUDA_ARCHITECTURES}")
+
+    if (NOT "${CUTENSOR_ROOT}" STREQUAL "")
+        message(STATUS "Using cuTensor from CUTENSOR_ROOT: ${CUTENSOR_ROOT}")
+        set(USE_CUTENSOR ON)
+    else()
+        message(STATUS "CUTENSOR_ROOT not set. cutranspose will be used for swapaxes.")
+        set(USE_CUTENSOR OFF)
+    endif()
+
 
     # Find CUDA specific libraries
     # find_package(CUDAToolkit REQUIRED COMPONENTS cublas cufft curand nvjpeg ...)
@@ -97,12 +114,13 @@ if(BUILD_WITH_HIP)
     set(CMAKE_HIP_STANDARD_REQUIRED ON)
     set(CMAKE_HIP_EXTENSIONS OFF)
 else()
-    set(CMAKE_CUDA_STANDARD <span class="math-inline">\{CMAKE\_CXX\_STANDARD\}\) \# NVCC uses this for host compilation part
-        set\(CMAKE\_CUDA\_STANDARD\_REQUIRED ON\)
-        set\(CMAKE\_CUDA\_EXTENSIONS OFF\)
-        endif\(\)
-        find\_package\(Git QUIET\)
-        if\(GIT\_FOUND AND EXISTS "</span>{PROJECT_SOURCE_DIR}/.git")
+    set(CMAKE_CUDA_STANDARD ${CMAKE_CXX_STANDARD}) # NVCC uses this for host compilation part
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+    set(CMAKE_CUDA_EXTENSIONS OFF)
+endif()
+
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     option(GIT_SUBMODULE "Check submodules during build" ON)
     if(GIT_SUBMODULE)
         message(STATUS "Submodule update")
@@ -117,7 +135,7 @@ endif()
 
 find_package(MPI REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(HDF5 REQUIRED COMPONENTS CXX HL) # Request CXX and HL components
+find_package(HDF5 REQUIRED) # Request CXX and HL components
 
 # Check for HDF5 parallel support (remains important)
 if(NOT HDF5_IS_PARALLEL)
@@ -132,6 +150,7 @@ add_subdirectory(HighFive) # Assuming HighFive/CMakeLists.txt handles its linkag
 include_directories(
     ${MPI_INCLUDE_PATH} # From find_package(MPI)
     ${HDF5_INCLUDE_DIRS} # From find_package(HDF5)
+    HighFive/include
     # HighFive should make its includes available via its target (e.g. HighFive::HighFive)
 )
 # Note: GPU specific includes (CUDA Toolkit, HIP, rocBLAS includes etc.) should be handled by
@@ -152,3 +171,13 @@ endif()
 message(STATUS "---------------------------------------------------------")
 message(STATUS "Project Name: ${PROJECT_NAME}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "GPU Platform: ${GPU_PLATFORM}") # Set this in src based on BUILD_WITH_HIP
+if(BUILD_WITH_HIP)
+    message(STATUS "HIP Architectures: ${CMAKE_HIP_ARCHITECTURES}")
+else()
+    message(STATUS "CUDA Architectures: ${CMAKE_CUDA_ARCHITECTURES}")
+endif()
+message(STATUS "MPI CXX Compiler: ${MPI_CXX_COMPILER}")
+message(STATUS "HDF5 Version: ${HDF5_VERSION}")
+message(STATUS "HDF5 is Parallel: ${HDF5_IS_PARALLEL}")
+message(STATUS "---------------------------------------------------------")

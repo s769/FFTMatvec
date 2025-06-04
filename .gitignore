@@ -6,4 +6,4 @@ git *.i
 *.fatbin
 build/*
 build*
-
+*build*

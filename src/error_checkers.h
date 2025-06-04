@@ -6,10 +6,10 @@
 #include <cuda_runtime.h>
 #include <cufft.h>
 #include <cublas_v2.h>
+#if CUTENSOR_AVAILABLE
 #include <cutensor.h>
+#endif
 #include <assert.h>
-
-
 
 #define gpuErrchk(ans)                        \
     {                                         \
@@ -120,6 +120,8 @@ static const char *_cudaGetErrorEnum2(cublasStatus_t error)
     return "<unknown>";
 }
 
+#if CUTENSOR_AVAILABLE
+
 static const char *_cudaGetErrorEnum3(cutensorStatus_t error)
 {
     switch (error)
@@ -156,24 +158,24 @@ static const char *_cudaGetErrorEnum3(cutensorStatus_t error)
 
     case CUTENSOR_STATUS_CUBLAS_ERROR:
         return "CUTENSOR_STATUS_CUBLAS_ERROR";
-    
+
     case CUTENSOR_STATUS_CUDA_ERROR:
         return "CUTENSOR_STATUS_CUDA_ERROR";
-    
+
     case CUTENSOR_STATUS_INSUFFICIENT_WORKSPACE:
         return "CUTENSOR_STATUS_INSUFFICIENT_WORKSPACE";
 
     case CUTENSOR_STATUS_INSUFFICIENT_DRIVER:
         return "CUTENSOR_STATUS_INSUFFICIENT_DRIVER";
-    
+
     case CUTENSOR_STATUS_IO_ERROR:
         return "CUTENSOR_STATUS_IO_ERROR";
-
     }
 
     return "<unknown>";
 }
 
+#endif
 
 #define cufftSafeCall(err) __cufftSafeCall(err, __FILE__, __LINE__)
 /**
@@ -194,11 +196,10 @@ inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
     }
 }
 
-
 #define cublasSafeCall(err) __cublasSafeCall(err, __FILE__, __LINE__)
 /**
  * @brief Safely calls the cuBLAS function and checks for errors.
- * 
+ *
  * @param err The cuBLAS status code.
  * @param file The file path where the function is called.
  * @param line The line number where the function is called.
@@ -215,15 +216,16 @@ inline void __cublasSafeCall(cublasStatus_t err, const char *file, const int lin
     }
 }
 
+#if CUTENSOR_AVAILABLE
 
 #define cutensorSafeCall(err) __cutensorSafeCall(err, __FILE__, __LINE__)
 /**
  * @brief Safely calls the cuTENSOR function and checks for errors.
- * 
+ *
  * @param err The cuTENSOR status code.
  * @param file The file path where the function is called.
  * @param line The line number where the function is called.
- */ 
+ */
 inline void __cutensorSafeCall(cutensorStatus_t err, const char *file, const int line)
 {
     if (CUTENSOR_STATUS_SUCCESS != err)
@@ -234,8 +236,6 @@ inline void __cutensorSafeCall(cutensorStatus_t err, const char *file, const int
         assert(0);
     }
 }
+#endif
 
-
-
-
-#endif // __ERROR_CHECKERS_H__  
+#endif // __ERROR_CHECKERS_H__

@@ -169,6 +169,16 @@ int local_to_global_size(int local_size, int comm_size);
  */
 std::string zero_pad(size_t num, size_t width);
 
+/**
+ * @brief Computes the swapaxes operation on the matrix blocks when cuTensor is not available.
+ * @param d_out Pointer to the output matrix.
+ * @param d_in Pointer to the input matrix.
+ * @param size Tensor dimensions.
+ * @param elements_per_thread Number of elements to process per thread.
+ * @param s The CUDA stream to use for the operation.
+ */
+void cut_transpose3d(Complex* d_out, const Complex* d_in, const int* size, int elements_per_thread, cudaStream_t s);
+
 } // namespace Utils
 
 #endif // __UTILS_H__

@@ -18,7 +18,7 @@ function(hipify_directory)
     # Define arguments
     set(options) # No boolean options
     set(oneValueArgs BASE_CUDA_DIR OUTPUT_HIP_DIR GENERATED_HIP_SOURCES_VAR GENERATED_HIP_HEADERS_VAR)
-    set(multiValueArgs INPUT_FILES_LIST EXTRA_HIPIFY_INCLUDE_PATHS)
+    set(multiValueArgs INPUT_FILES_LIST EXTRA_HIPIFY_INCLUDE_PATHS HIPIFY_CLANG_DEFINES)
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(NOT ARG_BASE_CUDA_DIR OR NOT ARG_OUTPUT_HIP_DIR OR NOT ARG_GENERATED_HIP_SOURCES_VAR OR NOT ARG_GENERATED_HIP_HEADERS_VAR OR NOT ARG_INPUT_FILES_LIST)
@@ -39,11 +39,17 @@ function(hipify_directory)
     # Prepare include path arguments for hipify-clang
     set(HIPIFY_INCLUDE_ARGS "")
     # Add the base directory of the sources being hipified. This helps hipify-clang resolve relative includes.
-    list(APPEND HIPIFY_INCLUDE_ARGS --include-path=${ARG_BASE_CUDA_DIR})
-
+    list(APPEND HIPIFY_INCLUDE_ARGS -I=${ARG_BASE_CUDA_DIR})
     # Add any explicitly provided extra include paths
     foreach(INCLUDE_PATH ${ARG_EXTRA_HIPIFY_INCLUDE_PATHS})
-        list(APPEND HIPIFY_INCLUDE_ARGS --include-path=${INCLUDE_PATH})
+        list(APPEND HIPIFY_INCLUDE_ARGS -I=${INCLUDE_PATH})
+        message(STATUS ${INCLUDE_PATH})
+    endforeach()
+
+    set(LOCAL_HIPIFY_CLANG_OPTIONS "") # Use a local variable for options like -D
+    foreach(DEFINITION ${ARG_HIPIFY_CLANG_DEFINES})
+        # Each item in HIPIFY_CLANG_DEFINES should be like "MACRO=VALUE" or just "MACRO"
+        list(APPEND LOCAL_HIPIFY_CLANG_OPTIONS -D${DEFINITION})
     endforeach()
 
     # Add project's own include directories that might be needed for parsing
@@ -83,9 +89,12 @@ function(hipify_directory)
         endif()
         set(HIP_OUTPUT_FILE "${HIP_OUTPUT_SUBDIR}/${OUTPUT_FILE_NAME_BASE}${OUTPUT_FILE_EXTENSION}")
 
+
+
         add_custom_command(
             OUTPUT "${HIP_OUTPUT_FILE}"
             COMMAND ${HIPIFY_CLANG_EXECUTABLE}
+            ${LOCAL_HIPIFY_CLANG_OPTIONS}
             ${HIPIFY_INCLUDE_ARGS} # Include paths for hipify-clang to parse files
             # --cuda-path=${CUDAToolkit_TOOLKIT_ROOT_DIR} # Might be needed if hipify-clang can't find CUDA headers
             # --rocminfo-path=path_to_rocminfo # If specific version needed
@@ -96,6 +105,7 @@ function(hipify_directory)
             # --add-hip-pch # If using precompiled headers for HIP
             "${INPUT_FILE_FULL_PATH}"
             -o "${HIP_OUTPUT_FILE}"
+            --default-preprocessor
             DEPENDS "${INPUT_FILE_FULL_PATH}" # Re-run if the source CUDA file changes
             COMMENT "Hipifying ${INPUT_FILE_FULL_PATH} to ${HIP_OUTPUT_FILE}"
             VERBATIM # Crucial for commands with special characters or list arguments

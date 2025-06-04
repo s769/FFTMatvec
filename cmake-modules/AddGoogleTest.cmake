@@ -8,8 +8,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
 FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+    googletest
+    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -43,6 +43,7 @@ endif()
 macro(add_gtest TESTNAME FILES LIBRARIES NPROCS)
     add_executable(${TESTNAME} ${FILES})
     target_link_libraries(${TESTNAME} PUBLIC gtest gmock gtest_main ${LIBRARIES})
+    target_compile_definitions(${TESTNAME} PUBLIC SKIP_CUTENSOR_FOR_HIPIFY=1)
     set_target_properties(${TESTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Tests")
     if(GOOGLE_TEST_INDIVIDUAL)
         if(CMAKE_VERSION VERSION_LESS 3.10)
@@ -76,18 +77,18 @@ macro(add_gtest TESTNAME FILES LIBRARIES NPROCS)
         endif()
         set_property(TEST ${TESTNAME} PROPERTY PROCESSORS ${NPROCS})
     endif()
-    endmacro()
+endmacro()
 
-    mark_as_advanced(
-        gmock_build_tests
-        gtest_build_samples
-        gtest_build_tests
-        gtest_disable_pthreads
-        gtest_force_shared_crt
-        gtest_hide_internal_symbols
-        BUILD_GMOCK
-        BUILD_GTEST
-    )
+mark_as_advanced(
+    gmock_build_tests
+    gtest_build_samples
+    gtest_build_tests
+    gtest_disable_pthreads
+    gtest_force_shared_crt
+    gtest_hide_internal_symbols
+    BUILD_GMOCK
+    BUILD_GTEST
+)
 
-    set_target_properties(gtest gtest_main gmock gmock_main
-        PROPERTIES FOLDER "Extern")
+set_target_properties(gtest gtest_main gmock gmock_main
+    PROPERTIES FOLDER "Extern")
