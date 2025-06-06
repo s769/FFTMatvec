@@ -14,14 +14,25 @@ if(BUILD_WITH_HIP)
     message(STATUS "HIP_INCLUDE_DIRS ${HIP_INCLUDE_DIRS}")
     include(HipifyHelpers) # Include our custom module
 
+
     # User needs to set AMDGPU_TARGETS, e.g., "gfx900;gfx906;gfx908;gfx1030"
     # You can set it via cmake -DAMDGPU_TARGETS="gfx908" or an environment variable
-    if(NOT DEFINED AMDGPU_TARGETS)
-        message(WARNING "AMDGPU_TARGETS not defined for HIP build. Set this to your target AMD GPU architectures (e.g., \"gfx908;gfx90a\"). Defaulting to gfx908 for example.")
-        set(AMDGPU_TARGETS "gfx942")
+    # 1. Define AMDGPU_TARGETS as a CACHE variable so the user's -D input is stored and documented.
+    #    Provide a sensible default if you wish.
+    set(AMDGPU_TARGETS_DEFAULT "gfx90a;gfx942" CACHE STRING "Semicolon-separated list of AMD GPU architectures (e.g., gfx90a;gfx942)")
+
+    # 2. Determine the final value to use for architectures.
+    #    Prioritize user-provided AMDGPU_TARGETS if it's different from the default or explicitly set.
+    #    This logic ensures that what the user passes via -D AMDGPU_TARGETS=... takes precedence.
+    set(FINAL_ARCHITECTURES_TO_SET "${AMDGPU_TARGETS}") # AMDGPU_TARGETS will hold the value from -D or the cached default.
+
+    if(NOT FINAL_ARCHITECTURES_TO_SET)
+        message(WARNING "AMDGPU_TARGETS is empty. Please specify target AMD GPU architectures. Defaulting to 'gfx90a'.")
+        set(FINAL_ARCHITECTURES_TO_SET "gfx90a;gfx942")
     endif()
-    set(CMAKE_HIP_ARCHITECTURES ${AMDGPU_TARGETS})
-    message(STATUS "CMAKE_HIP_ARCHITECTURES: ${CMAKE_HIP_ARCHITECTURES}")
+
+    set(CMAKE_HIP_ARCHITECTURES "${FINAL_ARCHITECTURES_TO_SET}" CACHE STRING "AMD GPU architectures for HIP compilation" FORCE)
+
 
     set(HIPIFY_CLANG_CUDA_INCLUDE_DIRS "")
 
@@ -47,7 +58,7 @@ if(BUILD_WITH_HIP)
     find_package(rccl REQUIRED) # Provides rccl::rccl target (or similar)
     # find_package(hipTensor) # If used and available
 
-
+    set(GPU_PLATFORM "HIP")
 
 else() # CUDA Build
     message(STATUS "Selected GPU Platform: CUDA")
@@ -63,7 +74,7 @@ else() # CUDA Build
     endif()
     message(STATUS "CMAKE_CUDA_ARCHITECTURES: ${CMAKE_CUDA_ARCHITECTURES}")
 
-    if (NOT "${CUTENSOR_ROOT}" STREQUAL "")
+    if(NOT "${CUTENSOR_ROOT}" STREQUAL "")
         message(STATUS "Using cuTensor from CUTENSOR_ROOT: ${CUTENSOR_ROOT}")
         set(USE_CUTENSOR ON)
     else()
@@ -101,6 +112,7 @@ else() # CUDA Build
     # else()
     # message(WARNING "cuTensor not found for CUDA build.")
     # endif()
+    set(GPU_PLATFORM "CUDA")
 
 endif()
 
@@ -173,7 +185,7 @@ message(STATUS "Project Name: ${PROJECT_NAME}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "GPU Platform: ${GPU_PLATFORM}") # Set this in src based on BUILD_WITH_HIP
 if(BUILD_WITH_HIP)
-    message(STATUS "HIP Architectures: ${CMAKE_HIP_ARCHITECTURES}")
+    message(STATUS "HIP Achitectures: ${CMAKE_HIP_ARCHITECTURES}")
 else()
     message(STATUS "CUDA Architectures: ${CMAKE_CUDA_ARCHITECTURES}")
 endif()

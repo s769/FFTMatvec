@@ -26,7 +26,7 @@ function(hipify_directory)
     endif()
 
     find_program(HIPIFY_CLANG_EXECUTABLE hipify-clang
-        HINTS ENV ROCM_PATH /opt/rocm/bin /opt/rocm/hip/bin # Adjust if ROCM_PATH is not standard
+        HINTS ENV ROCM_PATH /opt/rocm-6.4.0/bin /opt/rocm-6.4.0/hip/bin # Adjust if ROCM_PATH is not standard
         DOC "Path to hipify-clang executable")
 
     if(NOT HIPIFY_CLANG_EXECUTABLE)

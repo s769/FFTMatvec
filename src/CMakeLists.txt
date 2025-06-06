@@ -81,6 +81,17 @@ if(BUILD_WITH_HIP)
         message(FATAL_ERROR "Hipified main.cpp was not generated!")
     endif()
 
+    foreach(hip_source_file IN LISTS FFT_MVEC_LIBRARY_HIP_SOURCES)
+        if("${hip_source_file}" MATCHES "\\.cpp$")
+            message(STATUS "Setting language of ${hip_source_file} to HIP")
+            set_source_files_properties("${hip_source_file}" PROPERTIES LANGUAGE HIP)
+        endif()
+    endforeach()
+    # Also do this for the main executable's source file
+    if(HIP_MAIN_CPP_FILE_FOR_EXEC AND "${HIP_MAIN_CPP_FILE_FOR_EXEC}" MATCHES "\\.cpp$")
+         set_source_files_properties("${HIP_MAIN_CPP_FILE_FOR_EXEC}" PROPERTIES LANGUAGE HIP)
+    endif()
+
     add_library(FFT_mvec STATIC
         ${FFT_MVEC_LIBRARY_HIP_SOURCES} # Hipified CUDA-entangled sources
         ${FFT_MVEC_LIBRARY_HIP_HEADERS} # Hipified CUDA-entangled headers
@@ -88,6 +99,12 @@ if(BUILD_WITH_HIP)
         ${FFT_MVEC_PURE_CPP_HEADERS} # Pure C++ headers
     )
 
+    if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
+        set_target_properties(FFT_mvec PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        message(STATUS "FFT_mvec: Setting HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
+    else()
+        message(WARNING "FFT_mvec: CMAKE_HIP_ARCHITECTURES is not defined or empty. Library might not be compiled for specific HIP architectures.")
+    endif()
 
 
     target_include_directories(FFT_mvec PUBLIC
@@ -107,6 +124,14 @@ if(BUILD_WITH_HIP)
 
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:HIP>:-fopenmp>) # For host OpenMP in .hip.cpp
+
+    # # add target compile options to explicitly specify --offload-arch=arch0 --offload-arch=arch1... for each GPU architecture in CMAKE_HIP_ARCHITECTURES
+    # # split CMAKE_HIP_ARCHITECTURES by ; and add a separate --offload-arch= for each
+    # string(REPLACE ";" " --offload-arch=" CMAKE_HIP_ARCHITECTURES_LIST "${CMAKE_HIP_ARCHITECTURES}")
+    # foreach(arch IN LISTS CMAKE_HIP_ARCHITECTURES_LIST)
+    #     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:HIP>:--offload-arch=${arch}>)
+    # endforeach()
+
     set(MAIN_EXECUTABLE_SOURCE ${HIP_MAIN_CPP_FILE_FOR_EXEC})
 
 else() # Building with CUDA
@@ -147,11 +172,23 @@ else() # Building with CUDA
 
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-fopenmp>)
+
     set(MAIN_EXECUTABLE_SOURCE ${ORIGINAL_MAIN_CPP})
 endif()
 
 # --- Executable: fft_matvec ---
 add_executable(fft_matvec "${MAIN_EXECUTABLE_SOURCE}")
+
+if(BUILD_WITH_HIP)
+    if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
+        set_target_properties(fft_matvec PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        message(STATUS "fft_matvec: Setting HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
+    endif()
+    target_include_directories(fft_matvec PRIVATE
+        "${HIP_GENERATED_OUTPUT_DIR}" # In case hipified main.cpp includes other hipified headers from the lib
+    )
+endif()
+
 
 # The hipified main.cpp will find hipified library headers (like shared.hpp)
 # because FFT_mvec publicly includes HIP_GENERATED_OUTPUT_DIR.
