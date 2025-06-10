@@ -886,6 +886,7 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
     (*tl)[ProfilerTimes::UNPAD].start();
 #endif
 
+
     UtilKernels::unpad_repad_vector(out_vec_pad, out_vec, vec_out_len, padded_size, unpad, s);
 
 #if TIME_MPI
@@ -964,16 +965,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_
     local_matvec(res_vec, in_vec_pad, mat_freq_TOSI1, padded_size, num_cols, num_rows, conjugate,
                  !(full), device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_TOSI,
                  in_vec_freq_TOSI, out_vec_freq, s, cublasHandle);
-    int res_vec_len = (full) ? vec_out_len * padded_size : vec_out_len * padded_size / 2;
-    double *h_res_vec = new double[res_vec_len];
-    cudaMemcpy(h_res_vec, res_vec, res_vec_len * sizeof(double), cudaMemcpyDeviceToHost);
 
-    for (int i = 0; i < res_vec_len; i++)
-    {
-        printf("res_vec[%d] = %f\n", i, h_res_vec[i]);
-    }
-
-    delete[] h_res_vec;
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
 #endif

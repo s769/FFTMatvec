@@ -39,7 +39,7 @@ template<typename T_real>
 __global__ void repad_vector_kernel(const T_real* d_in, T_real* d_out, const unsigned int padded_size)
 {
     const size_t unpadded_size = padded_size / 2;
-    const T_real* block_in_base = d_in + (size_t)blockIdx.x * unpadded_size;
+    const T_real* block_in_base = d_in + (size_t)blockIdx.x * padded_size;
     T_real* block_out_base = d_out + (size_t)blockIdx.x * padded_size;
 
     for (size_t j = threadIdx.x; j < padded_size; j += blockDim.x) {
