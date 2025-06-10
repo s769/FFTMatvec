@@ -25,6 +25,7 @@ set(FFT_MVEC_CUDA_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/util_kernels.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/error_checkers.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/comm_error_checkers.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/precision.hpp"
 )
 
 # 4. CUDA-entangled Source Files (contain CUDA types/functions or are .cu files, will be hipified for HIP build)

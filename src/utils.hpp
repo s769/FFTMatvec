@@ -47,16 +47,16 @@ void get_host_name(char* hostname, int maxlen);
 void print_vec(double* vec, int len, int block_size, std::string name = "Vector");
 
 /**
- * @brief Prints a complex vector.
+ * @brief Prints a ComplexD vector.
  *
- * This function prints the elements of a complex vector to the console.
+ * This function prints the elements of a ComplexD vector to the console.
  *
- * @param vec The complex vector to be printed.
+ * @param vec The ComplexD vector to be printed.
  * @param len The length of the vector.
  * @param block_size The size of the unpadded vector.
  * @param name The name of the vector (optional).
  */
-void print_vec_complex(Complex* vec, int len, int block_size, std::string name = "Vector");
+void print_vec_complex(ComplexD* vec, int len, int block_size, std::string name = "Vector");
 
 /**
  * @brief Prints a vector using MPI.
@@ -124,7 +124,7 @@ void print_raw(long double* mean_times, long double* min_times, long double* max
  * so it is called with Nt + 1 and not 2 * Nt.
  * @param s The CUDA stream to use for the operation (optional).
  */
-void swap_axes(Complex* d_in, Complex* d_out, int num_cols, int num_rows, int padded_size,
+void swap_axes(ComplexD* d_in, ComplexD* d_out, int num_cols, int num_rows, int padded_size,
     cudaStream_t s = nullptr);
 
 /**
@@ -177,7 +177,7 @@ std::string zero_pad(size_t num, size_t width);
  * @param elements_per_thread Number of elements to process per thread.
  * @param s The CUDA stream to use for the operation.
  */
-void cut_transpose3d(Complex* d_out, const Complex* d_in, const int* size, int elements_per_thread, cudaStream_t s);
+void cut_transpose3d(ComplexD* d_out, const ComplexD* d_in, const int* size, int elements_per_thread, cudaStream_t s);
 
 } // namespace Utils
 

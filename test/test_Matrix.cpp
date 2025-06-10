@@ -235,9 +235,9 @@ TEST_F(MatrixTest, InitMatOnes)
 {
     F->init_mat_ones();
     ASSERT_TRUE(F->is_initialized());
-    Complex *h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex *d_mat = F->get_mat_freq_TOSI();
-    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
+    ComplexD *h_mat = new ComplexD[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    ComplexD *d_mat = F->get_mat_freq_TOSI();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
@@ -248,14 +248,14 @@ TEST_F(MatrixTest, InitMatOnes)
     }
     double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex *d_fft;
-    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    ComplexD *d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
     cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex *h_fft = new Complex[BLOCK_SIZE + 1];
-    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+    ComplexD *h_fft = new ComplexD[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD), cudaMemcpyDeviceToHost));
 
     for (int t = 0; t < BLOCK_SIZE + 1; t++)
     {
@@ -281,9 +281,9 @@ TEST_F(MatrixTest, InitMatOnesAux)
     F->init_mat_ones();
     F->init_mat_ones(true);
     ASSERT_TRUE(F->is_initialized());
-    Complex *h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex *d_mat = F->get_mat_freq_TOSI_aux();
-    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
+    ComplexD *h_mat = new ComplexD[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    ComplexD *d_mat = F->get_mat_freq_TOSI_aux();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
@@ -294,14 +294,14 @@ TEST_F(MatrixTest, InitMatOnesAux)
     }
     double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex *d_fft;
-    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    ComplexD *d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
     cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex *h_fft = new Complex[BLOCK_SIZE + 1];
-    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+    ComplexD *h_fft = new ComplexD[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD), cudaMemcpyDeviceToHost));
 
     for (int t = 0; t < BLOCK_SIZE + 1; t++)
     {
@@ -429,13 +429,13 @@ TEST_F(MatrixTest, ReadFromFile)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex *h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex *d_mat = F2.get_mat_freq_TOSI();
+    ComplexD *h_mat = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
 
-    Complex result = {0.0, 0.0};
+    ComplexD result = {0.0, 0.0};
     for (int t = 0; t < block_size + 1; t++)
     {
         for (int r = 0; r < F2.get_num_rows(); r++)
@@ -459,13 +459,13 @@ TEST_F(MatrixTest, ReadFromFile)
     std::string aux_path = dirname(__FILE__) + "/data/test_mat_2/binary/adj/vec_";
     F2.init_mat_from_file(aux_path, true);
 
-    Complex *h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex *d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    ComplexD *h_mat_aux = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
 
-    Complex result_aux = {0.0, 0.0};
+    ComplexD result_aux = {0.0, 0.0};
     for (int t = 0; t < block_size + 1; t++)
     {
         for (int r = 0; r < F2.get_num_rows(); r++)
@@ -501,13 +501,13 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex *h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex *d_mat = F2.get_mat_freq_TOSI();
+    ComplexD *h_mat = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
 
-    Complex result = {0.0, 0.0};
+    ComplexD result = {0.0, 0.0};
     for (int t = 0; t < block_size + 1; t++)
     {
         for (int r = 0; r < F2.get_num_rows(); r++)
@@ -528,13 +528,13 @@ TEST_F(MatrixTest, ReadFromFileQoI)
 
     delete[] h_mat;
 
-    Complex *h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex *d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    ComplexD *h_mat_aux = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
                          cudaMemcpyDeviceToHost));
 
-    Complex result_aux = {0.0, 0.0};
+    ComplexD result_aux = {0.0, 0.0};
     for (int t = 0; t < block_size + 1; t++)
     {
         for (int r = 0; r < F2.get_num_rows(); r++)

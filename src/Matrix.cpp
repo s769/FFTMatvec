@@ -62,15 +62,15 @@ void Matrix::initialize(
     cufftSafeCall(cufftSetStream(inverse_plan, s));
     gpuErrchk(cudaMalloc((void **)&(col_vec_pad), (size_t)num_cols * padded_size * sizeof(double)));
     gpuErrchk(cudaMalloc(
-        (void **)&(col_vec_freq), sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols));
+        (void **)&(col_vec_freq), sizeof(ComplexD) * (size_t)(padded_size / 2 + 1) * num_cols));
 
     gpuErrchk(cudaMalloc(
-        (void **)&(col_vec_freq_TOSI), sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols));
+        (void **)&(col_vec_freq_TOSI), sizeof(ComplexD) * (size_t)(padded_size / 2 + 1) * num_cols));
     gpuErrchk(cudaMalloc(
-        (void **)&(row_vec_freq_TOSI), (size_t)sizeof(Complex) * (padded_size / 2 + 1) * num_rows));
+        (void **)&(row_vec_freq_TOSI), (size_t)sizeof(ComplexD) * (padded_size / 2 + 1) * num_rows));
 
     gpuErrchk(cudaMalloc(
-        (void **)&(row_vec_freq), (size_t)sizeof(Complex) * (padded_size / 2 + 1) * num_rows));
+        (void **)&(row_vec_freq), (size_t)sizeof(ComplexD) * (padded_size / 2 + 1) * num_rows));
     gpuErrchk(cudaMalloc((void **)&(row_vec_pad),
                          (size_t)sizeof(double) * padded_size * num_rows)); // num_cols * num_rows));
 
@@ -682,7 +682,7 @@ void Matrix::check_matvec(Vector &x, Vector &y, bool transpose, bool full, bool 
     }
 }
 
-void Matrix::setup_matvec(Complex **mat_freq_TOSI, const double *const h_mat,
+void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat,
                           const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
                           cublasHandle_t cublasHandle)
 {
@@ -720,7 +720,7 @@ void Matrix::setup_matvec(Complex **mat_freq_TOSI, const double *const h_mat,
     gpuErrchk(cudaMalloc((void **)&d_mat, mat_len));
     gpuErrchk(cudaMemcpy(d_mat, h_mat, mat_len, cudaMemcpyHostToDevice));
     gpuErrchk(cudaMalloc((void **)mat_freq_TOSI,
-                         (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(Complex)));
+                         (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(ComplexD)));
 
 #if !ROW_SETUP
     cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_TOSI));
@@ -744,9 +744,9 @@ void Matrix::setup_matvec(Complex **mat_freq_TOSI, const double *const h_mat,
                                    (size_t)(padded_size / 2 + 1) * num_cols * num_rows, &scale, *mat_freq_TOSI, 1));
 #endif
 
-    Complex *d_mat_freq_trans;
+    ComplexD *d_mat_freq_trans;
     gpuErrchk(cudaMalloc((void **)&d_mat_freq_trans,
-                         sizeof(Complex) * (size_t)(padded_size / 2 + 1) * num_cols * num_rows));
+                         sizeof(ComplexD) * (size_t)(padded_size / 2 + 1) * num_cols * num_rows));
     if (num_cols > 1 && num_rows > 1)
     {
         Utils::swap_axes(
@@ -787,11 +787,11 @@ void Matrix::setup_matvec(Complex **mat_freq_TOSI, const double *const h_mat,
 }
 
 void Matrix::local_matvec(double *const out_vec, double *const in_vec,
-                          const Complex *const d_mat_freq, const unsigned int padded_size, const unsigned int num_cols,
+                          const ComplexD *const d_mat_freq, const unsigned int padded_size, const unsigned int num_cols,
                           const unsigned int num_rows, const bool conjugate, const bool unpad, const unsigned int device,
                           cufftHandle forward_plan, cufftHandle inverse_plan, double *const out_vec_pad,
-                          Complex *const in_vec_freq, Complex *const out_vec_freq_TOSI, Complex *const in_vec_freq_TOSI,
-                          Complex *const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle)
+                          ComplexD *const in_vec_freq, ComplexD *const out_vec_freq_TOSI, ComplexD *const in_vec_freq_TOSI,
+                          ComplexD *const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle)
 {
 
     unsigned int vec_in_len = (conjugate) ? num_rows : num_cols;
@@ -894,14 +894,14 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
 #endif
 }
 
-void Matrix::compute_matvec(double *out_vec, double *in_vec, Complex *mat_freq_TOSI,
+void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_TOSI,
                             const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
                             const bool conjugate, const bool full, const unsigned int device, ncclComm_t nccl_row_comm,
                             ncclComm_t nccl_col_comm, cudaStream_t s, double *const in_vec_pad, cufftHandle forward_plan,
                             cufftHandle inverse_plan, cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj,
-                            double *const out_vec_pad, Complex *const in_vec_freq, Complex *const out_vec_freq_TOSI,
-                            Complex *const in_vec_freq_TOSI, Complex *const out_vec_freq, cublasHandle_t cublasHandle,
-                            Complex *mat_freq_TOSI_aux, double *const res_pad, bool use_aux_mat)
+                            double *const out_vec_pad, ComplexD *const in_vec_freq, ComplexD *const out_vec_freq_TOSI,
+                            ComplexD *const in_vec_freq_TOSI, ComplexD *const out_vec_freq, cublasHandle_t cublasHandle,
+                            ComplexD *mat_freq_TOSI_aux, double *const res_pad, bool use_aux_mat)
 {
 
 #if TIME_MPI
@@ -938,7 +938,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, Complex *mat_freq_T
     (*tl)[ProfilerTimes::PAD].stop();
 #endif
 
-    Complex *mat_freq_TOSI1, *mat_freq_TOSI2;
+    ComplexD *mat_freq_TOSI1, *mat_freq_TOSI2;
 
     if (full && use_aux_mat)
     {
@@ -964,6 +964,16 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, Complex *mat_freq_T
     local_matvec(res_vec, in_vec_pad, mat_freq_TOSI1, padded_size, num_cols, num_rows, conjugate,
                  !(full), device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_TOSI,
                  in_vec_freq_TOSI, out_vec_freq, s, cublasHandle);
+    int res_vec_len = (full) ? vec_out_len * padded_size : vec_out_len * padded_size / 2;
+    double *h_res_vec = new double[res_vec_len];
+    cudaMemcpy(h_res_vec, res_vec, res_vec_len * sizeof(double), cudaMemcpyDeviceToHost);
+
+    for (int i = 0; i < res_vec_len; i++)
+    {
+        printf("res_vec[%d] = %f\n", i, h_res_vec[i]);
+    }
+
+    delete[] h_res_vec;
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
 #endif

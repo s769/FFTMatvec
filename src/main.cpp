@@ -190,7 +190,8 @@ int main(int argc, char** argv)
         // Perform matrix-vector multiplication
         for (int i = 0; i < reps + WARMUP; i++) {
             F.matvec(in_F, out_F);
-            F.transpose_matvec(in_FS, out_FS);
+            // F.transpose_matvec(in_FS, out_FS);
+            F.matvec(in_F, out_FS, false, true);
         }
 
 #if TIME_MPI

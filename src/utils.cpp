@@ -69,13 +69,13 @@ void Utils::print_vec_mpi(
     }
 }
 
-void Utils::print_vec_complex(Complex *vec, int len, int block_size, std::string name)
+void Utils::print_vec_complex(ComplexD *vec, int len, int block_size, std::string name)
 {
 
-    Complex *h_vec;
-    h_vec = (Complex *)malloc((size_t)len * block_size * sizeof(Complex));
+    ComplexD *h_vec;
+    h_vec = (ComplexD *)malloc((size_t)len * block_size * sizeof(ComplexD));
     gpuErrchk(
-        cudaMemcpy(h_vec, vec, (size_t)len * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+        cudaMemcpy(h_vec, vec, (size_t)len * block_size * sizeof(ComplexD), cudaMemcpyDeviceToHost));
 
     printf("%s:\n", name.c_str());
 
@@ -294,7 +294,7 @@ void Utils::print_times(int reps, bool table)
 }
 
 void Utils::swap_axes(
-    Complex *d_in, Complex *d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
+    ComplexD *d_in, ComplexD *d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
 {
 #if CUTENSOR_AVAILABLE
     // use cuTensor to swap axes d_in[t,m,d] -> d_out[d,m,t] (column-major)

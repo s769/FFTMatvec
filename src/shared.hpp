@@ -56,8 +56,8 @@ typedef int fft_int_t;
 #include <array>
 #endif
 
-typedef double2 Complex;
-typedef Complex data_t;
+typedef double2 ComplexD;
+typedef float2 ComplexF;
 
 #include "error_checkers.h"
 #include "comm_error_checkers.h"

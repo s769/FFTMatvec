@@ -20,21 +20,21 @@ TEST(UtilsTest, SwapAxes)
     int num_cols = 3;
     int num_rows = 2;
     int block_size = 4;
-    Complex *d_in;
-    Complex *d_out;
-    gpuErrchk(cudaMalloc(&d_in, (size_t)num_cols * num_rows * block_size * sizeof(Complex)));
-    Complex *h_in = new Complex[(size_t)num_cols * num_rows * block_size];
+    ComplexD *d_in;
+    ComplexD *d_out;
+    gpuErrchk(cudaMalloc(&d_in, (size_t)num_cols * num_rows * block_size * sizeof(ComplexD)));
+    ComplexD *h_in = new ComplexD[(size_t)num_cols * num_rows * block_size];
     for (size_t i = 0; i < (size_t)num_cols * num_rows * block_size; i++)
     {
         h_in[i] = {i * 1.0, i * 1.0 + 1};
     }
     gpuErrchk(cudaMemcpy(
-        d_in, h_in, (size_t)num_cols * num_rows * block_size * sizeof(Complex), cudaMemcpyHostToDevice));
-    gpuErrchk(cudaMalloc(&d_out, (size_t)num_cols * num_rows * block_size * sizeof(Complex)));
+        d_in, h_in, (size_t)num_cols * num_rows * block_size * sizeof(ComplexD), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMalloc(&d_out, (size_t)num_cols * num_rows * block_size * sizeof(ComplexD)));
     Utils::swap_axes(d_in, d_out, num_cols, num_rows, block_size);
-    Complex *h_out = new Complex[(size_t)num_cols * num_rows * block_size];
+    ComplexD *h_out = new ComplexD[(size_t)num_cols * num_rows * block_size];
     gpuErrchk(cudaMemcpy(
-        h_out, d_out, num_cols * num_rows * block_size * sizeof(Complex), cudaMemcpyDeviceToHost));
+        h_out, d_out, num_cols * num_rows * block_size * sizeof(ComplexD), cudaMemcpyDeviceToHost));
     for (int r = 0; r < num_rows; r++)
     {
         for (int c = 0; c < num_cols; c++)

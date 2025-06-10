@@ -19,9 +19,12 @@ class Vector; // forward declaration
 class Matrix {
 
 private:
-    Complex* mat_freq_TOSI; /**< Pointer to the matrix frequency in TOSI format. */
-    Complex* mat_freq_TOSI_aux
+    ComplexD* mat_freq_TOSI; /**< Pointer to the matrix frequency in TOSI format. */
+    ComplexD* mat_freq_TOSI_aux
         = nullptr; /**< Pointer to the other matrix frequency in TOSI format. */
+    ComplexF* mat_freq_TOSI_F; /**< Pointer to the matrix frequency in TOSI format (float). */
+    ComplexF* mat_freq_TOSI_aux_F
+        = nullptr; /**< Pointer to the other matrix frequency in TOSI format (float). */
     unsigned int padded_size; /**< The padded block size of the matrix. */
     unsigned int block_size; /**< The unpadded block size of the matrix. */
     unsigned int num_cols; /**< The number of columns in the matrix. */
@@ -33,10 +36,19 @@ private:
     double* row_vec_pad; /**< Pointer to the padded row vector. */
     double* row_vec_unpad; /**< Pointer to the unpadded row vector. */
     double* res_pad; /**< Pointer to the padded result vector. */
-    Complex* col_vec_freq; /**< Pointer to the column vector frequency. */
-    Complex* row_vec_freq; /**< Pointer to the row vector frequency. */
-    Complex* col_vec_freq_TOSI; /**< Pointer to the column vector frequency in TOSI format. */
-    Complex* row_vec_freq_TOSI; /**< Pointer to the row vector frequency in TOSI format. */
+    float* res_pad_F; /**< Pointer to the padded result vector (float). */
+    float* col_vec_unpad_F; /**< Pointer to the unpadded column vector (float). */
+    float* col_vec_pad_F; /**< Pointer to the padded column vector (float). */
+    float* row_vec_pad_F; /**< Pointer to the padded row vector (float). */
+    float* row_vec_unpad_F; /**< Pointer to the unpadded row vector (float). */ 
+    ComplexD* col_vec_freq; /**< Pointer to the column vector frequency. */
+    ComplexD* row_vec_freq; /**< Pointer to the row vector frequency. */
+    ComplexD* col_vec_freq_TOSI; /**< Pointer to the column vector frequency in TOSI format. */
+    ComplexD* row_vec_freq_TOSI; /**< Pointer to the row vector frequency in TOSI format. */
+    ComplexF* col_vec_freq_F; /**< Pointer to the column vector frequency (float). */
+    ComplexF* row_vec_freq_F; /**< Pointer to the row vector frequency (float). */
+    ComplexF* col_vec_freq_TOSI_F; /**< Pointer to the column vector frequency in TOSI format (float). */
+    ComplexF* row_vec_freq_TOSI_F; /**< Pointer to the row vector frequency in TOSI format (float). */
     cufftHandle forward_plan; /**< The forward plan for FFT. */
     cufftHandle inverse_plan; /**< The inverse plan for FFT. */
     cufftHandle forward_plan_conj; /**< The forward plan for conjugate FFT. */
@@ -89,7 +101,7 @@ private:
      * @param num_rows The number of rows in the matrix.
      * @param cublasHandle The handle for the cuBLAS library.
      */
-    void setup_matvec(Complex** d_mat_freq, const double* const h_mat,
+    void setup_matvec(ComplexD** d_mat_freq, const double* const h_mat,
         const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
         cublasHandle_t cublasHandle);
 
@@ -120,12 +132,12 @@ private:
      * @param s The CUDA stream.
      * @param cublasHandle The handle for the cuBLAS library.
      */
-    void local_matvec(double* const out_vec, double* const in_vec, const Complex* const d_mat_freq,
+    void local_matvec(double* const out_vec, double* const in_vec, const ComplexD* const d_mat_freq,
         const unsigned int size, const unsigned int num_cols, const unsigned int num_rows,
         const bool conjugate, const bool unpad, const unsigned int device, cufftHandle forward_plan,
-        cufftHandle inverse_plan, double* const out_vec_pad, Complex* const in_vec_freq,
-        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
-        Complex* const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle);
+        cufftHandle inverse_plan, double* const out_vec_pad, ComplexD* const in_vec_freq,
+        ComplexD* const out_vec_freq_TOSI, ComplexD* const in_vec_freq_TOSI,
+        ComplexD* const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle);
 
     /**
      * @brief Perform matrix-vector multiplication.
@@ -164,14 +176,14 @@ private:
      * @param use_aux_mat Flag indicating whether to use the auxiliary matrix for the full
      * multiplication (i.e. FG^* or G^*F)
      */
-    void compute_matvec(double* out_vec, double* in_vec, Complex* mat_freq_TOSI,
+    void compute_matvec(double* out_vec, double* in_vec, ComplexD* mat_freq_TOSI,
         const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
         const bool conjugate, const bool full, const unsigned int device, ncclComm_t nccl_row_comm,
         ncclComm_t nccl_col_comm, cudaStream_t s, double* const in_vec_pad,
         cufftHandle forward_plan, cufftHandle inverse_plan, cufftHandle forward_plan_conj,
-        cufftHandle inverse_plan_conj, double* const out_vec_pad, Complex* const in_vec_freq,
-        Complex* const out_vec_freq_TOSI, Complex* const in_vec_freq_TOSI,
-        Complex* const out_vec_freq, cublasHandle_t cublasHandle, Complex* mat_freq_TOSI_aux,
+        cufftHandle inverse_plan_conj, double* const out_vec_pad, ComplexD* const in_vec_freq,
+        ComplexD* const out_vec_freq_TOSI, ComplexD* const in_vec_freq_TOSI,
+        ComplexD* const out_vec_freq, cublasHandle_t cublasHandle, ComplexD* mat_freq_TOSI_aux,
         double* const res_pad, bool use_aux_mat = false);
 
 public:
@@ -257,24 +269,24 @@ public:
     double* get_row_vec_pad() { return row_vec_pad; } /**< Returns the padded row vector. */
     double* get_row_vec_unpad() { return row_vec_unpad; } /**< Returns the unpadded row vector. */
     double* get_res_pad() { return res_pad; } /**< Returns the padded result vector. */
-    Complex* get_col_vec_freq()
+    ComplexD* get_col_vec_freq()
     {
         return col_vec_freq;
     } /**< Returns the column vector frequency. */
-    Complex* get_row_vec_freq() { return row_vec_freq; } /**< Returns the row vector frequency. */
-    Complex* get_col_vec_freq_TOSI()
+    ComplexD* get_row_vec_freq() { return row_vec_freq; } /**< Returns the row vector frequency. */
+    ComplexD* get_col_vec_freq_TOSI()
     {
         return col_vec_freq_TOSI;
     } /**< Returns the column vector frequency in TOSI format. */
-    Complex* get_row_vec_freq_TOSI()
+    ComplexD* get_row_vec_freq_TOSI()
     {
         return row_vec_freq_TOSI;
     } /**< Returns the row vector frequency in TOSI format. */
-    Complex* get_mat_freq_TOSI()
+    ComplexD* get_mat_freq_TOSI()
     {
         return mat_freq_TOSI;
     } /**< Returns the matrix frequency in TOSI format. */
-    Complex* get_mat_freq_TOSI_aux()
+    ComplexD* get_mat_freq_TOSI_aux()
     {
         return mat_freq_TOSI_aux;
     } /**< Returns the other matrix frequency in TOSI format. */
