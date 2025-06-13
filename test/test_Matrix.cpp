@@ -13,6 +13,14 @@ int NUM_ROWS = 2;
 int NUM_COLS = 3;
 int BLOCK_SIZE = 4;
 
+// Define a struct to hold the logical parameters for each test case
+struct LogicalTestConfig {
+    std::string test_name;
+    bool is_transpose;
+    bool use_aux_mat;
+    bool is_full;
+};
+
 class MatrixTest : public ::testing::Test
 {
 protected:
@@ -81,7 +89,7 @@ protected:
         }
     }
     static void check_element(
-        double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full)
+        double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full, double tol=1e-10)
     {
         double correct_elem;
         if (conj)
@@ -106,10 +114,10 @@ protected:
                 correct_elem = (j + 1) * Nm;
             }
         }
-        ASSERT_NEAR(elem, correct_elem, 1e-10);
+        ASSERT_NEAR(elem, correct_elem, tol);
     }
 
-    static void check_ones_matvec(Matrix &mat, Vector &vec, bool conj, bool full)
+    static void check_ones_matvec(Matrix &mat, Vector &vec, bool conj, bool full, double tol=1e-10)
     {
 
         int proc_rows = comm->get_proc_rows();
@@ -133,7 +141,7 @@ protected:
             {
                 for (size_t j = 0; j < Nt; j++)
                 {
-                    check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
+                    check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full, tol);
                 }
             }
 
@@ -342,81 +350,6 @@ TEST_F(MatrixTest, GetVector)
     ASSERT_EQ(d.get_row_or_col(), "row");
 }
 
-TEST_F(MatrixTest, OnesMatvec)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->matvec(*x, *y);
-    check_ones_matvec(*F, *y, false, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecConj)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->transpose_matvec(*y, *x);
-    check_ones_matvec(*F, *x, true, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecFull)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    x2->init_vec_ones();
-    F->matvec(*x, *x2, false, true);
-    check_ones_matvec(*F, *x2, false, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullConj)
-{
-    F->init_mat_ones();
-    y->init_vec_ones();
-    y2->init_vec_ones();
-    F->transpose_matvec(*y, *y2, false, true);
-    check_ones_matvec(*F, *y2, true, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->matvec(*x, *y, true);
-    check_ones_matvec(*F, *y, false, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecConjAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->transpose_matvec(*y, *x, true);
-    check_ones_matvec(*F, *x, true, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    x2->init_vec_ones();
-    F->matvec(*x, *x2, true, true);
-    check_ones_matvec(*F, *x2, false, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullConjAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    y->init_vec_ones();
-    y2->init_vec_ones();
-    F->transpose_matvec(*y, *y2, true, true);
-    check_ones_matvec(*F, *y2, true, true);
-}
 
 TEST_F(MatrixTest, ReadFromFile)
 {
@@ -596,3 +529,130 @@ int main(int argc, char **argv)
 
     return result; // Run tests, then clean up and exit
 }
+
+//============================================================================//
+//               PARAMETERIZED TEST FOR MATVEC COMBINATIONS                   //
+//============================================================================//
+
+// Inherit from MatrixTest to get access to static members like 'comm' and helpers
+class MatrixParameterizedTest : public MatrixTest,
+                                public ::testing::WithParamInterface<std::tuple<LogicalTestConfig, MatvecPrecisionConfig>>
+{};
+
+// This single TEST_P block runs all 256 combinations with the correct logic.
+TEST_P(MatrixParameterizedTest, AllMatvecCombinations)
+{
+    // 1. Get the parameters for this specific test run
+    const auto& logical_config = std::get<0>(GetParam());
+    const auto& precision_config = std::get<1>(GetParam());
+
+    // 2. Create a NEW, LOCAL Matrix for this specific test case.
+    Matrix local_F(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE, false, false, precision_config);
+
+    // 3. Initialize the local matrix and the STATIC vectors from the base fixture.
+    local_F.init_mat_ones();
+    if (logical_config.use_aux_mat) {
+        local_F.init_mat_ones(true);
+    }
+    x->init_vec_ones();
+    y->init_vec_ones();
+    x2->init_vec_ones();
+    y2->init_vec_ones();
+    
+    // 4. Select the correct input and output vectors based on your rules.
+    Vector* in_vec = nullptr;
+    Vector* out_vec = nullptr;
+
+    if (logical_config.is_transpose) {
+        // For transpose, input is a row vector, output is a col vector.
+        in_vec = y;
+        out_vec = logical_config.is_full ? y2 : x;
+    } else {
+        // For regular matvec, input is a col vector, output is a row vector.
+        in_vec = x;
+        out_vec = logical_config.is_full ? x2 : y;
+    }
+
+    // 5. Execute the operation using the selected vectors.
+    if (logical_config.is_transpose) {
+        local_F.transpose_matvec(*in_vec, *out_vec, logical_config.use_aux_mat, logical_config.is_full);
+    } else {
+        local_F.matvec(*in_vec, *out_vec, logical_config.use_aux_mat, logical_config.is_full);
+    }
+
+    double tol = 1e-10;
+    // if any of the operations are done in single precision, we need to relax the tolerance
+    if (precision_config.broadcast_and_pad == Precision::SINGLE ||
+        precision_config.fft == Precision::SINGLE ||
+        precision_config.sbgemv == Precision::SINGLE ||
+        precision_config.ifft == Precision::SINGLE ||
+        precision_config.unpad_and_reduce == Precision::SINGLE) {
+        tol = 1e-4;
+    }
+
+    // 6. Verify the result written to the correct output vector.
+    check_ones_matvec(local_F, *out_vec, logical_config.is_transpose, logical_config.is_full, tol);
+    
+    // `local_F` is destroyed automatically when this test scope ends.
+}
+
+// --- Helper functions and INSTANTIATE_TEST_SUITE_P to generate all test cases ---
+
+// --- Helper functions and INSTANTIATE_TEST_SUITE_P remain the same ---
+
+std::vector<LogicalTestConfig> GenerateLogicalConfigs() {
+    return {
+        {"Matvec",           false, false, false},
+        {"Matvec_Conj",      true,  false, false},
+        {"Matvec_Full",      false, false, true},
+        {"Matvec_Full_Conj", true,  false, true},
+        {"Matvec_Aux",       false, true,  false},
+        {"Matvec_Aux_Conj",  true,  true,  false},
+        {"Matvec_Full_Aux",  false, true,  true},
+        {"Matvec_Full_Aux_Conj", true, true, true}
+    };
+}
+
+std::vector<MatvecPrecisionConfig> GeneratePrecisionConfigs() {
+    std::vector<MatvecPrecisionConfig> configs;
+    for (int i = 0; i < 32; ++i) { // 2^5 = 32 combinations
+        MatvecPrecisionConfig config;
+        config.broadcast_and_pad = (i & 1)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.fft               = (i & 2)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.sbgemv            = (i & 4)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.ifft              = (i & 8)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.unpad_and_reduce  = (i & 16) ? Precision::SINGLE : Precision::DOUBLE;
+        configs.push_back(config);
+    }
+    return configs;
+}
+
+auto generateTestName = [](const auto& info) {
+    const auto& logical_config = std::get<0>(info.param);
+    const auto& precision_config = std::get<1>(info.param);
+    
+    auto p_to_s = [](Precision p) { return p == Precision::SINGLE ? "S" : "D"; };
+
+    std::string precision_str = "Precisions_";
+    precision_str += p_to_s(precision_config.broadcast_and_pad);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.fft);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.sbgemv);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.ifft);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.unpad_and_reduce);
+
+    return logical_config.test_name + "_" + precision_str;
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    MatvecPrecisionTests,
+    MatrixParameterizedTest,
+    ::testing::Combine(
+        ::testing::ValuesIn(GenerateLogicalConfigs()),
+        ::testing::ValuesIn(GeneratePrecisionConfigs())
+    ),
+    generateTestName
+);

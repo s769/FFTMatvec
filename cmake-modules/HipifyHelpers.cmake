@@ -106,6 +106,7 @@ function(hipify_directory)
             "${INPUT_FILE_FULL_PATH}"
             -o "${HIP_OUTPUT_FILE}"
             --default-preprocessor
+            -- -std=c++17
             DEPENDS "${INPUT_FILE_FULL_PATH}" # Re-run if the source CUDA file changes
             COMMENT "Hipifying ${INPUT_FILE_FULL_PATH} to ${HIP_OUTPUT_FILE}"
             VERBATIM # Crucial for commands with special characters or list arguments

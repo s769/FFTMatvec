@@ -10,6 +10,21 @@ enum_array<ProfilerTimes, profiler_t, 10> t_list_f;
 enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
 #endif
 
+cufftType_t get_cufft_type(Precision p, bool forward)
+{
+    switch (p)
+    {
+    case Precision::SINGLE:
+        return (forward) ? TypeTraits<Precision::SINGLE>::cufft_fwd_type : TypeTraits<Precision::SINGLE>::cufft_inv_type;
+    case Precision::DOUBLE:
+        return (forward) ? TypeTraits<Precision::DOUBLE>::cufft_fwd_type : TypeTraits<Precision::DOUBLE>::cufft_inv_type;
+    default:
+        fprintf(stderr, "Invalid precision.\n");
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+        exit(1);
+    }
+}
+
 void Matrix::initialize(
     unsigned int cols, unsigned int rows, unsigned int block_size, bool global_sizes)
 {
@@ -41,19 +56,23 @@ void Matrix::initialize(
 
     fft_int_t istride = 1;
     fft_int_t ostride = 1;
+
+    cufftType_t fwd_type = get_cufft_type(p_config.fft, true);
+    cufftType_t inv_type = get_cufft_type(p_config.ifft, false);
+
 #if !INDICES_64_BIT
     cufftSafeCall(cufftPlanMany(&(forward_plan), rank, n, inembed, istride, idist, onembed, ostride,
-                                odist, CUFFT_D2Z, num_cols));
+                                odist, fwd_type, num_cols));
     cufftSafeCall(cufftPlanMany(&(inverse_plan), rank, n, onembed, ostride, odist, inembed, istride,
-                                idist, CUFFT_Z2D, num_rows));
+                                idist, inv_type, num_rows));
 #else
     size_t ws = 0;
     cufftSafeCall(cufftCreate(&(forward_plan)));
     cufftSafeCall(cufftMakePlanMany64(forward_plan, rank, n, inembed, istride, idist, onembed,
-                                      ostride, odist, CUFFT_D2Z, num_cols, &ws));
+                                      ostride, odist, fwd_type, num_cols, &ws));
     cufftSafeCall(cufftCreate(&(inverse_plan)));
     cufftSafeCall(cufftMakePlanMany64(inverse_plan, rank, n, onembed, ostride, odist, inembed,
-                                      istride, idist, CUFFT_Z2D, num_rows, &ws));
+                                      istride, idist, inv_type, num_rows, &ws));
 #endif
 
     cudaStream_t s = comm.get_stream();
@@ -76,16 +95,16 @@ void Matrix::initialize(
 
 #if !INDICES_64_BIT
     cufftSafeCall(cufftPlanMany(&(forward_plan_conj), rank, n, inembed, istride, idist, onembed,
-                                ostride, odist, CUFFT_D2Z, num_rows));
+                                ostride, odist, fwd_type, num_rows));
     cufftSafeCall(cufftPlanMany(&(inverse_plan_conj), rank, n, onembed, ostride, odist, inembed,
-                                istride, idist, CUFFT_Z2D, num_cols));
+                                istride, idist, inv_type, num_cols));
 #else
     cufftSafeCall(cufftCreate(&(forward_plan_conj)));
     cufftSafeCall(cufftMakePlanMany64(forward_plan_conj, rank, n, inembed, istride, idist, onembed,
-                                      ostride, odist, CUFFT_D2Z, num_rows, &ws));
+                                      ostride, odist, fwd_type, num_rows, &ws));
     cufftSafeCall(cufftCreate(&(inverse_plan_conj)));
     cufftSafeCall(cufftMakePlanMany64(inverse_plan_conj, rank, n, onembed, ostride, odist, inembed,
-                                      istride, idist, CUFFT_Z2D, num_cols, &ws));
+                                      istride, idist, inv_type, num_cols, &ws));
 #endif
     cufftSafeCall(cufftSetStream(forward_plan_conj, s));
     cufftSafeCall(cufftSetStream(inverse_plan_conj, s));
@@ -93,24 +112,42 @@ void Matrix::initialize(
     int max_block_len = (num_cols > num_rows) ? num_cols : num_rows;
 
     gpuErrchk(cudaMalloc((void **)&(res_pad), sizeof(double) * (size_t)padded_size * max_block_len));
+    gpuErrchk(cudaMalloc((void **)&(res_unpad), sizeof(double) * (size_t)padded_size / 2 * max_block_len));
 
     gpuErrchk(
         cudaMalloc((void **)&(col_vec_unpad), (size_t)num_cols * padded_size / 2 * sizeof(double)));
 
     gpuErrchk(
         cudaMalloc((void **)&(row_vec_unpad), sizeof(double) * (size_t)padded_size / 2 * num_rows));
+
+    if (p_config.broadcast_and_pad == Precision::SINGLE || p_config.unpad_and_reduce == Precision::SINGLE || p_config.fft == Precision::SINGLE || p_config.ifft == Precision::SINGLE)
+    {
+        gpuErrchk(cudaMalloc((void **)&(col_vec_unpad_F), (size_t)num_cols * padded_size / 2 * sizeof(float)));
+        gpuErrchk(cudaMalloc((void **)&(row_vec_unpad_F), sizeof(float) * (size_t)padded_size / 2 * num_rows));
+        gpuErrchk(cudaMalloc((void **)&(col_vec_pad_F), (size_t)num_cols * padded_size * sizeof(float)));
+        gpuErrchk(cudaMalloc((void **)&(row_vec_pad_F), (size_t)sizeof(float) * padded_size * num_rows));
+        gpuErrchk(cudaMalloc((void **)&(res_pad_F), sizeof(float) * (size_t)padded_size * max_block_len));
+        gpuErrchk(cudaMalloc((void **)&(res_unpad_F), sizeof(float) * (size_t)padded_size / 2 * max_block_len));
+    }
+    if (p_config.sbgemv == Precision::SINGLE || p_config.fft == Precision::SINGLE || p_config.ifft == Precision::SINGLE)
+    {
+        gpuErrchk(cudaMalloc((void **)&(col_vec_freq_F), sizeof(ComplexF) * (size_t)(padded_size / 2 + 1) * num_cols));
+        gpuErrchk(cudaMalloc((void **)&(row_vec_freq_F), sizeof(ComplexF) * (size_t)(padded_size / 2 + 1) * num_rows));
+        gpuErrchk(cudaMalloc((void **)&(col_vec_freq_TOSI_F), sizeof(ComplexF) * (size_t)(padded_size / 2 + 1) * num_cols));
+        gpuErrchk(cudaMalloc((void **)&(row_vec_freq_TOSI_F), (size_t)sizeof(ComplexF) * (padded_size / 2 + 1) * num_rows));
+    }
 }
 
 Matrix::Matrix(Comm &comm, unsigned int cols, unsigned int rows, unsigned int block_size,
-               bool global_sizes, bool QoI)
-    : comm(comm), block_size(block_size), padded_size(2 * block_size), is_QoI(QoI)
+               bool global_sizes, bool QoI, const MatvecPrecisionConfig &p_config)
+    : comm(comm), block_size(block_size), padded_size(2 * block_size), is_QoI(QoI), p_config(p_config)
 {
     // Initialize the matrix data structures
     initialize(cols, rows, block_size, global_sizes);
 }
 
-Matrix::Matrix(Comm &comm, std::string path, std::string aux_path, bool QoI)
-    : comm(comm), is_QoI(QoI)
+Matrix::Matrix(Comm &comm, std::string path, std::string aux_path, bool QoI, const MatvecPrecisionConfig &p_config)
+    : comm(comm), is_QoI(QoI), p_config(p_config)
 {
     if (aux_path != "" && path == "")
     {
@@ -163,11 +200,38 @@ Matrix::~Matrix()
 
     gpuErrchk(cudaFree(row_vec_unpad));
     gpuErrchk(cudaFree(res_pad));
+    gpuErrchk(cudaFree(res_unpad));
 
     if (initialized)
         gpuErrchk(cudaFree(mat_freq_TOSI));
     if (has_mat_freq_TOSI_aux && initialized)
         gpuErrchk(cudaFree(mat_freq_TOSI_aux));
+
+    if (p_config.sbgemv == Precision::SINGLE)
+    {
+        if (initialized)
+            gpuErrchk(cudaFree(mat_freq_TOSI_F));
+        if (has_mat_freq_TOSI_aux && initialized)
+            gpuErrchk(cudaFree(mat_freq_TOSI_aux_F));
+    }
+
+    if (p_config.broadcast_and_pad == Precision::SINGLE || p_config.fft == Precision::SINGLE || p_config.ifft == Precision::SINGLE || p_config.unpad_and_reduce == Precision::SINGLE)
+    {
+        gpuErrchk(cudaFree(col_vec_unpad_F));
+        gpuErrchk(cudaFree(row_vec_unpad_F));
+        gpuErrchk(cudaFree(col_vec_pad_F));
+        gpuErrchk(cudaFree(row_vec_pad_F));
+        gpuErrchk(cudaFree(res_pad_F));
+        gpuErrchk(cudaFree(res_unpad_F));
+    }
+
+    if (p_config.fft == Precision::SINGLE || p_config.ifft == Precision::SINGLE || p_config.sbgemv == Precision::SINGLE)
+    {
+        gpuErrchk(cudaFree(col_vec_freq_F));
+        gpuErrchk(cudaFree(row_vec_freq_F));
+        gpuErrchk(cudaFree(col_vec_freq_TOSI_F));
+        gpuErrchk(cudaFree(row_vec_freq_TOSI_F));
+    }
 }
 
 void Matrix::init_mat_ones(bool aux_mat)
@@ -197,12 +261,16 @@ void Matrix::init_mat_ones(bool aux_mat)
     if (aux_mat)
     {
         Matrix::setup_matvec(
-            &mat_freq_TOSI_aux, h_mat, padded_size, num_cols, num_rows, cublasHandle);
+            &mat_freq_TOSI_aux, h_mat);
         has_mat_freq_TOSI_aux = true;
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_aux_F, mat_freq_TOSI_aux);
     }
     else
     {
-        Matrix::setup_matvec(&mat_freq_TOSI, h_mat, padded_size, num_cols, num_rows, cublasHandle);
+        Matrix::setup_matvec(&mat_freq_TOSI, h_mat);
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_F, mat_freq_TOSI);
         initialized = true;
     }
     delete[] h_mat;
@@ -453,13 +521,17 @@ void Matrix::init_mat_from_file(std::string dirname, bool aux_mat)
     if (aux_mat)
     {
         Matrix::setup_matvec(
-            &mat_freq_TOSI_aux, h_mat, padded_size, num_cols, num_rows, cublasHandle);
+            &mat_freq_TOSI_aux, h_mat);
         has_mat_freq_TOSI_aux = true;
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_aux_F, mat_freq_TOSI_aux);
     }
     else
     {
-        Matrix::setup_matvec(&mat_freq_TOSI, h_mat, padded_size, num_cols, num_rows, cublasHandle);
+        Matrix::setup_matvec(&mat_freq_TOSI, h_mat);
         initialized = true;
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_F, mat_freq_TOSI);
     }
 
     delete[] h_mat;
@@ -469,11 +541,10 @@ void Matrix::matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
 {
     check_matvec(x, y, false, full, use_aux_mat);
 
-    cudaStream_t s = comm.get_stream();
-    cublasHandle_t cublasHandle = comm.get_cublasHandle();
-    int device = comm.get_device();
-    ncclComm_t row_comm = comm.get_gpu_row_comm();
-    ncclComm_t col_comm = comm.get_gpu_col_comm();
+    MatvecConfig config;
+    config.use_aux_mat = use_aux_mat;
+    config.full = full;
+    config.transpose = false;
 
     double *in_vec, *out_vec;
 
@@ -490,24 +561,7 @@ void Matrix::matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
     else
         out_vec = (full) ? col_vec_unpad : row_vec_unpad;
 
-    if (full)
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI, padded_size, num_cols, num_rows,
-                               false, true, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan,
-                               forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq,
-                               col_vec_freq_TOSI, row_vec_freq_TOSI, cublasHandle, mat_freq_TOSI_aux, res_pad,
-                               use_aux_mat);
-    else if (use_aux_mat)
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI_aux, padded_size, num_cols, num_rows,
-                               false, false, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan,
-                               forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq,
-                               col_vec_freq_TOSI, row_vec_freq_TOSI, cublasHandle, mat_freq_TOSI_aux, res_pad);
-    else
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI, padded_size, num_cols, num_rows,
-                               false, false, device, row_comm, col_comm, s, col_vec_pad, forward_plan, inverse_plan,
-                               forward_plan_conj, inverse_plan_conj, row_vec_pad, col_vec_freq, row_vec_freq,
-                               col_vec_freq_TOSI, row_vec_freq_TOSI, cublasHandle, mat_freq_TOSI_aux, res_pad);
-
-    gpuErrchk(cudaStreamSynchronize(s));
+    compute_matvec(out_vec, in_vec, config);
 
     if (out_color == 0)
         y.set_d_vec(out_vec);
@@ -516,11 +570,11 @@ void Matrix::matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
 void Matrix::transpose_matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
 {
     check_matvec(x, y, true, full, use_aux_mat);
-    cudaStream_t s = comm.get_stream();
-    cublasHandle_t cublasHandle = comm.get_cublasHandle();
-    int device = comm.get_device();
-    ncclComm_t row_comm = comm.get_gpu_row_comm();
-    ncclComm_t col_comm = comm.get_gpu_col_comm();
+
+    MatvecConfig config;
+    config.use_aux_mat = use_aux_mat;
+    config.full = full;
+    config.transpose = true;
 
     double *in_vec, *out_vec;
 
@@ -537,25 +591,7 @@ void Matrix::transpose_matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
     else
         out_vec = (full) ? row_vec_unpad : col_vec_unpad;
 
-    if (full)
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI, padded_size, num_cols, num_rows,
-                               true, true, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj,
-                               inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_TOSI,
-                               col_vec_freq_TOSI, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_TOSI_aux, res_pad,
-                               use_aux_mat);
-    else if (use_aux_mat)
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI_aux, padded_size, num_cols, num_rows,
-                               true, false, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj,
-                               inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_TOSI,
-                               col_vec_freq_TOSI, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_TOSI_aux,
-                               res_pad);
-    else
-        Matrix::compute_matvec(out_vec, in_vec, mat_freq_TOSI, padded_size, num_cols, num_rows,
-                               true, false, device, row_comm, col_comm, s, row_vec_pad, forward_plan_conj,
-                               inverse_plan_conj, forward_plan, inverse_plan, col_vec_pad, row_vec_freq_TOSI,
-                               col_vec_freq_TOSI, row_vec_freq, col_vec_freq, cublasHandle, mat_freq_TOSI_aux,
-                               res_pad);
-    gpuErrchk(cudaStreamSynchronize(s));
+    compute_matvec(out_vec, in_vec, config);
 
     if (out_color == 0)
         y.set_d_vec(out_vec);
@@ -682,11 +718,9 @@ void Matrix::check_matvec(Vector &x, Vector &y, bool transpose, bool full, bool 
     }
 }
 
-void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat,
-                          const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
-                          cublasHandle_t cublasHandle)
+void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
 {
-
+    cublasHandle_t cublasHandle = comm.get_cublasHandle();
     double *d_mat;
     cufftHandle forward_plan_mat;
     const size_t mat_len = (size_t)padded_size * num_cols * num_rows * sizeof(double);
@@ -750,7 +784,7 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat,
     if (num_cols > 1 && num_rows > 1)
     {
         Utils::swap_axes(
-            *mat_freq_TOSI, d_mat_freq_trans, num_cols, num_rows, (padded_size / 2 + 1));
+            Precision::DOUBLE, *mat_freq_TOSI, d_mat_freq_trans, num_cols, num_rows, (padded_size / 2 + 1));
     }
     else
     {
@@ -786,23 +820,201 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat,
     *mat_freq_TOSI = d_mat_freq_trans;
 }
 
-void Matrix::local_matvec(double *const out_vec, double *const in_vec,
-                          const ComplexD *const d_mat_freq, const unsigned int padded_size, const unsigned int num_cols,
-                          const unsigned int num_rows, const bool conjugate, const bool unpad, const unsigned int device,
-                          cufftHandle forward_plan, cufftHandle inverse_plan, double *const out_vec_pad,
-                          ComplexD *const in_vec_freq, ComplexD *const out_vec_freq_TOSI, ComplexD *const in_vec_freq_TOSI,
-                          ComplexD *const out_vec_freq, cudaStream_t s, cublasHandle_t cublasHandle)
+void Matrix::setup_mat_freq_TOSI_F(ComplexF **mat_freq_TOSI_F, const ComplexD *const mat_freq_TOSI)
 {
+    gpuErrchk(cudaMalloc((void **)mat_freq_TOSI_F, sizeof(ComplexF) * (size_t)(padded_size / 2 + 1) * num_cols * num_rows));
+    UtilKernels::cast_vector(mat_freq_TOSI, *mat_freq_TOSI_F, (size_t)(padded_size / 2 + 1) * num_cols * num_rows, comm.get_stream());
+}
 
+std::string get_prec_string(Precision p)
+{
+    switch (p)
+    {
+    case Precision::SINGLE:
+        return "single";
+    case Precision::DOUBLE:
+        return "double";
+    default:
+        return "unknown";
+    }
+}
+
+void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig &config)
+{
+    bool full = config.full;
+    bool conjugate = config.transpose;
+    bool use_aux_mat = config.use_aux_mat;
     unsigned int vec_in_len = (conjugate) ? num_rows : num_cols;
     unsigned int vec_out_len = (conjugate) ? num_cols : num_rows;
 
+    // set buffers and plans based on config
+    double *in_vec_pad, *out_vec_pad;
+    ComplexD *in_vec_freq, *out_vec_freq, *in_vec_freq_TOSI, *out_vec_freq_TOSI;
+    cufftHandle fwd_plan, inv_plan, fwd_plan_conj, inv_plan_conj;
+    ComplexD *mat_freq_TOSI1, *mat_freq_TOSI2;
+
+    float *in_vec_pad_F, *out_vec_pad_F, *in_vec_F, *out_vec_F;
+    ComplexF *in_vec_freq_F, *out_vec_freq_F, *in_vec_freq_TOSI_F, *out_vec_freq_TOSI_F;
+    ComplexF *mat_freq_TOSI1_F, *mat_freq_TOSI2_F;
+    if (conjugate)
+    {
+        in_vec_pad = row_vec_pad;
+        out_vec_pad = col_vec_pad;
+        in_vec_freq = row_vec_freq;
+        out_vec_freq = col_vec_freq;
+        in_vec_freq_TOSI = row_vec_freq_TOSI;
+        out_vec_freq_TOSI = col_vec_freq_TOSI;
+        fwd_plan = forward_plan_conj;
+        inv_plan = inverse_plan_conj;
+        fwd_plan_conj = forward_plan;
+        inv_plan_conj = inverse_plan;
+
+        in_vec_F = row_vec_unpad_F;
+        out_vec_F = (full) ? row_vec_unpad_F : col_vec_unpad_F;
+        in_vec_pad_F = row_vec_pad_F;
+        out_vec_pad_F = col_vec_pad_F;
+        in_vec_freq_F = row_vec_freq_F;
+        out_vec_freq_F = col_vec_freq_F;
+        in_vec_freq_TOSI_F = row_vec_freq_TOSI_F;
+        out_vec_freq_TOSI_F = col_vec_freq_TOSI_F;
+    }
+    else
+    {
+        in_vec_pad = col_vec_pad;
+        out_vec_pad = row_vec_pad;
+        in_vec_freq = col_vec_freq;
+        out_vec_freq = row_vec_freq;
+        in_vec_freq_TOSI = col_vec_freq_TOSI;
+        out_vec_freq_TOSI = row_vec_freq_TOSI;
+        fwd_plan = forward_plan;
+        inv_plan = inverse_plan;
+        fwd_plan_conj = forward_plan_conj;
+        inv_plan_conj = inverse_plan_conj;
+
+        in_vec_F = col_vec_unpad_F;
+        out_vec_F = (full) ? col_vec_unpad_F : row_vec_unpad_F;
+        in_vec_pad_F = col_vec_pad_F;
+        out_vec_pad_F = row_vec_pad_F;
+        in_vec_freq_F = col_vec_freq_F;
+        out_vec_freq_F = row_vec_freq_F;
+        in_vec_freq_TOSI_F = col_vec_freq_TOSI_F;
+        out_vec_freq_TOSI_F = row_vec_freq_TOSI_F;
+    }
+
+    if (full && use_aux_mat)
+    {
+        if (conjugate)
+        {
+            mat_freq_TOSI1 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
+            mat_freq_TOSI2 = mat_freq_TOSI;
+
+            mat_freq_TOSI1_F = (mat_freq_TOSI_aux_F) ? mat_freq_TOSI_aux_F : mat_freq_TOSI_F;
+            mat_freq_TOSI2_F = mat_freq_TOSI_F;
+        }
+        else
+        {
+            mat_freq_TOSI1 = mat_freq_TOSI;
+            mat_freq_TOSI2 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
+
+            mat_freq_TOSI1_F = mat_freq_TOSI_F;
+            mat_freq_TOSI2_F = (mat_freq_TOSI_aux_F) ? mat_freq_TOSI_aux_F : mat_freq_TOSI_F;
+        }
+    }
+    else
+    {
+        mat_freq_TOSI1 = mat_freq_TOSI;
+        mat_freq_TOSI2 = mat_freq_TOSI;
+
+        mat_freq_TOSI1_F = mat_freq_TOSI_F;
+        mat_freq_TOSI2_F = mat_freq_TOSI_F;
+    }
+
+    double *res_vec = (full) ? res_unpad : out_vec;
+
+    float *res_vec_F = (full) ? res_unpad_F : out_vec_F;
+
+    int device = comm.get_device();
+    ncclComm_t comm1 = (conjugate) ? comm.get_gpu_row_comm() : comm.get_gpu_col_comm();
+    ncclComm_t comm2 = (conjugate) ? comm.get_gpu_col_comm() : comm.get_gpu_row_comm();
+    cudaStream_t s = comm.get_stream();
+    cublasHandle_t cublasHandle = comm.get_cublasHandle();
+
+    Precision current_precision = Precision::DOUBLE;
+
 #if TIME_MPI
-    enum_array<ProfilerTimes, profiler_t, 10> *tl = (conjugate) ? &t_list_fs : &t_list_f;
-    (*tl)[ProfilerTimes::FFT].start();
+    enum_array<ProfilerTimes, profiler_t, 10> *tl, *tl2;
+    if (full)
+        tl2 = (conjugate) ? &t_list_fs : &t_list_f;
+    tl = (conjugate) ? &t_list_fs : &t_list_f;
+    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+    (*tl)[ProfilerTimes::TOT].start();
 #endif
 
-    cufftSafeCall(cufftExecD2Z(forward_plan, in_vec, in_vec_freq));
+#if TIME_MPI
+    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+    (*tl)[ProfilerTimes::BROADCAST].start();
+#endif
+
+    if (p_config.broadcast_and_pad == Precision::SINGLE && current_precision == Precision::DOUBLE)
+    {
+        UtilKernels::cast_vector(in_vec, in_vec_F, vec_in_len * padded_size / 2, s);
+        NCCLCHECK(ncclBroadcast((const void *)in_vec_F, (void *)in_vec_F,
+                                (size_t)vec_in_len * padded_size / 2, ncclFloat, 0, comm1, s));
+        current_precision = Precision::SINGLE;
+    }
+    else
+    {
+        NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
+                                (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm1, s));
+    }
+    gpuErrchk(cudaStreamSynchronize(s));
+
+#if TIME_MPI
+    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+    (*tl)[ProfilerTimes::BROADCAST].stop();
+#endif
+
+#if TIME_MPI
+    (*tl)[ProfilerTimes::PAD].start();
+#endif
+    if (current_precision == Precision::SINGLE)
+        UtilKernels::pad_vector(in_vec_F, in_vec_pad_F, vec_in_len, padded_size, s);
+    else if (p_config.fft == Precision::SINGLE)
+    {
+        UtilKernels::pad_vector(in_vec, in_vec_pad_F, vec_in_len, padded_size, s);
+        current_precision = Precision::SINGLE;
+    }
+    else
+        UtilKernels::pad_vector(in_vec, in_vec_pad, vec_in_len, padded_size, s);
+
+#if TIME_MPI
+    gpuErrchk(cudaDeviceSynchronize());
+    (*tl)[ProfilerTimes::PAD].stop();
+#endif
+
+#if TIME_MPI
+    (*tl)[ProfilerTimes::FFT].start();
+#endif
+    if (current_precision == Precision::SINGLE && p_config.fft == Precision::SINGLE)
+    {
+        cufftSafeCall(cufftExecR2C(fwd_plan, in_vec_pad_F, in_vec_freq_F));
+    }
+    else if (current_precision == Precision::DOUBLE && p_config.fft == Precision::SINGLE)
+    {
+        UtilKernels::cast_vector(in_vec_pad, in_vec_pad_F, vec_in_len * padded_size, s);
+        cufftSafeCall(cufftExecR2C(fwd_plan, in_vec_pad_F, in_vec_freq_F));
+        current_precision = Precision::SINGLE;
+    }
+    else if (current_precision == Precision::SINGLE && p_config.fft == Precision::DOUBLE)
+    {
+        UtilKernels::cast_vector(in_vec_pad_F, in_vec_pad, vec_in_len * padded_size, s);
+        cufftSafeCall(cufftExecD2Z(fwd_plan, in_vec_pad, in_vec_freq));
+        current_precision = Precision::DOUBLE;
+    }
+    else
+    {
+        cufftSafeCall(cufftExecD2Z(fwd_plan, in_vec_pad, in_vec_freq));
+    }
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -813,18 +1025,16 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
     (*tl)[ProfilerTimes::TRANS1].start();
 #endif
 
-    cuDoubleComplex alpha({1, 0});
-    cuDoubleComplex beta({0, 0});
-#if !INDICES_64_BIT
-    cublasSafeCall(cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len,
-                               (padded_size / 2 + 1), &alpha, in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len,
-                               in_vec_freq_TOSI, vec_in_len));
-
-#else
-    cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, vec_in_len,
-                                  (padded_size / 2 + 1), &alpha, in_vec_freq, (padded_size / 2 + 1), &beta, NULL, vec_in_len,
-                                  in_vec_freq_TOSI, vec_in_len));
-#endif
+    if (current_precision == Precision::SINGLE)
+        Utils::transpose_2d(Precision::SINGLE, in_vec_freq_F, in_vec_freq_TOSI_F, (padded_size / 2 + 1), vec_in_len, cublasHandle, s);
+    else if (p_config.sbgemv == Precision::SINGLE)
+    {
+        UtilKernels::cast_vector(in_vec_freq, in_vec_freq_F, vec_in_len * (padded_size / 2 + 1), s);
+        Utils::transpose_2d(Precision::SINGLE, in_vec_freq_F, in_vec_freq_TOSI_F, (padded_size / 2 + 1), vec_in_len, cublasHandle, s);
+        current_precision = Precision::SINGLE;
+    }
+    else
+        Utils::transpose_2d(Precision::DOUBLE, in_vec_freq, in_vec_freq_TOSI, (padded_size / 2 + 1), vec_in_len, cublasHandle, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -834,19 +1044,26 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
 #if TIME_MPI
     (*tl)[ProfilerTimes::SBGEMV].start();
 #endif
-
-    cublasOperation_t transa = (conjugate) ? CUBLAS_OP_C : CUBLAS_OP_N;
-
-#if !INDICES_64_BIT
-    cublasSafeCall(cublasZgemvStridedBatched(cublasHandle, transa, num_rows, num_cols, &alpha,
-                                             d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_TOSI, 1, vec_in_len, &beta,
-                                             out_vec_freq_TOSI, 1, vec_out_len, (padded_size / 2 + 1)));
-
-#else
-    cublasSafeCall(cublasZgemvStridedBatched_64(cublasHandle, transa, num_rows, num_cols, &alpha,
-                                                d_mat_freq, num_rows, (size_t)num_rows * num_cols, in_vec_freq_TOSI, 1, vec_in_len, &beta,
-                                                out_vec_freq_TOSI, 1, vec_out_len, (padded_size / 2 + 1)));
-#endif
+    if (current_precision == Precision::SINGLE && p_config.sbgemv == Precision::SINGLE)
+    {
+        Utils::sbgemv(Precision::SINGLE, mat_freq_TOSI1_F, in_vec_freq_TOSI_F, out_vec_freq_TOSI_F, num_rows, num_cols, (padded_size / 2 + 1), conjugate, cublasHandle, s);
+    }
+    else if (current_precision == Precision::DOUBLE && p_config.sbgemv == Precision::SINGLE)
+    {
+        UtilKernels::cast_vector(in_vec_freq_TOSI, in_vec_freq_TOSI_F, vec_in_len * (padded_size / 2 + 1), s);
+        Utils::sbgemv(Precision::SINGLE, mat_freq_TOSI1_F, in_vec_freq_TOSI_F, out_vec_freq_TOSI_F, num_rows, num_cols, (padded_size / 2 + 1), conjugate, cublasHandle, s);
+        current_precision = Precision::SINGLE;
+    }
+    else if (current_precision == Precision::SINGLE && p_config.sbgemv == Precision::DOUBLE)
+    {
+        UtilKernels::cast_vector(in_vec_freq_TOSI_F, in_vec_freq_TOSI, vec_in_len * (padded_size / 2 + 1), s);
+        Utils::sbgemv(Precision::DOUBLE, mat_freq_TOSI1, in_vec_freq_TOSI, out_vec_freq_TOSI, num_rows, num_cols, (padded_size / 2 + 1), conjugate, cublasHandle, s);
+        current_precision = Precision::DOUBLE;
+    }
+    else
+    {
+        Utils::sbgemv(Precision::DOUBLE, mat_freq_TOSI1, in_vec_freq_TOSI, out_vec_freq_TOSI, num_rows, num_cols, (padded_size / 2 + 1), conjugate, cublasHandle, s);
+    }
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -856,16 +1073,16 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
 #if TIME_MPI
     (*tl)[ProfilerTimes::TRANS2].start();
 #endif
-
-#if !INDICES_64_BIT
-    cublasSafeCall(cublasZgeam(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1),
-                               vec_out_len, &alpha, out_vec_freq_TOSI, vec_out_len, &beta, NULL, (padded_size / 2 + 1),
-                               out_vec_freq, (padded_size / 2 + 1)));
-#else
-    cublasSafeCall(cublasZgeam_64(cublasHandle, CUBLAS_OP_T, CUBLAS_OP_N, (padded_size / 2 + 1),
-                                  vec_out_len, &alpha, out_vec_freq_TOSI, vec_out_len, &beta, NULL, (padded_size / 2 + 1),
-                                  out_vec_freq, (padded_size / 2 + 1)));
-#endif
+    if (current_precision == Precision::SINGLE)
+        Utils::transpose_2d(Precision::SINGLE, out_vec_freq_TOSI_F, out_vec_freq_F, vec_out_len, (padded_size / 2 + 1), cublasHandle, s);
+    else if (p_config.ifft == Precision::SINGLE)
+    {
+        UtilKernels::cast_vector(out_vec_freq_TOSI, out_vec_freq_TOSI_F, vec_out_len * (padded_size / 2 + 1), s);
+        Utils::transpose_2d(Precision::SINGLE, out_vec_freq_TOSI_F, out_vec_freq_F, vec_out_len, (padded_size / 2 + 1), cublasHandle, s);
+        current_precision = Precision::SINGLE;
+    }
+    else
+        Utils::transpose_2d(Precision::DOUBLE, out_vec_freq_TOSI, out_vec_freq, vec_out_len, (padded_size / 2 + 1), cublasHandle, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
@@ -875,8 +1092,25 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
 #if TIME_MPI
     (*tl)[ProfilerTimes::IFFT].start();
 #endif
+    if (current_precision == Precision::SINGLE && p_config.ifft == Precision::SINGLE)
+    {
+        cufftSafeCall(cufftExecC2R(inv_plan, out_vec_freq_F, out_vec_pad_F));
+    }
+    else if (current_precision == Precision::DOUBLE && p_config.ifft == Precision::SINGLE)
+    {
+        UtilKernels::cast_vector(out_vec_freq, out_vec_freq_F, vec_out_len * (padded_size / 2 + 1), s);
+        cufftSafeCall(cufftExecC2R(inv_plan, out_vec_freq_F, out_vec_pad_F));
+        current_precision = Precision::SINGLE;
+    }
+    else if (current_precision == Precision::SINGLE && p_config.ifft == Precision::DOUBLE)
+    {
+        UtilKernels::cast_vector(out_vec_freq_F, out_vec_freq, vec_out_len * (padded_size / 2 + 1), s);
+        cufftSafeCall(cufftExecZ2D(inv_plan, out_vec_freq, out_vec_pad));
+        current_precision = Precision::DOUBLE;
+    }
+    else
+        cufftSafeCall(cufftExecZ2D(inv_plan, out_vec_freq, out_vec_pad));
 
-    cufftSafeCall(cufftExecZ2D(inverse_plan, out_vec_freq, out_vec_pad));
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
     (*tl)[ProfilerTimes::IFFT].stop();
@@ -885,89 +1119,22 @@ void Matrix::local_matvec(double *const out_vec, double *const in_vec,
 #if TIME_MPI
     (*tl)[ProfilerTimes::UNPAD].start();
 #endif
+    if (current_precision == Precision::SINGLE)
+        UtilKernels::unpad_repad_vector(out_vec_pad_F, res_vec_F, vec_out_len, padded_size, true, s);
+    else if (p_config.unpad_and_reduce == Precision::SINGLE)
+    {
+        UtilKernels::unpad_repad_vector(out_vec_pad, res_vec_F, vec_out_len, padded_size, true, s);
+        current_precision = Precision::SINGLE;
+    }
+    else
+    {
+        UtilKernels::unpad_repad_vector(out_vec_pad, res_vec, vec_out_len, padded_size, true, s);
+    }
 
-
-    UtilKernels::unpad_repad_vector(out_vec_pad, out_vec, vec_out_len, padded_size, unpad, s);
 
 #if TIME_MPI
     gpuErrchk(cudaDeviceSynchronize());
     (*tl)[ProfilerTimes::UNPAD].stop();
-#endif
-}
-
-void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_TOSI,
-                            const unsigned int padded_size, const unsigned int num_cols, const unsigned int num_rows,
-                            const bool conjugate, const bool full, const unsigned int device, ncclComm_t nccl_row_comm,
-                            ncclComm_t nccl_col_comm, cudaStream_t s, double *const in_vec_pad, cufftHandle forward_plan,
-                            cufftHandle inverse_plan, cufftHandle forward_plan_conj, cufftHandle inverse_plan_conj,
-                            double *const out_vec_pad, ComplexD *const in_vec_freq, ComplexD *const out_vec_freq_TOSI,
-                            ComplexD *const in_vec_freq_TOSI, ComplexD *const out_vec_freq, cublasHandle_t cublasHandle,
-                            ComplexD *mat_freq_TOSI_aux, double *const res_pad, bool use_aux_mat)
-{
-
-#if TIME_MPI
-    enum_array<ProfilerTimes, profiler_t, 10> *tl, *tl2;
-    if (full)
-        tl2 = (conjugate) ? &t_list_fs : &t_list_f;
-    tl = (conjugate) ? &t_list_fs : &t_list_f;
-    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    (*tl)[ProfilerTimes::TOT].start();
-#endif
-    unsigned int vec_in_len = (conjugate) ? num_rows : num_cols;
-    unsigned int vec_out_len = (conjugate) ? num_cols : num_rows;
-
-#if TIME_MPI
-    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    (*tl)[ProfilerTimes::BROADCAST].start();
-#endif
-    ncclComm_t comm = (conjugate) ? nccl_row_comm : nccl_col_comm;
-    ncclComm_t comm2 = (conjugate) ? nccl_col_comm : nccl_row_comm;
-    NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
-                            (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm, s));
-    gpuErrchk(cudaStreamSynchronize(s));
-#if TIME_MPI
-    MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
-    (*tl)[ProfilerTimes::BROADCAST].stop();
-#endif
-
-#if TIME_MPI
-    (*tl)[ProfilerTimes::PAD].start();
-#endif
-    UtilKernels::pad_vector(in_vec, in_vec_pad, vec_in_len, padded_size, s);
-#if TIME_MPI
-    gpuErrchk(cudaDeviceSynchronize());
-    (*tl)[ProfilerTimes::PAD].stop();
-#endif
-
-    ComplexD *mat_freq_TOSI1, *mat_freq_TOSI2;
-
-    if (full && use_aux_mat)
-    {
-        if (conjugate)
-        {
-            mat_freq_TOSI1 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
-            mat_freq_TOSI2 = mat_freq_TOSI;
-        }
-        else
-        {
-            mat_freq_TOSI1 = mat_freq_TOSI;
-            mat_freq_TOSI2 = (mat_freq_TOSI_aux) ? mat_freq_TOSI_aux : mat_freq_TOSI;
-        }
-    }
-    else
-    {
-        mat_freq_TOSI1 = mat_freq_TOSI;
-        mat_freq_TOSI2 = mat_freq_TOSI;
-    }
-
-    double *res_vec = (full) ? res_pad : out_vec;
-
-    local_matvec(res_vec, in_vec_pad, mat_freq_TOSI1, padded_size, num_cols, num_rows, conjugate,
-                 !(full), device, forward_plan, inverse_plan, out_vec_pad, in_vec_freq, out_vec_freq_TOSI,
-                 in_vec_freq_TOSI, out_vec_freq, s, cublasHandle);
-
-#if TIME_MPI
-    gpuErrchk(cudaDeviceSynchronize());
 #endif
 
     if (!full)
@@ -976,9 +1143,37 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
-                             (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+        if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size / 2, s);
+            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size / 2, s);
+            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
+                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            current_precision = Precision::DOUBLE;
+        }
+        else
+        {
+            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
+                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+        }
         gpuErrchk(cudaStreamSynchronize(s));
+
+        if (current_precision == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size / 2, s);
+            current_precision = Precision::DOUBLE;
+        }
 
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
@@ -994,9 +1189,32 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
-                                (size_t)vec_out_len * padded_size, ncclDouble, ncclSum, comm2, s));
+        if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size /2, s);
+            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size /2, s);
+            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
+                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            current_precision = Precision::DOUBLE;
+        }
+        else
+        {
+            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
+                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+        }
         gpuErrchk(cudaStreamSynchronize(s));
+
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].stop();
@@ -1008,18 +1226,180 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, ComplexD *mat_freq_
         (*tl2)[ProfilerTimes::TOT].start();
 #endif
 
-        local_matvec(out_vec, res_vec, mat_freq_TOSI2, padded_size, num_cols, num_rows,
-                     !(conjugate), true, device, forward_plan_conj, inverse_plan_conj, in_vec_pad,
-                     out_vec_freq, in_vec_freq_TOSI, out_vec_freq_TOSI, in_vec_freq, s, cublasHandle);
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::FFT].start();
+#endif
+        if (current_precision == Precision::SINGLE)
+            UtilKernels::pad_vector(res_vec_F, res_pad_F, vec_out_len, padded_size, s);
+        else if (p_config.fft == Precision::SINGLE)
+        {
+            UtilKernels::pad_vector(res_vec, res_pad_F, vec_out_len, padded_size, s);
+            current_precision = Precision::SINGLE;
+        }
+        else
+            UtilKernels::pad_vector(res_vec, res_pad, vec_out_len, padded_size, s);
+
+        if (current_precision == Precision::SINGLE && p_config.fft == Precision::SINGLE)
+        {
+            cufftSafeCall(cufftExecR2C(fwd_plan_conj, res_pad_F, out_vec_freq_F));
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.fft == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(res_pad, res_pad_F, vec_out_len * padded_size, s);
+            cufftSafeCall(cufftExecR2C(fwd_plan_conj, res_pad_F, out_vec_freq_F));
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.fft == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(res_pad_F, res_pad, vec_out_len * padded_size, s);
+            cufftSafeCall(cufftExecD2Z(fwd_plan_conj, res_pad, out_vec_freq));
+            current_precision = Precision::DOUBLE;
+        }
+        else
+            cufftSafeCall(cufftExecD2Z(fwd_plan_conj, res_pad, out_vec_freq));
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::FFT].stop();
+#endif
+
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::TRANS1].start();
+#endif
+        if (current_precision == Precision::SINGLE)
+            Utils::transpose_2d(Precision::SINGLE, out_vec_freq_F, out_vec_freq_TOSI_F, (padded_size / 2 + 1), vec_out_len, cublasHandle, s);
+        else if (p_config.sbgemv == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(out_vec_freq, out_vec_freq_F, vec_out_len * (padded_size / 2 + 1), s);
+            Utils::transpose_2d(Precision::SINGLE, out_vec_freq_F, out_vec_freq_TOSI_F, (padded_size / 2 + 1), vec_out_len, cublasHandle, s);
+            current_precision = Precision::SINGLE;
+        }
+        else
+            Utils::transpose_2d(Precision::DOUBLE, out_vec_freq, out_vec_freq_TOSI, (padded_size / 2 + 1), vec_out_len, cublasHandle, s);
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::TRANS1].stop();
+#endif
+
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::SBGEMV].start();
+#endif
+        if (current_precision == Precision::SINGLE && p_config.sbgemv == Precision::SINGLE)
+        {
+            Utils::sbgemv(Precision::SINGLE, mat_freq_TOSI2_F, out_vec_freq_TOSI_F, in_vec_freq_TOSI_F, num_rows, num_cols, (padded_size / 2 + 1), !(conjugate), cublasHandle, s);
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.sbgemv == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(out_vec_freq_TOSI, out_vec_freq_TOSI_F, vec_out_len * (padded_size / 2 + 1), s);
+            Utils::sbgemv(Precision::SINGLE, mat_freq_TOSI2_F, out_vec_freq_TOSI_F, in_vec_freq_TOSI_F, num_rows, num_cols, (padded_size / 2 + 1), !(conjugate), cublasHandle, s);
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.sbgemv == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(out_vec_freq_TOSI_F, out_vec_freq_TOSI, vec_out_len * (padded_size / 2 + 1), s);
+            Utils::sbgemv(Precision::DOUBLE, mat_freq_TOSI2, out_vec_freq_TOSI, in_vec_freq_TOSI, num_rows, num_cols, (padded_size / 2 + 1), !(conjugate), cublasHandle, s);
+            current_precision = Precision::DOUBLE;
+        }
+        else
+            Utils::sbgemv(Precision::DOUBLE, mat_freq_TOSI2, out_vec_freq_TOSI, in_vec_freq_TOSI, num_rows, num_cols, (padded_size / 2 + 1), !(conjugate), cublasHandle, s);
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::SBGEMV].stop();
+#endif
+
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::TRANS2].start();
+#endif
+        if (current_precision == Precision::SINGLE)
+            Utils::transpose_2d(Precision::SINGLE, in_vec_freq_TOSI_F, in_vec_freq_F, vec_in_len, (padded_size / 2 + 1), cublasHandle, s);
+        else if (p_config.ifft == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(in_vec_freq_TOSI, in_vec_freq_TOSI_F, vec_in_len * (padded_size / 2 + 1), s);
+            Utils::transpose_2d(Precision::SINGLE, in_vec_freq_TOSI_F, in_vec_freq_F, vec_in_len, (padded_size / 2 + 1), cublasHandle, s);
+            current_precision = Precision::SINGLE;
+        }
+        else
+            Utils::transpose_2d(Precision::DOUBLE, in_vec_freq_TOSI, in_vec_freq, vec_in_len, (padded_size / 2 + 1), cublasHandle, s);
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::TRANS2].stop();
+#endif
+
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::IFFT].start();
+#endif
+        if (current_precision == Precision::SINGLE && p_config.ifft == Precision::SINGLE)
+        {
+            cufftSafeCall(cufftExecC2R(inv_plan_conj, in_vec_freq_F, in_vec_pad_F));
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.ifft == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(in_vec_freq, in_vec_freq_F, vec_in_len * (padded_size / 2 + 1), s);
+            cufftSafeCall(cufftExecC2R(inv_plan_conj, in_vec_freq_F, in_vec_pad_F));
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.ifft == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(in_vec_freq_F, in_vec_freq, vec_in_len * (padded_size / 2 + 1), s);
+            cufftSafeCall(cufftExecZ2D(inv_plan_conj, in_vec_freq, in_vec_pad));
+            current_precision = Precision::DOUBLE;
+        }
+        else
+            cufftSafeCall(cufftExecZ2D(inv_plan_conj, in_vec_freq, in_vec_pad));
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::IFFT].stop();
+#endif
+
+#if TIME_MPI
+        (*tl2)[ProfilerTimes::UNPAD].start();
+#endif
+        if (current_precision == Precision::SINGLE)
+            UtilKernels::unpad_repad_vector(in_vec_pad_F, out_vec_F, vec_in_len, padded_size, true, s);
+        else if (p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            UtilKernels::unpad_repad_vector(in_vec_pad, out_vec_F, vec_in_len, padded_size, true, s);
+            current_precision = Precision::SINGLE;
+        }
+        else
+            UtilKernels::unpad_repad_vector(in_vec_pad, out_vec, vec_in_len, padded_size, true, s);
+#if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
+        (*tl2)[ProfilerTimes::UNPAD].stop();
+#endif
 
 #if TIME_MPI
         gpuErrchk(cudaDeviceSynchronize());
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl2)[ProfilerTimes::NCCLC].start();
 #endif
-        NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
-                             (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm, s));
+        if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
+                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+        }
+        else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(out_vec, out_vec_F, vec_in_len * padded_size / 2, s);
+            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
+                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            current_precision = Precision::SINGLE;
+        }
+        else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
+        {
+            UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);
+            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
+                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            current_precision = Precision::DOUBLE;
+        }
+        else
+            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
+                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
         gpuErrchk(cudaStreamSynchronize(s));
+        if (current_precision == Precision::SINGLE)
+        {
+            UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);
+            current_precision = Precision::DOUBLE;
+        }
 
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));

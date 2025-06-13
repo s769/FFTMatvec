@@ -6,113 +6,6 @@ typedef struct
 {
     int y, z;
 } grid_factors_t;
-template<typename T_real>
-__global__ void pad_vector_kernel(const T_real* d_in, T_real* d_pad, const unsigned int padded_size)
-{
-    const size_t unpadded_size = padded_size / 2;
-    const T_real* block_in_base = d_in + (size_t)blockIdx.x * unpadded_size;
-    T_real* block_pad_base = d_pad + (size_t)blockIdx.x * padded_size;
-
-    for (size_t j = threadIdx.x; j < padded_size; j += blockDim.x) {
-        if (j < unpadded_size) {
-            block_pad_base[j] = block_in_base[j];
-        } else {
-            block_pad_base[j] = T_real(0.0);
-        }
-    }
-}
-
-template<typename T_real>
-__global__ void unpad_vector_kernel(const T_real* d_in, T_real* d_unpad, const unsigned int padded_size)
-{
-    const size_t unpadded_size = padded_size / 2;
-    const T_real* block_in_base = d_in + (size_t)blockIdx.x * padded_size;
-    T_real* block_unpad_base = d_unpad + (size_t)blockIdx.x * unpadded_size;
-
-    const size_t num_elements_to_copy = unpadded_size;
-    for (size_t j = threadIdx.x; j < num_elements_to_copy; j += blockDim.x) {
-        block_unpad_base[j] = block_in_base[j];
-    }
-}
-
-template<typename T_real>
-__global__ void repad_vector_kernel(const T_real* d_in, T_real* d_out, const unsigned int padded_size)
-{
-    const size_t unpadded_size = padded_size / 2;
-    const T_real* block_in_base = d_in + (size_t)blockIdx.x * padded_size;
-    T_real* block_out_base = d_out + (size_t)blockIdx.x * padded_size;
-
-    for (size_t j = threadIdx.x; j < padded_size; j += blockDim.x) {
-        if (j < unpadded_size) {
-            block_out_base[j] = block_in_base[j];
-        } else {
-            block_out_base[j] = T_real(0.0);
-        }
-    }
-
-    __syncthreads();
-
-    if (threadIdx.x == 0 && (padded_size % 2 == 1)) {
-        size_t nyquist_real_idx = padded_size / 2;
-        if (nyquist_real_idx + 1 < padded_size) {
-            block_out_base[nyquist_real_idx + 1] = T_real(0.0);
-        }
-    }
-}
-
-
-//============================================================================//
-//                      HOST LAUNCHER IMPLEMENTATIONS                         //
-//============================================================================//
-
-template<typename T_real>
-void UtilKernels::pad_vector(const T_real *const d_in, T_real *const d_pad, const unsigned int num_blocks,
-                             const unsigned int padded_size, cudaStream_t s)
-{
-    pad_vector_kernel<T_real><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_pad, padded_size);
-    gpuErrchk(cudaPeekAtLastError());
-}
-
-template<typename T_real>
-void unpad_vector(const T_real *const d_in, T_real *const d_unpad, const unsigned int num_blocks,
-                               const unsigned int padded_size, cudaStream_t s)
-{
-    unpad_vector_kernel<T_real><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_unpad, padded_size);
-    gpuErrchk(cudaPeekAtLastError());
-}
-
-template<typename T_real>
-void repad_vector(const T_real* const d_in, T_real* const d_repad,
-                               const unsigned int num_blocks, const unsigned int padded_size, cudaStream_t s)
-{
-    repad_vector_kernel<T_real><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_repad, padded_size);
-    gpuErrchk(cudaPeekAtLastError());
-}
-
-template<typename T_real>
-void UtilKernels::unpad_repad_vector(const T_real* const d_in, T_real* const d_out,
-                                     const unsigned int num_blocks, const unsigned int padded_size,
-                                     const bool unpad, cudaStream_t s)
-{
-    if (unpad)
-    {
-        // Call the dedicated unpad function/kernel
-        unpad_vector<T_real>(d_in, d_out, num_blocks, padded_size, s);
-    }
-    else // It's a repad operation
-    {
-        // Call the dedicated repad function/kernel
-        repad_vector<T_real>(d_in, d_out, num_blocks, padded_size, s);
-    }
-}
-
-
-// --- Explicit Host Launcher Instantiations ---
-template void UtilKernels::unpad_repad_vector<float>(const float*, float*, unsigned int, unsigned int, bool, cudaStream_t);
-template void UtilKernels::unpad_repad_vector<double>(const double*, double*, unsigned int, unsigned int, bool, cudaStream_t);
-
-template void UtilKernels::pad_vector<float>(const float*, float*, unsigned int, unsigned int, cudaStream_t);
-template void UtilKernels::pad_vector<double>(const double*, double*, unsigned int, unsigned int, cudaStream_t);
 
 template <typename T_complex, int TILE_SIZE, int EPT>
 __global__ void swap_axes_kernel(
@@ -146,8 +39,8 @@ __global__ void swap_axes_kernel(
     size_t lx = threadIdx.x, ly = threadIdx.y;
     size_t y = bz;
 
-    // Input: Each thread loads EPT elements along z_in
-    #pragma unroll
+// Input: Each thread loads EPT elements along z_in
+#pragma unroll
     for (int e = 0; e < EPT; ++e)
     {
         size_t z_in = ly + e * (TILE_SIZE / EPT) + TILE_SIZE * by;
@@ -161,8 +54,8 @@ __global__ void swap_axes_kernel(
 
     __syncthreads();
 
-    // Output: Each thread writes EPT elements along x_out
-    #pragma unroll
+// Output: Each thread writes EPT elements along x_out
+#pragma unroll
     for (int e = 0; e < EPT; ++e)
     {
         size_t x_out = ly + e * (TILE_SIZE / EPT) + TILE_SIZE * bx;
@@ -224,12 +117,12 @@ static void set_grid_dims(const int *size,
 
 // The host function is now templated on T_complex
 template<typename T_complex>
-void UtilKernels::swap_axes_cutranspose(const T_complex *const d_in, T_complex *const d_out, const unsigned int num_cols, const unsigned int num_rows, const unsigned int block_size, cudaStream_t s)
+void UtilKernels::swap_axes_cutranspose(const T_complex *d_in, T_complex *d_out,
+                                        const unsigned int num_cols, const unsigned int num_rows,
+                                        const unsigned int block_size, cudaStream_t s)
 {
     int sz[3] = {(int)block_size, (int)num_cols, (int)num_rows};
     
-    // These template parameters are hard-coded here, matching your original design.
-    // If you need to change them, you must also update the explicit instantiations above.
     constexpr int EPT = 2;
     constexpr int TILE_SIZE = 32;
     
@@ -238,110 +131,196 @@ void UtilKernels::swap_axes_cutranspose(const T_complex *const d_in, T_complex *
 
     set_grid_dims(sz, 2, &block_dims, &grid_dims, EPT, TILE_SIZE, &fold_factors);
 
-    // Call the correctly templated version of the kernel
+    // The kernel call itself remains the same
     swap_axes_kernel<T_complex, TILE_SIZE, EPT><<<grid_dims, block_dims, 0, s>>>(
         d_out, d_in, sz[0], sz[1], sz[2], fold_factors.y, fold_factors.z);
 
-    // gpuErrchk(cudaPeekAtLastError());
-    // #if ERR_CHK
-    // gpuErrchk(cudaDeviceSynchronize());
-    // #endif
+    gpuErrchk(cudaPeekAtLastError());
 }
 
-// Explicit instantiations for the host launcher function.
-template void UtilKernels::swap_axes_cutranspose<ComplexF>(const ComplexF*, ComplexF*, unsigned int, unsigned int, unsigned int, cudaStream_t);
-template void UtilKernels::swap_axes_cutranspose<ComplexD>(const ComplexD*, ComplexD*, unsigned int, unsigned int, unsigned int, cudaStream_t);
+// --- The explicit instantiations now match the simplified signature ---
+template void UtilKernels::swap_axes_cutranspose<ComplexF>(
+    const ComplexF*, ComplexF*, unsigned int, unsigned int, unsigned int, cudaStream_t);
 
+template void UtilKernels::swap_axes_cutranspose<ComplexD>(
+    const ComplexD*, ComplexD*, unsigned int, unsigned int, unsigned int, cudaStream_t);
 
 //============================================================================//
-//                  TEMPLATED KERNEL IMPLEMENTATION                           //
+//                  CASTING HELPERS (for internal kernel use)                 //
 //============================================================================//
 
-
-// --- __device__ Helper Functions for Casting ---
-
-// This helper is chosen by the compiler when T is a primitive float or double.
-// The third argument (std::true_type) is selected when std::is_floating_point<T_in>::value is true.
+// Helper for casting primitive types (float, double)
 template <typename T_in, typename T_out>
-__device__ __forceinline__ void perform_cast(const T_in& in, T_out& out, std::true_type /* is_floating_point */)
+__device__ __forceinline__ void perform_cast(const T_in &in, T_out &out, std::true_type /* is_floating_point */)
 {
     out = in;
 }
 
-// This helper is chosen by the compiler when T is a struct (like ComplexF/D).
-// The third argument (std::false_type) is selected when std::is_floating_point<T_in>::value is false.
+// Helper for casting complex struct types
 template <typename T_in, typename T_out>
-__device__ __forceinline__ void perform_cast(const T_in& in, T_out& out, std::false_type /* is_not_floating_point */)
+__device__ __forceinline__ void perform_cast(const T_in &in, T_out &out, std::false_type /* is_not_floating_point */)
 {
-    // Your proposed logic: assign member-wise. This works for all complex conversions.
     out.x = in.x;
     out.y = in.y;
 }
 
+//============================================================================//
+//            GENERIC KERNEL IMPLEMENTATIONS (Input and Output Types)         //
+//============================================================================//
 
-/**
- * @brief A single, generic CUDA kernel to cast elements from one type to another.
- * It uses compile-time dispatch to handle real and complex types differently.
- */
 template <typename T_in, typename T_out>
 __global__ void cast_kernel(const T_in *d_in, T_out *d_out, const unsigned int size)
 {
-    for (size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
-         idx < size;
-         idx += gridDim.x * blockDim.x)
+    for (size_t idx = blockIdx.x * blockDim.x + threadIdx.x; idx < size; idx += gridDim.x * blockDim.x)
     {
-        // Call the appropriate helper function. The compiler will resolve this at
-        // compile time, generating either a direct assignment or a member-wise assignment.
-        // There is zero runtime overhead.
         perform_cast(d_in[idx], d_out[idx], typename std::is_floating_point<T_in>::type());
     }
 }
 
+template <typename T_in, typename T_out>
+__global__ void pad_vector_kernel(const T_in *d_in, T_out *d_pad, const unsigned int padded_size)
+{
+    const size_t unpadded_size = padded_size / 2;
+    const T_in *block_in_base = d_in + (size_t)blockIdx.x * unpadded_size;
+    T_out *block_pad_base = d_pad + (size_t)blockIdx.x * padded_size;
+
+    for (size_t j = threadIdx.x; j < padded_size; j += blockDim.x)
+    {
+        if (j < unpadded_size)
+        {
+            // Perform the combined copy and cast operation
+            perform_cast(block_in_base[j], block_pad_base[j], typename std::is_floating_point<T_in>::type());
+        }
+        else
+        {
+            // Zero out the padding using the default constructor T_out() -> 0.0 or {0.0, 0.0}
+            block_pad_base[j] = T_out();
+        }
+    }
+}
+
+template <typename T_in, typename T_out>
+__global__ void unpad_vector_kernel(const T_in *d_in, T_out *d_unpad, const unsigned int padded_size)
+{
+    const size_t unpadded_size = padded_size / 2;
+    const T_in *block_in_base = d_in + (size_t)blockIdx.x * padded_size;
+    T_out *block_unpad_base = d_unpad + (size_t)blockIdx.x * unpadded_size;
+
+    for (size_t j = threadIdx.x; j < unpadded_size; j += blockDim.x)
+    {
+        // Perform the combined copy and cast operation
+        perform_cast(block_in_base[j], block_unpad_base[j], typename std::is_floating_point<T_in>::type());
+    }
+}
+
+template <typename T_in, typename T_out>
+__global__ void repad_vector_kernel(const T_in *d_in, T_out *d_out, const unsigned int padded_size)
+{
+    const size_t unpadded_size = padded_size / 2;
+    const T_in *block_in_base = d_in + (size_t)blockIdx.x * padded_size;
+    T_out *block_out_base = d_out + (size_t)blockIdx.x * padded_size;
+
+    for (size_t j = threadIdx.x; j < padded_size; j += blockDim.x)
+    {
+        if (j < unpadded_size)
+        {
+            perform_cast(block_in_base[j], block_out_base[j], typename std::is_floating_point<T_in>::type());
+        }
+        else
+        {
+            block_out_base[j] = T_out();
+        }
+    }
+
+    __syncthreads();
+
+    if (threadIdx.x == 0 && (padded_size % 2 == 1))
+    {
+        size_t nyquist_real_idx = padded_size / 2;
+        if (nyquist_real_idx + 1 < padded_size)
+        {
+            block_out_base[nyquist_real_idx + 1] = T_out();
+        }
+    }
+}
+
 //============================================================================//
-//                      HOST LAUNCHER IMPLEMENTATION                          //
+//                      HOST LAUNCHER IMPLEMENTATIONS                         //
 //============================================================================//
 
-/**
- * @brief Host launcher for the cast_vector kernel.
- * This is the implementation of your declared function.
- */
 template <typename T_in, typename T_out>
 void UtilKernels::cast_vector(const T_in *const d_in, T_out *const d_out, const unsigned int size, cudaStream_t s)
 {
-    if (size == 0) {
-        return; // Nothing to do
-    }
-
-    // Standard CUDA launch configuration
-    constexpr int block_size = 256;
-    const int grid_size = (size + block_size - 1) / block_size;
-
-    // Launch the templated kernel
-    cast_kernel<T_in, T_out><<<grid_size, block_size, 0, s>>>(d_in, d_out, size);
-
+    if (size == 0)
+        return;
+    cast_kernel<T_in, T_out><<<(size + 255) / 256, 256, 0, s>>>(d_in, d_out, size);
     gpuErrchk(cudaPeekAtLastError());
-    #if ERR_CHK
-        gpuErrchk(cudaDeviceSynchronize());
-    #endif
 }
 
+template <typename T_in, typename T_out>
+void UtilKernels::pad_vector(const T_in *const d_in, T_out *const d_pad, const unsigned int num_blocks,
+                             const unsigned int padded_size, cudaStream_t s)
+{
+    if (padded_size == 0)
+        return;
+    pad_vector_kernel<T_in, T_out><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_pad, padded_size);
+    gpuErrchk(cudaPeekAtLastError());
+}
+
+template <typename T_in, typename T_out>
+void unpad_vector(const T_in *const d_in, T_out *const d_unpad, const unsigned int num_blocks,
+                  const unsigned int padded_size, cudaStream_t s)
+{
+    if (padded_size == 0)
+        return;
+    unpad_vector_kernel<T_in, T_out><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_unpad, padded_size);
+    gpuErrchk(cudaPeekAtLastError());
+}
+
+template <typename T_in, typename T_out>
+void repad_vector(const T_in *const d_in, T_out *const d_repad,
+                  const unsigned int num_blocks, const unsigned int padded_size, cudaStream_t s)
+{
+    if (padded_size == 0)
+        return;
+    repad_vector_kernel<T_in, T_out><<<num_blocks, MAX_BLOCK_SIZE, 0, s>>>(d_in, d_repad, padded_size);
+    gpuErrchk(cudaPeekAtLastError());
+}
+
+template <typename T_in, typename T_out>
+void UtilKernels::unpad_repad_vector(const T_in *const d_in, T_out *const d_out,
+                                     const unsigned int num_blocks, const unsigned int padded_size,
+                                     const bool unpad, cudaStream_t s)
+{
+    if (unpad)
+    {
+        unpad_vector<T_in, T_out>(d_in, d_out, num_blocks, padded_size, s);
+    }
+    else
+    {
+        repad_vector<T_in, T_out>(d_in, d_out, num_blocks, padded_size, s);
+    }
+}
 
 //============================================================================//
-//                 EXPLICIT TEMPLATE INSTANTIATIONS                           //
+//                      EXPLICIT TEMPLATE INSTANTIATIONS                      //
 //============================================================================//
-// This is a CRITICAL step to prevent linker errors. It tells the compiler to
-// generate concrete code for these specific template combinations.
 
-// Case 1: Single-precision float to double-precision float
-template void UtilKernels::cast_vector<float, double>(const float*, double*, const unsigned int, cudaStream_t);
+// --- cast_vector: For pure precision changes of the same type category ---
+template void UtilKernels::cast_vector<float, double>(const float *, double *, unsigned int, cudaStream_t);
+template void UtilKernels::cast_vector<double, float>(const double *, float *, unsigned int, cudaStream_t);
+template void UtilKernels::cast_vector<ComplexF, ComplexD>(const ComplexF *, ComplexD *, unsigned int, cudaStream_t);
+template void UtilKernels::cast_vector<ComplexD, ComplexF>(const ComplexD *, ComplexF *, unsigned int, cudaStream_t);
 
-// Case 2: Double-precision float to single-precision float
-template void UtilKernels::cast_vector<double, float>(const double*, float*, const unsigned int, cudaStream_t);
+// --- pad_vector: For padding REAL -> REAL, with optional precision change ---
+template void UtilKernels::pad_vector<float, float>(const float *, float *, unsigned int, unsigned int, cudaStream_t);
+template void UtilKernels::pad_vector<double, double>(const double *, double *, unsigned int, unsigned int, cudaStream_t);
+template void UtilKernels::pad_vector<float, double>(const float *, double *, unsigned int, unsigned int, cudaStream_t);
+template void UtilKernels::pad_vector<double, float>(const double *, float *, unsigned int, unsigned int, cudaStream_t);
 
-// Case 3: Single-precision complex to double-precision complex
-template void UtilKernels::cast_vector<ComplexF, ComplexD>(const ComplexF*, ComplexD*, const unsigned int, cudaStream_t);
+// Unpad
 
-// Case 4: Double-precision complex to single-precision complex
-template void UtilKernels::cast_vector<ComplexD, ComplexF>(const ComplexD*, ComplexF*, const unsigned int, cudaStream_t);
-
-
+template void UtilKernels::unpad_repad_vector<float, float>(const float *, float *, unsigned int, unsigned int, bool, cudaStream_t);
+template void UtilKernels::unpad_repad_vector<double, double>(const double *, double *, unsigned int, unsigned int, bool, cudaStream_t);
+template void UtilKernels::unpad_repad_vector<float, double>(const float *, double *, unsigned int, unsigned int, bool, cudaStream_t);
+template void UtilKernels::unpad_repad_vector<double, float>(const double *, float *, unsigned int, unsigned int, bool, cudaStream_t);

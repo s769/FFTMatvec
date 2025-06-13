@@ -1,5 +1,7 @@
 #include "utils.hpp"
 #include "util_kernels.hpp"
+#include <type_traits>
+#include "precision.hpp"
 
 uint64_t Utils::get_host_hash(const char *string)
 {
@@ -292,27 +294,32 @@ void Utils::print_times(int reps, bool table)
 
 #endif
 }
-
-void Utils::swap_axes(
-    ComplexD *d_in, ComplexD *d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
+template <Precision P>
+void swap_axes_impl(const typename TypeTraits<P>::Complex *d_in,
+                    typename TypeTraits<P>::Complex *d_out,
+                    int num_cols,
+                    int num_rows,
+                    int block_size,
+                    cudaStream_t s)
 {
+    // 1. Get the specific complex type (ComplexF or ComplexD) from the trait.
+    using T_complex = typename TypeTraits<P>::Complex;
 #if CUTENSOR_AVAILABLE
-    // use cuTensor to swap axes d_in[t,m,d] -> d_out[d,m,t] (column-major)
+    // 1. Get all type-specific information directly from the traits struct.
+    // This replaces the if/constexpr block.
+    cutensorDataType_t dataType = TypeTraits<P>::cutensor_type();
+    cutensorComputeDescriptor_t descCompute = TypeTraits<P>::compute_desc();
+    using T_real = typename TypeTraits<P>::Real;
 
-    cutensorDataType_t typeA = CUTENSOR_C_64F;
-    cutensorDataType_t typeB = CUTENSOR_C_64F;
+    T_real alpha = 1.0;
 
-    cutensorComputeDescriptor_t descCompute = CUTENSOR_COMPUTE_DESC_64F;
-
-    double alpha = 1.0;
-
+    // The rest of your function logic remains largely the same
     std::vector<int> modeA = {'t', 'm', 'd'};
     std::vector<int> modeB = {'d', 'm', 't'};
-
     int nmode = 3;
 
-    std::vector<int64_t> extentA = {block_size, num_cols, num_rows};
-    std::vector<int64_t> extentB = {num_rows, num_cols, block_size};
+    std::vector<int64_t> extentA = {(int64_t)block_size, (int64_t)num_cols, (int64_t)num_rows};
+    std::vector<int64_t> extentB = {(int64_t)num_rows, (int64_t)num_cols, (int64_t)block_size};
 
     cutensorHandle_t handle;
     cutensorSafeCall(cutensorCreate(&handle));
@@ -321,15 +328,11 @@ void Utils::swap_axes(
     assert(uintptr_t(d_in) % kAlignment == 0);
     assert(uintptr_t(d_out) % kAlignment == 0);
 
-    cutensorTensorDescriptor_t descA;
-
+    cutensorTensorDescriptor_t descA, descB;
     cutensorSafeCall(cutensorCreateTensorDescriptor(
-        handle, &descA, nmode, extentA.data(), nullptr, typeA, kAlignment));
-
-    cutensorTensorDescriptor_t descB;
-
+        handle, &descA, nmode, extentA.data(), nullptr, dataType, kAlignment));
     cutensorSafeCall(cutensorCreateTensorDescriptor(
-        handle, &descB, nmode, extentB.data(), nullptr, typeB, kAlignment));
+        handle, &descB, nmode, extentB.data(), nullptr, dataType, kAlignment));
 
     cutensorOperationDescriptor_t desc;
     cutensorSafeCall(cutensorCreatePermutation(handle, &desc, descA, modeA.data(),
@@ -338,18 +341,16 @@ void Utils::swap_axes(
     cutensorDataType_t scalarType;
     cutensorSafeCall(cutensorOperationDescriptorGetAttribute(handle, desc,
                                                              CUTENSOR_OPERATION_DESCRIPTOR_SCALAR_TYPE, (void *)&scalarType, sizeof(scalarType)));
-
-    assert(scalarType == CUTENSOR_C_64F);
+    assert(scalarType == dataType);
 
     const cutensorAlgo_t algo = CUTENSOR_ALGO_DEFAULT;
-
     cutensorPlanPreference_t planPref;
-
     cutensorSafeCall(cutensorCreatePlanPreference(handle, &planPref, algo, CUTENSOR_JIT_MODE_NONE));
-
     cutensorPlan_t plan;
-    cutensorSafeCall(cutensorCreatePlan(handle, &plan, desc, planPref, 0 /* worksize */));
+    cutensorSafeCall(cutensorCreatePlan(handle, &plan, desc, planPref, 0));
 
+    // Note: The type of &alpha is now correctly T_real* (float* or double*).
+    // The void* argument in cutensorPermute handles this correctly.
     cutensorSafeCall(cutensorPermute(handle, plan, &alpha, d_in, d_out, s));
 
     cutensorSafeCall(cutensorDestroy(handle));
@@ -359,11 +360,30 @@ void Utils::swap_axes(
     cutensorSafeCall(cutensorDestroyTensorDescriptor(descA));
     cutensorSafeCall(cutensorDestroyTensorDescriptor(descB));
 #else
-    // use cutranspose to swap axes d_in[t,m,d] -> d_out[d,m,t] (column-major)
-    UtilKernels::swap_axes_cutranspose(d_in, d_out, num_cols, num_rows, block_size, s);
+    // 2. Call the explicit, type-safe swap_axes kernel directly from the trait.
+    UtilKernels::swap_axes_cutranspose<T_complex>(d_in, d_out, num_cols, num_rows, block_size, s);
 #endif
-
 }
+
+void Utils::swap_axes(
+    Precision p, const void *d_in, void *d_out, int num_cols, int num_rows, int block_size, cudaStream_t s)
+{
+    // This runtime 'if' statement dispatches to the correct compile-time function.
+    if (p == Precision::SINGLE)
+    {
+        swap_axes_impl<Precision::SINGLE>(
+            static_cast<const ComplexF *>(d_in), static_cast<ComplexF *>(d_out),
+            num_cols, num_rows, block_size, s);
+    }
+    else
+    { // Precision::DOUBLE
+        swap_axes_impl<Precision::DOUBLE>(
+            static_cast<const ComplexD *>(d_in), static_cast<ComplexD *>(d_out),
+            num_cols, num_rows, block_size, s);
+    }
+}
+
+
 
 void Utils::check_collective_io(const HighFive::DataTransferProps &xfer_props)
 {
@@ -408,4 +428,95 @@ std::string Utils::zero_pad(size_t num, size_t width)
 {
     std::string num_str = std::to_string(num);
     return std::string(width - std::min(width, num_str.length()), '0') + num_str;
+}
+
+template <Precision P>
+void transpose_2d_impl(const typename TypeTraits<P>::Complex *d_in,
+                       typename TypeTraits<P>::Complex *d_out,
+                       int dim_ctgs, int dim_strd, cublasHandle_t handle, cudaStream_t s)
+{
+    // 1. Get the specific complex type (ComplexF or ComplexD) from the trait.
+    using T_complex = typename TypeTraits<P>::Complex;
+
+    cublasSetStream(handle, s);
+
+    // 2. Safely create alpha and beta using the correct complex type.
+    const T_complex alpha = TypeTraits<P>::one();
+    const T_complex beta = TypeTraits<P>::zero();
+
+    // 3. Call the explicit, type-safe blasGeam wrapper directly from the trait.
+    cublasSafeCall(TypeTraits<P>::blasGeam(
+        handle,
+        CUBLAS_OP_T, CUBLAS_OP_N,
+        dim_strd, dim_ctgs,
+        &alpha, d_in, dim_ctgs,
+        &beta, NULL, dim_strd,
+        d_out, dim_strd));
+}
+
+// --- Your explicit instantiations remain the same ---
+template void transpose_2d_impl<Precision::SINGLE>(const ComplexF *, ComplexF *, int, int, cublasHandle_t, cudaStream_t);
+template void transpose_2d_impl<Precision::DOUBLE>(const ComplexD *, ComplexD *, int, int, cublasHandle_t, cudaStream_t);
+
+void Utils::transpose_2d(Precision p,
+                         const void *d_in, void *d_out,
+                         int dim_ctgs, int dim_strd, cublasHandle_t handle, cudaStream_t s)
+{
+    // This runtime 'if' statement dispatches to the correct compile-time function.
+    if (p == Precision::SINGLE)
+    {
+        transpose_2d_impl<Precision::SINGLE>(
+            static_cast<const ComplexF *>(d_in), static_cast<ComplexF *>(d_out),
+            dim_ctgs, dim_strd, handle, s);
+    }
+    else
+    { // Precision::DOUBLE
+        transpose_2d_impl<Precision::DOUBLE>(
+            static_cast<const ComplexD *>(d_in), static_cast<ComplexD *>(d_out),
+            dim_ctgs, dim_strd, handle, s);
+    }
+}
+
+template <Precision P>
+void sbgemv_impl(const typename TypeTraits<P>::Complex *d_mat, const typename TypeTraits<P>::Complex *d_vec_in, typename TypeTraits<P>::Complex *d_vec_out, int num_rows, int num_cols, int block_size, bool conjugate, cublasHandle_t handle, cudaStream_t s)
+{
+    // 1. Get the specific complex type (ComplexF or ComplexD) from the trait.
+    using T_complex = typename TypeTraits<P>::Complex;
+
+    // 2. Safely create alpha and beta using the correct complex type.
+    const T_complex alpha = TypeTraits<P>::one();
+    const T_complex beta = TypeTraits<P>::zero();
+
+    cublasOperation_t transa = (conjugate) ? CUBLAS_OP_C : CUBLAS_OP_N;
+
+    int vec_in_len = (conjugate) ? num_rows : num_cols;
+    int vec_out_len = (conjugate) ? num_cols : num_rows;
+
+    // 3. Call the explicit, type-safe blasGeam wrapper directly from the trait.
+    cublasSafeCall(TypeTraits<P>::blasSBgemv(
+        handle,
+        transa,
+        num_rows, num_cols, &alpha, d_mat, num_rows,
+        (size_t)num_rows * num_cols, d_vec_in, 1, vec_in_len,
+        &beta, d_vec_out, 1, vec_out_len, block_size));
+}
+
+// --- Your explicit instantiations remain the same ---
+template void sbgemv_impl<Precision::SINGLE>(const ComplexF *, const ComplexF *, ComplexF *, int, int, int, bool, cublasHandle_t, cudaStream_t);
+template void sbgemv_impl<Precision::DOUBLE>(const ComplexD *, const ComplexD *, ComplexD *, int, int, int, bool, cublasHandle_t, cudaStream_t);
+
+void Utils::sbgemv(Precision p, const void *d_mat, const void *d_vec_in, void *d_vec_out, int num_rows, int num_cols, int block_size, bool conjugate, cublasHandle_t handle, cudaStream_t s)
+{
+    if (p == Precision::SINGLE)
+    {
+        sbgemv_impl<Precision::SINGLE>(
+            static_cast<const ComplexF *>(d_mat), static_cast<const ComplexF *>(d_vec_in), static_cast<ComplexF *>(d_vec_out),
+            num_rows, num_cols, block_size, conjugate, handle, s);
+    }
+    else
+    { // Precision::DOUBLE
+        sbgemv_impl<Precision::DOUBLE>(
+            static_cast<const ComplexD *>(d_mat), static_cast<const ComplexD *>(d_vec_in), static_cast<ComplexD *>(d_vec_out),
+            num_rows, num_cols, block_size, conjugate, handle, s);
+    }
 }
