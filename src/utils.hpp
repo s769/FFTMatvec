@@ -198,6 +198,13 @@ namespace Utils
      */
     void sbgemv(Precision p, const void *d_mat, const void *d_vec_in, void *d_vec_out, int num_rows, int num_cols, int block_size, bool conjugate, cublasHandle_t handle, cudaStream_t s);
 
+    /**
+     * @brief Generates a deterministic double from a 64-bit integer.
+     * @param i The 64-bit integer.
+     *  
+     * */   
+    double generate_double(uint64_t i);
+
 } // namespace Utils
 
 #endif // __UTILS_H__

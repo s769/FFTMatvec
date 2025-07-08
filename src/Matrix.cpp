@@ -276,6 +276,49 @@ void Matrix::init_mat_ones(bool aux_mat)
     delete[] h_mat;
 }
 
+void Matrix::init_mat_doubles(bool aux_mat)
+{
+    if (aux_mat && !initialized)
+    {
+        if (comm.get_world_rank() == 0)
+            fprintf(stderr, "Primary matrix not initialized.\n");
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+        exit(1);
+    }
+    double *h_mat = new double[(size_t)padded_size * num_cols * num_rows];
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+#pragma omp parallel for collapse(3)
+    for (int i = 0; i < num_rows; i++)
+    {
+        for (int j = 0; j < num_cols; j++)
+        {
+            for (int k = 0; k < padded_size; k++)
+            {
+                size_t index = (size_t)i * num_cols * padded_size + (size_t)j * padded_size + k;
+                h_mat[index] = (k < padded_size / 2) ? Utils::generate_double(index) : 0.0;
+            }
+        }
+    }
+
+    cublasHandle_t cublasHandle = comm.get_cublasHandle();
+    if (aux_mat)
+    {
+        Matrix::setup_matvec(
+            &mat_freq_TOSI_aux, h_mat);
+        has_mat_freq_TOSI_aux = true;
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_aux_F, mat_freq_TOSI_aux);
+    }
+    else
+    {
+        Matrix::setup_matvec(&mat_freq_TOSI, h_mat);
+        if (p_config.sbgemv == Precision::SINGLE)
+            setup_mat_freq_TOSI_F(&mat_freq_TOSI_F, mat_freq_TOSI);
+        initialized = true;
+    }
+    delete[] h_mat;
+} 
+
 std::string Matrix::read_meta(std::string meta_filename, bool QoI, bool aux_mat)
 {
     if (aux_mat && !initialized)

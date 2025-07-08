@@ -53,42 +53,61 @@ void configureParser(cli::Parser &parser)
     parser.set_optional<bool>("t", "test", false, "Run tests");
     parser.set_optional<std::string>("prec", "precision", "DDDDD", "Precision Code: 5 characters, each D or S (case insensitive) representing the precision of the corresponding matrix/vector component (D=double, S=single). Components are: broadcast/pad, fft, sbgemv, ifft, unpad/reduce. Default is DDDDD.");
     parser.set_optional<std::string>("s", "save_dir", "", "Directory to save output files to");
+    parser.set_optional<bool>("rand", "random", false, "Use random values for the input vectors/matrices");
 }
 
-MatvecPrecisionConfig parse_precision_string(const std::string& arg) {
+MatvecPrecisionConfig parse_precision_string(const std::string &arg)
+{
     // 1. Check for correct length
-    if (arg.length() != 5) {
+    if (arg.length() != 5)
+    {
         throw std::invalid_argument("Error: Precision string must be exactly 5 characters long. e.g., 'DDSDD'");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
     }
 
     MatvecPrecisionConfig config;
     std::string mapping_names[] = {
-        "broadcast_and_pad", "fft", "sbgemv", "ifft", "unpad_and_reduce"
-    };
+        "broadcast_and_pad", "fft", "sbgemv", "ifft", "unpad_and_reduce"};
 
     // 2. Iterate through the string and set the configuration
-    for (size_t i = 0; i < arg.length(); ++i) {
+    for (size_t i = 0; i < arg.length(); ++i)
+    {
         char c = std::toupper(arg[i]);
         Precision p;
 
-        if (c == 'S') {
+        if (c == 'S')
+        {
             p = Precision::SINGLE;
-        } else if (c == 'D') {
+        }
+        else if (c == 'D')
+        {
             p = Precision::DOUBLE;
-        } else {
+        }
+        else
+        {
             // Found an invalid character
             throw std::invalid_argument("Error: Invalid character '" + std::string(1, arg[i]) +
                                         "' at position " + std::to_string(i) + ". Use only 'S' or 'D'.");
         }
 
         // 3. Assign precision to the correct member based on position
-        switch (i) {
-            case 0: config.broadcast_and_pad = p; break;
-            case 1: config.fft = p; break;
-            case 2: config.sbgemv = p; break;
-            case 3: config.ifft = p; break;
-            case 4: config.unpad_and_reduce = p; break;
+        switch (i)
+        {
+        case 0:
+            config.broadcast_and_pad = p;
+            break;
+        case 1:
+            config.fft = p;
+            break;
+        case 2:
+            config.sbgemv = p;
+            break;
+        case 3:
+            config.ifft = p;
+            break;
+        case 4:
+            config.unpad_and_reduce = p;
+            break;
         }
     }
 
@@ -192,9 +211,19 @@ int main(int argc, char **argv)
 
         if (world_rank == 0)
             printf("Created Matrices\n");
+        bool random = parser.get<bool>("rand");
+        int seed = 12345;
 
-        F.init_mat_ones();
-        F.init_mat_ones(true);
+        if (random)
+        {
+            F.init_mat_doubles();
+            F.init_mat_doubles(true);
+        }
+        else
+        {
+            F.init_mat_ones();
+            F.init_mat_ones(true);
+        }
 
         if (world_rank == 0)
             printf("Initialized Matrices\n");
@@ -206,8 +235,16 @@ int main(int argc, char **argv)
         if (world_rank == 0)
             printf("Created Vectors\n");
         // Initialize vectors with ones for testing
-        in_F.init_vec_ones();
-        in_FS.init_vec_ones();
+        if (random)
+        {
+            in_F.init_vec_doubles();
+            in_FS.init_vec_doubles();
+        }
+        else
+        {
+            in_F.init_vec_ones();
+            in_FS.init_vec_ones();
+        }
         out_F.init_vec();
         out_FS.init_vec();
 
@@ -253,8 +290,16 @@ int main(int argc, char **argv)
         // Run tests
         if (test)
         {
-            Tester::check_ones_matvec(comm, F, out_F, false, false);
-            Tester::check_ones_matvec(comm, F, out_FS, true, false);
+            if (random)
+            {
+                if (world_rank == 0)
+                    printf("Skipping tests for random matrices\n");
+            }
+            else
+            {
+                Tester::check_ones_matvec(comm, F, out_F, false, false);
+                Tester::check_ones_matvec(comm, F, out_FS, true, false);
+            }
         }
 
         if (world_rank == 0)

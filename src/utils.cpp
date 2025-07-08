@@ -520,3 +520,39 @@ void Utils::sbgemv(Precision p, const void *d_mat, const void *d_vec_in, void *d
             num_rows, num_cols, block_size, conjugate, handle, s);
     }
 }
+
+
+// Function to hash a 64-bit integer
+uint64_t hash_index(uint64_t i) {
+    i = (i ^ (i >> 30)) * 0xbf58476d1ce4e5b9;
+    i = (i ^ (i >> 27)) * 0x94d049bb133111eb;
+    i = i ^ (i >> 31);
+    return i;
+}
+
+// Function to generate the deterministic double
+double Utils::generate_double(uint64_t i) {
+    // 1. Get a 64-bit hash from the loop index
+    uint64_t hashed_value = hash_index(i);
+
+    // 2. Construct the double's bits
+    // Use a standard exponent for numbers in [1.0, 2.0)
+    uint64_t exponent = 1023;
+    // Take the lower 52 bits for the mantissa
+    uint64_t mantissa = hashed_value & 0x000FFFFFFFFFFFFF;
+
+    // 3. Ensure the number is not a perfect float by setting a lower bit
+    // A float has 23 mantissa bits. A double has 52. We set a bit
+    // in the double's mantissa that is beyond the float's precision.
+    // Forcing the 24th bit of the mantissa (from the right, 0-indexed) to 1.
+    mantissa |= (1ULL << 24);
+
+    // 4. Combine sign, exponent, and mantissa into a 64-bit integer
+    uint64_t double_bits = (exponent << 52) | mantissa;
+
+    // 5. Reinterpret the bits as a double
+    double result;
+    std::memcpy(&result, &double_bits, sizeof(result));
+
+    return result;
+}

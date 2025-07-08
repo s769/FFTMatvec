@@ -180,6 +180,15 @@ TEST(UtilsTest, LocalToGlobalSize)
 }
 
 
+TEST(UtilsTest, GenerateDouble)
+{
+    size_t index = 123456789;
+    double value = Utils::generate_double(index);
+    // check that the number is in [1, 2)
+    ASSERT_TRUE(value >= 1.0);
+    ASSERT_TRUE(value < 2.0);
+}
+
 //============================================================================//
 //                            THE ACTUAL TESTS                                //
 //============================================================================//

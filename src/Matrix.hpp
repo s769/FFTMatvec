@@ -23,9 +23,10 @@ class Vector; // forward declaration
  * @var MatvecConfig::use_aux_mat
  * Flag indicating if the auxiliary matrix G is used for the matvec.
  */
-struct MatvecConfig {
-    bool transpose = false; /**< Flag indicating if the matvec is a transpose matvec. */
-    bool full = false;       /**< Flag indicating if the matvec is with a full matrix. */
+struct MatvecConfig
+{
+    bool transpose = false;   /**< Flag indicating if the matvec is a transpose matvec. */
+    bool full = false;        /**< Flag indicating if the matvec is with a full matrix. */
     bool use_aux_mat = false; /**< Flag indicating if the auxiliary matrix G is used for the matvec. */
 };
 
@@ -116,29 +117,24 @@ private:
      * @param h_mat Pointer to the matrix in host memory.
      */
     void setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat);
-    
+
     /**
      * @brief Casts mat_freq_TOSI to float. Allocates memory for mat_freq_TOSI_F.
-     * 
+     *
      * @param mat_freq_TOSI_F Pointer to the matrix in device memory (float).
      * @param mat_freq_TOSI Pointer to the matrix in device memory.
      */
     void setup_mat_freq_TOSI_F(ComplexF **mat_freq_TOSI_F, const ComplexD *const mat_freq_TOSI);
 
-
-
     /**
      * @brief Main function for matrix-vector multiplication.
-     * 
+     *
      * @param out_vec The output vector.
      * @param in_vec The input vector.
      * @param config The configuration for the matvec.
-     * 
-     * */   
-    void compute_matvec(double* out_vec, double* in_vec, const MatvecConfig& config);
-
-
-    
+     *
+     * */
+    void compute_matvec(double *out_vec, double *in_vec, const MatvecConfig &config);
 
 public:
     Comm &comm; /**< Reference to the communication object. */
@@ -189,6 +185,12 @@ public:
      * primary matrix must be initialized first.
      */
     void init_mat_ones(bool aux_mat = false);
+
+    /**
+     * @brief Initializes the matrix with double precision floating point numbers (used for precision testing).
+     * @param aux_mat Flag indicating if the matrix to be initialized is the auxiliary matrix. The
+     */
+    void init_mat_doubles(bool aux_mat = false);
 
     /**
      * @brief Performs matrix-vector multiplication.
@@ -308,7 +310,7 @@ public:
     } /**< Returns the unpadded column vector (float). */
     float *get_col_vec_pad_F() { return col_vec_pad_F; }     /**< Returns the padded column vector (float). */
     float *get_row_vec_pad_F() { return row_vec_pad_F; }     /**< Returns the padded row vector (float). */
-    float *get_row_vec_unpad_F() { return row_vec_unpad_F; } /**< Returns the unpadded row vector (float). */   
+    float *get_row_vec_unpad_F() { return row_vec_unpad_F; } /**< Returns the unpadded row vector (float). */
 
     ComplexF *get_col_vec_freq_F()
     {
@@ -318,7 +320,7 @@ public:
     ComplexF *get_col_vec_freq_TOSI_F()
     {
         return col_vec_freq_TOSI_F;
-    } /**< Returns the column vector frequency in TOSI format (float). */       
+    } /**< Returns the column vector frequency in TOSI format (float). */
     ComplexF *get_row_vec_freq_TOSI_F()
     {
         return row_vec_freq_TOSI_F;

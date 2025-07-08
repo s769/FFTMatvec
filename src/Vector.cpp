@@ -157,6 +157,27 @@ void Vector::init_vec_ones()
     initialized = true;
 }
 
+void Vector::init_vec_doubles() 
+{
+    // Initialize the vector with random numbers
+    // make double array on host
+    if (on_grid())
+    {
+        double *h_vec = new double[(size_t)num_blocks * block_size];
+#pragma omp parallel for
+        for (size_t i = 0; i < (size_t)num_blocks * block_size; i++)
+        {
+            h_vec[i] = Utils::generate_double(i);
+        }
+        // copy to device
+        gpuErrchk(cudaMemcpy(d_vec, h_vec, (size_t)num_blocks * block_size * sizeof(double),
+                             cudaMemcpyHostToDevice));
+        delete[] h_vec;
+    }
+    initialized = true;
+
+}
+
 void Vector::init_vec_consecutive()
 {
     // Initialize the vector with consecutive integers (global across all processes containing the
