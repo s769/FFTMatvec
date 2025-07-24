@@ -90,23 +90,12 @@ endif()
         # endforeach()
 
 
-        set(CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS "")
-        list(APPEND CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS ${HIPIFY_CLANG_CUDA_INCLUDE_DIRS})
-        list(APPEND CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS "${CMAKE_CURRENT_SOURCE_DIR}") # For local includes within test
-        list(APPEND CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS "${CMAKE_SOURCE_DIR}/src") # For includes from src
-        list(APPEND CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS "${CMAKE_CURRENT_SOURCE_DIR}/../HighFive/include")
-        list(APPEND CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS "${gtest_SOURCE_DIR}/include")
-        list(APPEND DEFINES_FOR_HIPIFY "CUTENSOR_AVAILABLE=0")
-
-
         hipify_directory(
             INPUT_FILES_LIST "${TEST_FILES_TO_HIPIFY}" # Ensure this list is correctly populated
             BASE_CUDA_DIR "${ORIGINAL_CUDA_TEST_SRC_DIR}"
             OUTPUT_HIP_DIR "${HIP_GENERATED_TEST_SRC_DIR}"
             GENERATED_HIP_SOURCES_VAR "GENERATED_HIP_TEST_SOURCES"
             GENERATED_HIP_HEADERS_VAR "GENERATED_HIP_TEST_HEADERS"
-            EXTRA_HIPIFY_INCLUDE_PATHS "${CURRENT_HIPIFY_EXTRA_INCLUDES_FOR_TESTS}"
-            HIPIFY_CLANG_DEFINES "${DEFINES_FOR_HIPIFY}"
         )
         # Ensure generated test headers (if any) can be found by generated test sources
         include_directories("${HIP_GENERATED_TEST_SRC_DIR} ${HIP_GENERATED_SRC_DIR_FOR_FFT_MVEC}")

@@ -34,18 +34,6 @@ if(BUILD_WITH_HIP)
     set(CMAKE_HIP_ARCHITECTURES "${FINAL_ARCHITECTURES_TO_SET}" CACHE STRING "AMD GPU architectures for HIP compilation" FORCE)
 
 
-    set(HIPIFY_CLANG_CUDA_INCLUDE_DIRS "")
-
-    find_package(CUDAToolkit QUIET)
-    if(CUDAToolkit_FOUND AND CUDAToolkit_INCLUDE_DIRS)
-        list(APPEND HIPIFY_CLANG_CUDA_INCLUDE_DIRS ${CUDAToolkit_INCLUDE_DIRS})
-        # Some hipify-clang versions also benefit from knowing the CUDA root
-        # set(HIPIFY_CLANG_CUDA_ROOT_ARG --cuda-path=${CUDAToolkit_TOOLKIT_ROOT_DIR}) # We'll pass this to hipify_helpers if needed
-    else()
-        message(STATUS "CUDAToolkit not found or include_dirs not set. Hipify-clang might have trouble finding standard CUDA headers.")
-    endif()
-
-    list(APPEND HIPIFY_CLANG_CUDA_INCLUDE_DIRS ${NCCL_INCLUDE_DIRS})
 
 
 
