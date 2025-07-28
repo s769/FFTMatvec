@@ -17,6 +17,10 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     MPI_Comm_rank(row_comm, &row_group_rank);
     MPI_Comm_size(row_comm, &row_group_size);
 
+    int dev_count;
+    gpuErrchk(cudaGetDeviceCount(&dev_count));
+
+ 
     if (stream != 0) {
         int dev;
         gpuErrchk(cudaGetDevice(&dev));
@@ -24,6 +28,12 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
         device = dev;
         local_rank = dev;
         external_stream = true;
+    } 
+    else if (dev_count == 1){
+        gpuErrchk(cudaSetDevice(0));
+        gpuErrchk(cudaStreamCreate(&s));
+        external_stream = false;
+        device = 0;
     } else {
         // picking a GPU based on local_rank, make stream
         uint64_t hostHashs[world_size];
