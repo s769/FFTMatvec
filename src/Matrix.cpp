@@ -785,8 +785,15 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
     cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
                                 ostride, odist, CUFFT_D2Z, (size_t)num_cols * num_rows));
 #else
-    cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
+    if(p_config.fft == Precision::DOUBLE)
+    {
+        forward_plan_mat = forward_plan;
+    }
+    else
+    {
+        cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
                                 ostride, odist, CUFFT_D2Z, num_cols));
+    }
 #endif
 #else
     size_t ws = 0;
@@ -801,6 +808,8 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
 
 #if !ROW_SETUP
     cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_TOSI));
+    if (p_config.fft != Precision::DOUBLE)
+        cufftSafeCall(cufftDestroy(forward_plan_mat));
 #else
     for (int i = 0; i < num_rows; i++)
     {
@@ -809,17 +818,13 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
     }
 #endif
 
-    cufftSafeCall(cufftDestroy(forward_plan_mat));
+
     gpuErrchk(cudaFree(d_mat));
 
     double scale = 1.0 / padded_size;
-#if !INDICES_64_BIT
-    cublasSafeCall(cublasZdscal(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
+
+    cublasSafeCall(cublasZdscal_64(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
                                 &scale, *mat_freq_TOSI, 1));
-#else
-    cublasSafeCall(cublasZdscal_64(cublasHandle,
-                                   (size_t)(padded_size / 2 + 1) * num_cols * num_rows, &scale, *mat_freq_TOSI, 1));
-#endif
 
     ComplexD *d_mat_freq_trans;
     gpuErrchk(cudaMalloc((void **)&d_mat_freq_trans,
