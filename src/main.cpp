@@ -217,12 +217,10 @@ int main(int argc, char **argv)
         if (random)
         {
             F.init_mat_doubles();
-            F.init_mat_doubles(true);
         }
         else
         {
             F.init_mat_ones();
-            F.init_mat_ones(true);
         }
 
         if (world_rank == 0)
