@@ -53,7 +53,7 @@ void configureParser(cli::Parser &parser)
     parser.set_optional<bool>("t", "test", false, "Run tests");
     parser.set_optional<std::string>("prec", "precision", "DDDDD", "Precision Code: 5 characters, each D or S (case insensitive) representing the precision of the corresponding matrix/vector component (D=double, S=single). Components are: broadcast/pad, fft, sbgemv, ifft, unpad/reduce. Default is DDDDD.");
     parser.set_optional<std::string>("s", "save_dir", "", "Directory to save output files to");
-    parser.set_optional<bool>("rand", "random", false, "Use random values for the input vectors/matrices");
+    parser.set_optional<bool>("rand", "random", false, "Use deterministic double precision values for the input vectors/matrices that cannot be represented as single precision floats without error.");
 }
 
 MatvecPrecisionConfig parse_precision_string(const std::string &arg)
@@ -328,3 +328,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
