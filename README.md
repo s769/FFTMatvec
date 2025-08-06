@@ -4,31 +4,30 @@ This repository contains the code for the paper "Sreeram Venkat, Milinda Fernand
 
 ## Documentation
 
-The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/).
+The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/). That page has the documentation for the `main` branch. This is the `mp` branch which supports AMD GPUs via HIP and mixed-precision computing. 
 
 ## Installation
 
 To build the code, the following dependencies are required:
 
-- CUDA (with cuFFT, cuBLAS, and cuTENSOR 2.x) and a CUDA enabled GPU
-- [NCCL](https://github.com/NVIDIA/nccl)
+- CUDA (with cuFFT, cuBLAS, and (optionally) cuTENSOR 2.x) and a CUDA enabled GPU OR ROCm/HIP (with rocFFT, rocBLAS, and RCCL) and an AMD GPU
+- [NCCL](https://github.com/NVIDIA/nccl) for running on NVIDIA GPUs
 - HDF5 (parallel version is required)
 
 First, clone the repository:
 ```bash
 git clone https://github.com/s769/FFTMatvec.git
-cd matvec-test
+git checkout mp
 ```
 
-Initialize the submodules:
+Then, build the code (CUDA):
 ```bash
-git submodule update --init --recursive
+cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release [-DCUTENSOR_ROOT=/path/to/cutensor] [-DCUDA_ARCH=XX]
+cmake --build build --parallel
 ```
-
-Then, build the code:
-```bash
-cmake -B build -DNCCL_LIBRARIES=/path/to/nccl/lib -DNCCL_INCLUDE_DIRS=/path/to/nccl/include -DCMAKE_BUILD_TYPE=Release -DCUTENSOR_ROOT=/path/to/cutensor
-cmake --build build
+or (HIP)
+```
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_HIP=ON [-DAMDGPU_TARGETS=gfxABC]
 ```
 
 **Note**: the `-DCUTENSOR_ROOT` option is only needed if the cuTENSOR 2.x library is not in the usual CUDA library path. Some systems may have the cuTENSOR 1.x library in the CUDA library path, which is not compatible with this code. In that case, the cuTENSOR 2.x library must be [installed](https://developer.nvidia.com/cutensor-downloads), and the path to the cuTENSOR 2.x library must be provided to the build command.
@@ -62,16 +61,19 @@ The main executable is `fft_matvec`. It takes the following arguments:
 - `-N` (int): Number of matvecs to use for timing (default: 100)
 - `-raw` (bool): Print raw timing data instead of table (default: false)
 - `-t` (bool): Check matvec results (default: false)
+- `-prec` (string): Precision Code: 5 characters, each D or S (case insensitive) representing the precision of the corresponding matrix/vector component (D=double, S=single). Components are: broadcast/pad, fft, sbgemv, ifft, unpad/reduce. Default is DDDDD.
+- `-s` (string): Directory to save output files to (default "" - don't save output)
+- `-rand` (bool): Use random values for the input vectors/matrices. Result checking will not work with this option enabled (default: false)
 - `-h` (bool): Print help message
 
 **Note**: `pr x pc` must be equal to the number of processors used to run the code. If no values are provided for `-pr` and `-pc`, the code will run with `pr = 1` and `pc = num_mpi_procs`.
 
 For boolean arguments, just pass the flag to enable it without a value. For example:
 ```bash
-mpiexec -np 4 ./build/fft_matvec -pr 2 -pc 2 -g -Nm 20 -Nd 10 -Nt 7 -nm 4 -nd 3 -v -N 100
+mpiexec -np 4 ./build/fft_matvec -pr 2 -pc 2 -g -Nm 20 -Nd 10 -Nt 7 -nm 4 -nd 3 -v -N 100 -prec dssdd -rand -s .
 ```
 
-will run the code with 4 processors, a 2x2 processor grid, global sizes, 20 global block columns, 10 global block rows, a block size of 7, 4 local block columns, 3 local block rows, print input/output vectors, and use 100 matvecs for timing.
+will run the code with 4 processors, a 2x2 processor grid, global sizes, 20 global block columns, 10 global block rows, a block size of 7, 4 local block columns, 3 local block rows, print input/output vectors, and use 100 matvecs for timing. The fft and sbgemv will be computed in single precision; all other components in double precision. Random values will be used to initialize the matrix, and output vectors will be saved in the current directory.
 
 To reproduce the results in the paper, run with the configurations described in the Numerical Results section.
 
