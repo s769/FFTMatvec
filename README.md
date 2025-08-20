@@ -2,6 +2,8 @@
 
 This repository contains the code for the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems_. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18."
 
+This branch enables performance portability to AMD GPUs and mixed-precision computations. See "Sreeram Venkat, Kasia Swirydowicz, Noah Wolfe, and Omar Ghattas. _Mixed-Precision Performance Portability of FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices_. arXiv preprint [arXiv:2508.10202] (https://arxiv.org/abs/2508.10202) 2025 Aug 10."
+
 ## Documentation
 
 The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/). That page has the documentation for the `main` branch. This is the `mp` branch which supports AMD GPUs via HIP and mixed-precision computing. 
