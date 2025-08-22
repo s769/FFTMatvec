@@ -4,6 +4,8 @@ This repository contains the code for the paper "Sreeram Venkat, Milinda Fernand
 
 This branch enables performance portability to AMD GPUs and mixed-precision computations. See "Sreeram Venkat, Kasia Swirydowicz, Noah Wolfe, and Omar Ghattas. _Mixed-Precision Performance Portability of FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices_. arXiv preprint [arXiv:2508.10202] (https://arxiv.org/abs/2508.10202) 2025 Aug 10."
 
+**Note: To run on Intel GPUs (experimental), unzip the `sycl-release` directory and follow the instructions in the README.md file in that directory.**
+
 ## Documentation
 
 The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/). That page has the documentation for the `main` branch. This is the `mp` branch which supports AMD GPUs via HIP and mixed-precision computing. 
