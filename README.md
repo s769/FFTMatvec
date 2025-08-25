@@ -2,6 +2,8 @@
 
 This repository contains the code for the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Hessian Actions Arising in Linear Inverse Problems Governed by Autonomous Dynamical Systems_. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066). 2024 Jul 18."
 
+**Note: This is the main branch, which only supports NVIDIA GPUs. For AMD and (experimental) Intel support as well as mixed-precision computation, use the `mp` branch.**
+
 ## Documentation
 
 The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/).
