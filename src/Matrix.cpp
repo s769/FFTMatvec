@@ -608,6 +608,7 @@ void Matrix::matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
 
     if (out_color == 0)
         y.set_d_vec(out_vec);
+    gpuErrchk(cudaStreamSynchronize(comm.get_stream()));
 }
 
 void Matrix::transpose_matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
@@ -638,6 +639,7 @@ void Matrix::transpose_matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
 
     if (out_color == 0)
         y.set_d_vec(out_vec);
+    gpuErrchk(cudaStreamSynchronize(comm.get_stream()));
 }
 
 Vector Matrix::get_vec(std::string input_or_output)
@@ -1015,7 +1017,6 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm1, s));
     }
-    gpuErrchk(cudaStreamSynchronize(s));
 
 #if TIME_MPI
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
@@ -1215,7 +1216,6 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
             NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
                                  (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
         }
-        gpuErrchk(cudaStreamSynchronize(s));
 
         if (current_precision == Precision::SINGLE)
         {
@@ -1261,7 +1261,6 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
             NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
                                     (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
         }
-        gpuErrchk(cudaStreamSynchronize(s));
 
 #if TIME_MPI
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
@@ -1442,7 +1441,6 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         else
             NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
                                  (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
-        gpuErrchk(cudaStreamSynchronize(s));
         if (current_precision == Precision::SINGLE)
         {
             UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);

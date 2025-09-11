@@ -95,6 +95,7 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
 
     cublasSafeCall(cublasCreate(&(cublasHandle)));
     cublasSafeCall(cublasSetStream(cublasHandle, s));
+    gpuErrchk(cudaEventCreateWithFlags(&event, cudaEventDisableTiming));
 }
 
 Comm::~Comm()
@@ -106,4 +107,5 @@ Comm::~Comm()
     cublasSafeCall(cublasDestroy(cublasHandle));
     if (!external_stream)
         gpuErrchk(cudaStreamDestroy(s));
+    gpuErrchk(cudaEventDestroy(event));
 }
