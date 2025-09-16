@@ -5,28 +5,27 @@ include(AddGoogleTest) # Your existing module for GTest
 # We need to select the correct GPU-specific runtime libraries.
 if(BUILD_WITH_HIP)
     set(TEST_GPU_LIBS
-        hipfft
-        hipblas
-        rccl
-        # roc::rocfft  # Link if tests directly call rocfft APIs not covered by FFT_mvec
-        # roc::rocblas # Link if tests directly call rocblas APIs not covered by FFT_mvec
-        # rccl::rccl   # Link if tests directly call rccl APIs not covered by FFT_mvec
-        # hip::hipTensor # Link if tests directly call hipTensor APIs not covered by FFT_mvec
+        roc::rocfft # Link if tests directly call rocfft APIs not covered by FFT_mvec
+        roc::rocblas # Link if tests directly call rocblas APIs not covered by FFT_mvec
+        roc::rccl # Link if tests directly call rccl APIs not covered by FFT_mvec
+        hip::hipfft # Link if tests directly call hipfft APIs not covered by FFT_mvec
+        roc::hipblas # Link if tests directly call hipblas APIs not covered by FFT_m
         ${HIP_LIBRARIES} # General HIP runtime from find_package(HIP)
     )
+
 else() # CUDA Build
     if(USE_CUTENSOR)
         set(TEST_GPU_LIBS
-            cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
-            cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
+            CUDA::cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
+            CUDA::cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
             nccl # Link if tests directly call nccl APIs not covered by FFT_mvec
             cutensor # Link if tests directly call cutensor APIs not covered by FFT_mvec
             ${CUDAToolkit_LIBRARIES} # General CUDA runtime from find_package(CUDAToolkit)
         )
     else()
         set(TEST_GPU_LIBS
-            cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
-            cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
+            CUDA::cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
+            CUDA::cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
             nccl # Link if tests directly call nccl APIs not covered by FFT_mvec
             ${CUDAToolkit_LIBRARIES} # General CUDA runtime from find_package(CUDAToolkit)
         )
@@ -38,7 +37,8 @@ endif()
         FFT_mvec # Your main library, already dual-target
         OpenMP::OpenMP_CXX
         # OpenMP::OpenMP_C # If any C files with OpenMP are part of tests
-        HighFive # Assuming HighFive target is available
+        HighFive::Include # Assuming HighFive target is available
+        hdf5::hdf5 
         # MPI libraries are usually handled by MPIEXEC for running tests,
         # but if test code itself links MPI, add ${MPI_CXX_LIBRARIES}, ${MPI_C_LIBRARIES}
         # Example: ${MPI_CXX_LIBRARIES}
