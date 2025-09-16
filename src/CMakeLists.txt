@@ -1,5 +1,11 @@
 # --- File Categorization ---
-
+set(COMMON_LINK_LIBS
+    HighFive::Include
+    OpenMP::OpenMP_CXX
+    MPI::MPI_CXX
+    MPI::MPI_C
+    HDF5::HDF5
+)
 # 1. Pure C++ Headers (no CUDA/HIP specific syntax, or if any, it's guarded by preprocessor)
 set(FFT_MVEC_PURE_CPP_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/cmdparser.hpp"
@@ -103,10 +109,15 @@ if(BUILD_WITH_HIP)
         "${HIP_INCLUDE_DIRS}/rccl/"
     )
 
+
     target_compile_definitions(FFT_mvec PUBLIC CUTENSOR_AVAILABLE=0)
 
     set(GPU_SPECIFIC_LIBS
-        hipblas hipfft rccl # Ensure these are found by top-level CMake 
+        roc::rocfft # Link if tests directly call rocfft APIs not covered by FFT_mvec
+        roc::rocblas # Link if tests directly call rocblas APIs not covered by FFT_mvec
+        roc::rccl # Link if tests directly call rccl APIs not covered by FFT_mvec
+        hip::hipfft # Link if tests directly call hipfft APIs not covered by FFT_mvec
+        roc::hipblas # Link if tests directly call hipblas APIs not covered by FFT_mvec
         ${HIP_LIBRARIES}
     )
 
@@ -119,6 +130,10 @@ if(BUILD_WITH_HIP)
     # foreach(arch IN LISTS CMAKE_HIP_ARCHITECTURES_LIST)
     #     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:HIP>:--offload-arch=${arch}>)
     # endforeach()
+    target_link_libraries(FFT_mvec PUBLIC
+        ${COMMON_LINK_LIBS}
+        ${GPU_SPECIFIC_LIBS}
+    )
 
     set(MAIN_EXECUTABLE_SOURCE ${HIP_MAIN_CPP_FILE_FOR_EXEC})
 
@@ -132,28 +147,25 @@ else() # Building with CUDA
 
     target_include_directories(FFT_mvec PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}" # For all headers from the source directory
-        ${NCCL_INCLUDE_DIRS}
-
     )
 
     if(USE_CUTENSOR)
         target_compile_definitions(FFT_mvec PUBLIC CUTENSOR_AVAILABLE=1)
-        target_include_directories(FFT_mvec PUBLIC ${CUTENSOR_ROOT}/include)
         target_link_directories(FFT_mvec PUBLIC ${CUTENSOR_ROOT}/lib/12)
     else()
         target_compile_definitions(FFT_mvec PUBLIC CUTENSOR_AVAILABLE=0)
     endif()
 
-    target_link_directories(FFT_mvec PUBLIC ${NCCL_LIBRARIES} ${CUDA_LIBRARIES} ${MPI_C_LIBRARIES} ${MPI_CXX_LIBRARIES})
+    target_link_directories(FFT_mvec PUBLIC ${NCCL_LIBRARIES})
     if(USE_CUTENSOR)
         set(GPU_SPECIFIC_LIBS
-            cufft cublas nccl cutensor
+            CUDA::cufft CUDA::cublas nccl cutensor
             ${CUDAToolkit_LIBRARIES}
         )
     else()
 
         set(GPU_SPECIFIC_LIBS
-            cufft cublas nccl
+            CUDA::cufft CUDA::cublas nccl
             ${CUDAToolkit_LIBRARIES}
         )
     endif()
@@ -183,10 +195,7 @@ endif()
 # No extra target_include_directories for fft_matvec specifically for HIP_GENERATED_OUTPUT_DIR should be needed here
 # unless main.cpp generates its own unique headers into that directory (unlikely for main.cpp).
 
-set(COMMON_LINK_LIBS
-    OpenMP::OpenMP_CXX
-    HighFive::HighFive
-)
+
 target_link_libraries(fft_matvec PUBLIC
     FFT_mvec
     ${COMMON_LINK_LIBS}
