@@ -44,6 +44,8 @@ if(BUILD_WITH_HIP)
     find_package(rocblas REQUIRED) # Provides roc::rocblas target
     find_package(rocfft REQUIRED) # Provides roc::rocfft target
     find_package(rccl REQUIRED) # Provides rccl::rccl target (or similar)
+    find_package(hipfft REQUIRED) # Provides hip::hipfft target
+    find_package(hipblas REQUIRED) # Provides roc::hipblas target
     # find_package(hipTensor) # If used and available
 
     set(GPU_PLATFORM "HIP")
@@ -70,6 +72,15 @@ else() # CUDA Build
         set(USE_CUTENSOR OFF)
     endif()
 
+    # make sure $NCCL_ROOT is set in the environment
+    if(NOT "${NCCL_ROOT}" STREQUAL "")
+        message(STATUS "Using NCCL from NCCL_ROOT: ${NCCL_ROOT}")
+    else()
+        message(FATAL_ERROR "NCCL_ROOT environment variable is not set. Please set it to the NCCL installation path.")
+    endif()
+
+    include_directories(${NCCL_ROOT}/include) # Ensure NCCL includes are available
+    link_directories(${NCCL_ROOT}/lib) # Ensure NCCL libs are available
 
     # Find CUDA specific libraries
     # find_package(CUDAToolkit REQUIRED COMPONENTS cublas cufft curand nvjpeg ...)
@@ -144,15 +155,12 @@ endif()
 
 # HighFive is added as a subdirectory, it should set up its own targets and includes
 add_subdirectory(HighFive) # Assuming HighFive/CMakeLists.txt handles its linkage and includes correctly
-
+include_directories(HighFive/include 
+                    ${HDF5_ROOT}/include 
+                    $ENV{MPICH_DIR}/include) # Ensure HDF5 includes are available for HighFive
 # --- Global Include Directories (for common libraries like MPI, HDF5) ---
 # Prefer target_include_directories for project sources, but global ones are okay for widely used external libs.
-include_directories(
-    ${MPI_INCLUDE_PATH} # From find_package(MPI)
-    ${HDF5_INCLUDE_DIRS} # From find_package(HDF5)
-    HighFive/include
-    # HighFive should make its includes available via its target (e.g. HighFive::HighFive)
-)
+
 # Note: GPU specific includes (CUDA Toolkit, HIP, rocBLAS includes etc.) should be handled by
 # find_package results (e.g. ${HIP_INCLUDE_DIRS}, ${CUDAToolkit_INCLUDE_DIRS}) and applied
 # via target_include_directories in src/CMakeLists.txt, or by imported targets.
