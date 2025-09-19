@@ -30,6 +30,7 @@ private:
     cudaStream_t s; /**< CUDA stream */
     cublasHandle_t cublasHandle; /**< cuBLAS handle */
     bool external_stream; /**< Flag indicating if an external stream was provided */
+    cudaEvent_t event;
 
 public:
     /**
@@ -157,6 +158,12 @@ public:
      * @return True if an external stream was provided, false otherwise.
      */
     bool has_external_stream() { return external_stream; }
+
+    /**
+     * @brief Get the CUDA event.
+     * @return The CUDA event.
+     */
+    cudaEvent_t get_event() { return event; }
 };
 
 #endif // __COMM_HPP__

@@ -10,10 +10,9 @@ bool double_equality(double a, double b, double tol)
 // Function to check if an element of the matrix-vector product with ones matrix and ones vector is
 // correct
 void check_element(
-    Comm& comm, double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full)
+    Comm& comm, double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full, double tol)
 {
     // use double_equality to check for equality
-    double tol = 1e-6;
     double correct_elem;
     if (conj) {
         if (full) {
@@ -49,6 +48,16 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
     int Nm = mat.get_glob_num_cols();
     int Nd = mat.get_glob_num_rows();
 
+    MatvecPrecisionConfig precision_config = mat.get_precision_config();
+    double tol = 1e-6;
+    if (precision_config.broadcast_and_pad == Precision::SINGLE ||
+        precision_config.fft == Precision::SINGLE ||
+        precision_config.sbgemv == Precision::SINGLE ||
+        precision_config.ifft == Precision::SINGLE ||
+        precision_config.unpad_and_reduce == Precision::SINGLE) {
+        tol = 1e-1;
+    }
+
     if (vec.on_grid()) {
         double* d_vec = vec.get_d_vec();
         int num_blocks = vec.get_num_blocks();
@@ -59,7 +68,7 @@ void Tester::check_ones_matvec(Comm& comm, Matrix& mat, Vector& vec, bool conj, 
 
         for (size_t i = 0; i < num_blocks; i++) {
             for (size_t j = 0; j < Nt; j++) {
-                check_element(comm, h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
+                check_element(comm, h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full, tol);
             }
         }
 

@@ -199,6 +199,11 @@ public:
     void init_vec_zeros();
 
     /**
+     * @brief Initializes the vector with double precision floating point numbers (used for precision testing).
+     */
+    void init_vec_doubles();
+
+    /**
      * @brief Initializes the vector with consecutive integers.
      */
     void init_vec_consecutive();

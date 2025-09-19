@@ -20,18 +20,17 @@
 #include <assert.h>
 #include <time.h>
 #include <sys/time.h>
+#include <random>
+#if CUTENSOR_AVAILABLE
 #include <cutensor.h>
+#endif
 #include <highfive/highfive.hpp>
 #include <fstream>
 
 #include <omp.h>
-
-
 #include <cublas_v2.h>
 
-
-
-#define TIME_MPI 0
+#define TIME_MPI 1
 #define ERR_CHK 1
 #define INDICES_64_BIT 0
 #define ROW_SETUP 1
@@ -42,28 +41,27 @@ typedef long long int fft_int_t;
 typedef int fft_int_t;
 #endif
 
-
 #include <string>
 #include <vector>
 
-
 #include <mpi.h>
 #include <unistd.h>
-#include <nccl.h>
+#if defined(__HIP_PLATFORM_AMD__) || defined(__HIP_PLATFORM_NVIDIA__) // Macros defined by hipcc
+#include <rccl.h>                                                     // For HIP compilation
+#else
+#include <nccl.h> // For CUDA compilation
+#endif
 
 #if TIME_MPI
 #include "profiler.hpp"
 #include <array>
 #endif
 
-typedef double2 Complex;
-typedef Complex data_t;
-
+typedef double2 ComplexD;
+typedef float2 ComplexF;
 
 #include "error_checkers.h"
 #include "comm_error_checkers.h"
-
-
 
 #if TIME_MPI
 template <typename E, class T, std::size_t N>
@@ -98,7 +96,6 @@ enum class ProfilerTimesFull : unsigned int
     FULL,
 };
 
-
 enum class ProfilerTimes : unsigned int
 {
     BROADCAST = 0,
@@ -113,12 +110,9 @@ enum class ProfilerTimes : unsigned int
     TOT,
 };
 
-
-
 extern enum_array<ProfilerTimesFull, profiler_t, 3> t_list;
 extern enum_array<ProfilerTimes, profiler_t, 10> t_list_f;
 extern enum_array<ProfilerTimes, profiler_t, 10> t_list_fs;
-
 
 #endif
 

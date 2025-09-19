@@ -30,18 +30,17 @@ bool warmup;
 #define WARMUP 0
 #endif
 
-
 /**
  * @brief Configures the parser.
  * @param parser The parser.
  */
 
-void configureParser(cli::Parser& parser)
+void configureParser(cli::Parser &parser)
 {
     parser.set_optional<int>(
         "pr", "proc_rows", 1, "Number of processor rows (proc_rows x proc_cols = num_mpi_ranks)");
     parser.set_optional<int>("pc", "proc_cols", 1,
-        "Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)");
+                             "Number of processor columns (proc_rows x proc_cols = num_mpi_ranks)");
     parser.set_optional<bool>("g", "glob_sizes", false, "Use global indices");
     parser.set_optional<int>("Nm", "glob_cols", 10, "Number of global columns");
     parser.set_optional<int>("Nd", "glob_rows", 5, "Number of global rows");
@@ -52,18 +51,80 @@ void configureParser(cli::Parser& parser)
     parser.set_optional<int>("N", "reps", 100, "Number of repetitions (for timing purposes)");
     parser.set_optional<bool>("raw", "print_raw", false, "Print raw times (instead of table)");
     parser.set_optional<bool>("t", "test", false, "Run tests");
+    parser.set_optional<std::string>("prec", "precision", "DDDDD", "Precision Code: 5 characters, each D or S (case insensitive) representing the precision of the corresponding matrix/vector component (D=double, S=single). Components are: broadcast/pad, fft, sbgemv, ifft, unpad/reduce. Default is DDDDD.");
+    parser.set_optional<std::string>("s", "save_dir", "", "Directory to save output files to");
+    parser.set_optional<bool>("rand", "random", false, "Use deterministic double precision values for the input vectors/matrices that cannot be represented as single precision floats without error.");
+}
+
+MatvecPrecisionConfig parse_precision_string(const std::string &arg)
+{
+    // 1. Check for correct length
+    if (arg.length() != 5)
+    {
+        throw std::invalid_argument("Error: Precision string must be exactly 5 characters long. e.g., 'DDSDD'");
+        MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
+
+    MatvecPrecisionConfig config;
+    std::string mapping_names[] = {
+        "broadcast_and_pad", "fft", "sbgemv", "ifft", "unpad_and_reduce"};
+
+    // 2. Iterate through the string and set the configuration
+    for (size_t i = 0; i < arg.length(); ++i)
+    {
+        char c = std::toupper(arg[i]);
+        Precision p;
+
+        if (c == 'S')
+        {
+            p = Precision::SINGLE;
+        }
+        else if (c == 'D')
+        {
+            p = Precision::DOUBLE;
+        }
+        else
+        {
+            // Found an invalid character
+            throw std::invalid_argument("Error: Invalid character '" + std::string(1, arg[i]) +
+                                        "' at position " + std::to_string(i) + ". Use only 'S' or 'D'.");
+        }
+
+        // 3. Assign precision to the correct member based on position
+        switch (i)
+        {
+        case 0:
+            config.broadcast_and_pad = p;
+            break;
+        case 1:
+            config.fft = p;
+            break;
+        case 2:
+            config.sbgemv = p;
+            break;
+        case 3:
+            config.ifft = p;
+            break;
+        case 4:
+            config.unpad_and_reduce = p;
+            break;
+        }
+    }
+
+    return config;
 }
 
 /********/
 /* MAIN */
 /********/
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     int world_rank = 0, world_size, provided;
     // Initialize the MPI environment (OpenMP is used so we need to use MPI_Init_thread)
     MPICHECK(MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided));
 
-    if (provided < MPI_THREAD_FUNNELED) {
+    if (provided < MPI_THREAD_FUNNELED)
+    {
         if (world_rank == 0)
             fprintf(stderr, "The provided MPI level is not sufficient\n");
         MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
@@ -82,21 +143,25 @@ int main(int argc, char** argv)
         auto proc_rows = parser.get<int>("pr");
         auto proc_cols = parser.get<int>("pc");
         // Check that the number of processor rows and columns is valid
-        if (world_size != proc_rows * proc_cols) {
-            if (proc_rows == 1 && proc_cols == 1) {
+        if (world_size != proc_rows * proc_cols)
+        {
+            if (proc_rows == 1 && proc_cols == 1)
+            {
                 proc_rows = 1;
                 proc_cols = world_size;
                 if (world_rank == 0)
                     fprintf(stderr,
-                        "Warning: Proc Rows x Proc Cols must equal the total number of MPI "
-                        "ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead\n",
-                        proc_rows, proc_cols, proc_rows * proc_cols, world_size, proc_rows,
-                        proc_cols, proc_rows * proc_cols);
-            } else if (world_rank == 0) {
+                            "Warning: Proc Rows x Proc Cols must equal the total number of MPI "
+                            "ranks. Got %d x %d = %d, expected %d. Using %d x %d = %d instead\n",
+                            proc_rows, proc_cols, proc_rows * proc_cols, world_size, proc_rows,
+                            proc_cols, proc_rows * proc_cols);
+            }
+            else if (world_rank == 0)
+            {
                 fprintf(stderr,
-                    "Proc Rows x Proc Cols must equal the total number of MPI ranks. Got %d x %d = "
-                    "%d, expected %d\n",
-                    proc_rows, proc_cols, proc_rows * proc_cols, world_size);
+                        "Proc Rows x Proc Cols must equal the total number of MPI ranks. Got %d x %d = "
+                        "%d, expected %d\n",
+                        proc_rows, proc_cols, proc_rows * proc_cols, world_size);
                 MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
                 return 1;
             }
@@ -111,7 +176,8 @@ int main(int argc, char** argv)
         auto num_cols = (glob_sizes) ? parser.get<int>("Nm") : parser.get<int>("nm");
         auto num_rows = (glob_sizes) ? parser.get<int>("Nd") : parser.get<int>("nd");
 
-        if (world_rank == 0) {
+        if (world_rank == 0)
+        {
             printf("Proc Rows: %d, Proc Cols: %d\n", proc_rows, proc_cols);
             if (glob_sizes)
                 printf("Global Rows: %d, Global Cols: %d\n", num_rows, num_cols);
@@ -139,13 +205,23 @@ int main(int argc, char** argv)
         t_list[ProfilerTimesFull::SETUP].start();
 #endif
         // Create matrices and vectors
-        Matrix F(comm, num_cols, num_rows, block_size, glob_sizes);
+        MatvecPrecisionConfig p_config = parse_precision_string(parser.get<std::string>("prec"));
+
+        Matrix F(comm, num_cols, num_rows, block_size, glob_sizes, false, p_config);
 
         if (world_rank == 0)
             printf("Created Matrices\n");
+        bool random = parser.get<bool>("rand");
+        int seed = 12345;
 
-        F.init_mat_ones();
-        F.init_mat_ones(true);
+        if (random)
+        {
+            F.init_mat_doubles();
+        }
+        else
+        {
+            F.init_mat_ones();
+        }
 
         if (world_rank == 0)
             printf("Initialized Matrices\n");
@@ -157,8 +233,16 @@ int main(int argc, char** argv)
         if (world_rank == 0)
             printf("Created Vectors\n");
         // Initialize vectors with ones for testing
-        in_F.init_vec_ones();
-        in_FS.init_vec_ones();
+        if (random)
+        {
+            in_F.init_vec_doubles();
+            in_FS.init_vec_doubles();
+        }
+        else
+        {
+            in_F.init_vec_ones();
+            in_FS.init_vec_ones();
+        }
         out_F.init_vec();
         out_FS.init_vec();
 
@@ -169,7 +253,8 @@ int main(int argc, char** argv)
 
         bool print = parser.get<bool>("v");
 
-        if (print) {
+        if (print)
+        {
             in_F.print("in_F");
             in_FS.print("in_FS");
         }
@@ -188,7 +273,8 @@ int main(int argc, char** argv)
         t_list[ProfilerTimesFull::FULL].start();
 #endif
         // Perform matrix-vector multiplication
-        for (int i = 0; i < reps + WARMUP; i++) {
+        for (int i = 0; i < reps + WARMUP; i++)
+        {
             F.matvec(in_F, out_F);
             F.transpose_matvec(in_FS, out_FS);
         }
@@ -200,16 +286,33 @@ int main(int argc, char** argv)
 
         auto test = parser.get<bool>("t");
         // Run tests
-        if (test) {
-            Tester::check_ones_matvec(comm, F, out_F, false, false);
-            Tester::check_ones_matvec(comm, F, out_FS, true, false);
+        if (test)
+        {
+            if (random)
+            {
+                if (world_rank == 0)
+                    printf("Skipping tests for random matrices\n");
+            }
+            else
+            {
+                Tester::check_ones_matvec(comm, F, out_F, false, false);
+                Tester::check_ones_matvec(comm, F, out_FS, true, false);
+            }
         }
 
         if (world_rank == 0)
             printf("Finished Matvecs\n");
-        if (print) {
+        if (print)
+        {
             out_F.print("out_F");
             out_FS.print("out_FS");
+        }
+
+        std::string save_dir = parser.get<std::string>("s");
+        if (save_dir != "")
+        {
+            out_F.save(save_dir + "/out_F.h5");
+            out_FS.save(save_dir + "/out_FS.h5");
         }
 
         // Print timing results
@@ -217,7 +320,7 @@ int main(int argc, char** argv)
         if (world_rank == 0)
             printf("Timing Results Showing Mean, Min, and Max Times Over %d Processor(s) (%d "
                    "Matvecs):\n\n",
-                world_size, reps);
+                   world_size, reps);
 
         Utils::print_times(reps, !print_raw);
     }
@@ -225,3 +328,4 @@ int main(int argc, char** argv)
 
     return 0;
 }
+

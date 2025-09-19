@@ -13,81 +13,111 @@ int NUM_ROWS = 2;
 int NUM_COLS = 3;
 int BLOCK_SIZE = 4;
 
-class MatrixTest : public ::testing::Test {
+// Define a struct to hold the logical parameters for each test case
+struct LogicalTestConfig {
+    std::string test_name;
+    bool is_transpose;
+    bool use_aux_mat;
+    bool is_full;
+};
+
+class MatrixTest : public ::testing::Test
+{
 protected:
-    static Comm* comm;
-    static Matrix* F;
+    static Comm *comm;
+    static Matrix *F;
     static Vector *x, *y, *x2, *y2;
 
     static void SetUpTestSuite()
     {
-        if (comm == nullptr) {
+        if (comm == nullptr)
+        {
             comm = new Comm(MPI_COMM_WORLD, proc_rows, proc_cols);
         }
-        if (F == nullptr) {
+        if (F == nullptr)
+        {
             F = new Matrix(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE);
         }
-        if (x == nullptr) {
+        if (x == nullptr)
+        {
             x = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
-        if (y == nullptr) {
+        if (y == nullptr)
+        {
             y = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
-        if (x2 == nullptr) {
+        if (x2 == nullptr)
+        {
             x2 = new Vector(*comm, NUM_COLS, BLOCK_SIZE, "col");
         }
-        if (y2 == nullptr) {
+        if (y2 == nullptr)
+        {
             y2 = new Vector(*comm, NUM_ROWS, BLOCK_SIZE, "row");
         }
     }
     static void TearDownTestSuite()
     {
-        if (comm != nullptr) {
+        if (comm != nullptr)
+        {
             delete comm;
             comm = nullptr;
         }
-        if (F != nullptr) {
+        if (F != nullptr)
+        {
             delete F;
             F = nullptr;
         }
-        if (x != nullptr) {
+        if (x != nullptr)
+        {
             delete x;
             x = nullptr;
         }
-        if (y != nullptr) {
+        if (y != nullptr)
+        {
             delete y;
             y = nullptr;
         }
-        if (x2 != nullptr) {
+        if (x2 != nullptr)
+        {
             delete x2;
             x2 = nullptr;
         }
-        if (y2 != nullptr) {
+        if (y2 != nullptr)
+        {
             delete y2;
             y2 = nullptr;
         }
     }
     static void check_element(
-        double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full)
+        double elem, size_t b, size_t j, size_t Nt, size_t Nm, size_t Nd, bool conj, bool full, double tol=1e-10)
     {
         double correct_elem;
-        if (conj) {
-            if (full) {
+        if (conj)
+        {
+            if (full)
+            {
                 correct_elem = (Nm * Nd * ((j + 1) * (2 * Nt - j))) / 2.0;
-            } else {
+            }
+            else
+            {
                 correct_elem = (Nt - j) * Nd;
             }
-        } else {
-            if (full) {
+        }
+        else
+        {
+            if (full)
+            {
                 correct_elem = (Nm * Nd * ((Nt - j) * (2 * (j + 1) + (Nt - j - 1)))) / 2.0;
-            } else {
+            }
+            else
+            {
                 correct_elem = (j + 1) * Nm;
             }
         }
-        ASSERT_NEAR(elem, correct_elem, 1e-10);
+        ASSERT_NEAR(elem, correct_elem, tol);
     }
 
-    static void check_ones_matvec(Matrix& mat, Vector& vec, bool conj, bool full)
+    static void check_ones_matvec(Matrix &mat, Vector &vec, bool conj, bool full, double tol=1e-10)
     {
 
         int proc_rows = comm->get_proc_rows();
@@ -98,17 +128,20 @@ protected:
         int Nm = mat.get_glob_num_cols();
         int Nd = mat.get_glob_num_rows();
 
-        if (vec.on_grid()) {
-            double* d_vec = vec.get_d_vec();
+        if (vec.on_grid())
+        {
+            double *d_vec = vec.get_d_vec();
             int num_blocks = vec.get_num_blocks();
-            double* h_vec = new double[num_blocks * Nt];
+            double *h_vec = new double[num_blocks * Nt];
 
             gpuErrchk(
                 cudaMemcpy(h_vec, d_vec, num_blocks * Nt * sizeof(double), cudaMemcpyDeviceToHost));
 
-            for (size_t i = 0; i < num_blocks; i++) {
-                for (size_t j = 0; j < Nt; j++) {
-                    check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full);
+            for (size_t i = 0; i < num_blocks; i++)
+            {
+                for (size_t j = 0; j < Nt; j++)
+                {
+                    check_element(h_vec[i * Nt + j], i, j, Nt, Nm, Nd, conj, full, tol);
                 }
             }
 
@@ -116,19 +149,19 @@ protected:
         }
     }
 
-    static std::string dirname(const std::string& fname)
+    static std::string dirname(const std::string &fname)
     {
         size_t pos = fname.find_last_of("\\/");
         return (std::string::npos == pos) ? "" : fname.substr(0, pos);
     }
 };
 
-Comm* MatrixTest::comm = nullptr;
-Matrix* MatrixTest::F = nullptr;
-Vector* MatrixTest::x = nullptr;
-Vector* MatrixTest::y = nullptr;
-Vector* MatrixTest::x2 = nullptr;
-Vector* MatrixTest::y2 = nullptr;
+Comm *MatrixTest::comm = nullptr;
+Matrix *MatrixTest::F = nullptr;
+Vector *MatrixTest::x = nullptr;
+Vector *MatrixTest::y = nullptr;
+Vector *MatrixTest::x2 = nullptr;
+Vector *MatrixTest::y2 = nullptr;
 
 TEST_F(MatrixTest, MatrixConstructorLocal)
 {
@@ -210,30 +243,34 @@ TEST_F(MatrixTest, InitMatOnes)
 {
     F->init_mat_ones();
     ASSERT_TRUE(F->is_initialized());
-    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex* d_mat = F->get_mat_freq_TOSI();
-    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+    ComplexD *h_mat = new ComplexD[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    ComplexD *d_mat = F->get_mat_freq_TOSI();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
-    double* h_vec = new double[2 * BLOCK_SIZE];
-    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+    double *h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++)
+    {
         h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
     }
-    double* d_vec;
+    double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex* d_fft;
-    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    ComplexD *d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
-    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
-    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+    ComplexD *h_fft = new ComplexD[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD), cudaMemcpyDeviceToHost));
 
-    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
-        for (int r = 0; r < NUM_ROWS; r++) {
-            for (int c = 0; c < NUM_COLS; c++) {
+    for (int t = 0; t < BLOCK_SIZE + 1; t++)
+    {
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            for (int c = 0; c < NUM_COLS; c++)
+            {
                 size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
                 ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
                 ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
@@ -252,30 +289,34 @@ TEST_F(MatrixTest, InitMatOnesAux)
     F->init_mat_ones();
     F->init_mat_ones(true);
     ASSERT_TRUE(F->is_initialized());
-    Complex* h_mat = new Complex[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
-    Complex* d_mat = F->get_mat_freq_TOSI_aux();
-    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+    ComplexD *h_mat = new ComplexD[NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1)];
+    ComplexD *d_mat = F->get_mat_freq_TOSI_aux();
+    gpuErrchk(cudaMemcpy(h_mat, d_mat, NUM_COLS * NUM_ROWS * (BLOCK_SIZE + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
     cufftHandle plan;
     cufftSafeCall(cufftPlan1d(&plan, 2 * BLOCK_SIZE, CUFFT_D2Z, 1));
-    double* h_vec = new double[2 * BLOCK_SIZE];
-    for (int i = 0; i < 2 * BLOCK_SIZE; i++) {
+    double *h_vec = new double[2 * BLOCK_SIZE];
+    for (int i = 0; i < 2 * BLOCK_SIZE; i++)
+    {
         h_vec[i] = (i < BLOCK_SIZE) ? 1.0 : 0.0;
     }
-    double* d_vec;
+    double *d_vec;
     gpuErrchk(cudaMalloc(&d_vec, 2 * BLOCK_SIZE * sizeof(double)));
-    Complex* d_fft;
-    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(Complex)));
+    ComplexD *d_fft;
+    gpuErrchk(cudaMalloc(&d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD)));
     gpuErrchk(cudaMemcpy(d_vec, h_vec, 2 * BLOCK_SIZE * sizeof(double), cudaMemcpyHostToDevice));
 
-    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex*)d_fft));
+    cufftSafeCall(cufftExecD2Z(plan, d_vec, (cufftDoubleComplex *)d_fft));
     cufftSafeCall(cufftDestroy(plan));
-    Complex* h_fft = new Complex[BLOCK_SIZE + 1];
-    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(Complex), cudaMemcpyDeviceToHost));
+    ComplexD *h_fft = new ComplexD[BLOCK_SIZE + 1];
+    gpuErrchk(cudaMemcpy(h_fft, d_fft, (BLOCK_SIZE + 1) * sizeof(ComplexD), cudaMemcpyDeviceToHost));
 
-    for (int t = 0; t < BLOCK_SIZE + 1; t++) {
-        for (int r = 0; r < NUM_ROWS; r++) {
-            for (int c = 0; c < NUM_COLS; c++) {
+    for (int t = 0; t < BLOCK_SIZE + 1; t++)
+    {
+        for (int r = 0; r < NUM_ROWS; r++)
+        {
+            for (int c = 0; c < NUM_COLS; c++)
+            {
                 size_t ind = t * NUM_ROWS * NUM_COLS + r * NUM_COLS + c;
                 ASSERT_NEAR(h_mat[ind].x, h_fft[t].x / (2 * BLOCK_SIZE), 1e-12);
                 ASSERT_NEAR(h_mat[ind].y, h_fft[t].y / (2 * BLOCK_SIZE), 1e-12);
@@ -309,81 +350,6 @@ TEST_F(MatrixTest, GetVector)
     ASSERT_EQ(d.get_row_or_col(), "row");
 }
 
-TEST_F(MatrixTest, OnesMatvec)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->matvec(*x, *y);
-    check_ones_matvec(*F, *y, false, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecConj)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->transpose_matvec(*y, *x);
-    check_ones_matvec(*F, *x, true, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecFull)
-{
-    F->init_mat_ones();
-    x->init_vec_ones();
-    x2->init_vec_ones();
-    F->matvec(*x, *x2, false, true);
-    check_ones_matvec(*F, *x2, false, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullConj)
-{
-    F->init_mat_ones();
-    y->init_vec_ones();
-    y2->init_vec_ones();
-    F->transpose_matvec(*y, *y2, false, true);
-    check_ones_matvec(*F, *y2, true, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->matvec(*x, *y, true);
-    check_ones_matvec(*F, *y, false, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecConjAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    y->init_vec_ones();
-    F->transpose_matvec(*y, *x, true);
-    check_ones_matvec(*F, *x, true, false);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    x->init_vec_ones();
-    x2->init_vec_ones();
-    F->matvec(*x, *x2, true, true);
-    check_ones_matvec(*F, *x2, false, true);
-}
-
-TEST_F(MatrixTest, OnesMatvecFullConjAux)
-{
-    F->init_mat_ones();
-    F->init_mat_ones(true);
-    y->init_vec_ones();
-    y2->init_vec_ones();
-    F->transpose_matvec(*y, *y2, true, true);
-    check_ones_matvec(*F, *y2, true, true);
-}
 
 TEST_F(MatrixTest, ReadFromFile)
 {
@@ -396,16 +362,19 @@ TEST_F(MatrixTest, ReadFromFile)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat = F2.get_mat_freq_TOSI();
+    ComplexD *h_mat = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    ComplexD result = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result.x += h_mat[ind].x;
                 result.y += h_mat[ind].y;
@@ -423,16 +392,19 @@ TEST_F(MatrixTest, ReadFromFile)
     std::string aux_path = dirname(__FILE__) + "/data/test_mat_2/binary/adj/vec_";
     F2.init_mat_from_file(aux_path, true);
 
-    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    ComplexD *h_mat_aux = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result_aux = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    ComplexD result_aux = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result_aux.x += h_mat_aux[ind].x;
                 result_aux.y += h_mat_aux[ind].y;
@@ -462,16 +434,19 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     ASSERT_EQ(F2.get_glob_num_rows(), glob_num_rows);
     ASSERT_EQ(F2.get_block_size(), block_size);
 
-    Complex* h_mat = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat = F2.get_mat_freq_TOSI();
+    ComplexD *h_mat = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat = F2.get_mat_freq_TOSI();
     gpuErrchk(cudaMemcpy(h_mat, d_mat,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    ComplexD result = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result.x += h_mat[ind].x;
                 result.y += h_mat[ind].y;
@@ -486,16 +461,19 @@ TEST_F(MatrixTest, ReadFromFileQoI)
 
     delete[] h_mat;
 
-    Complex* h_mat_aux = new Complex[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
-    Complex* d_mat_aux = F2.get_mat_freq_TOSI_aux();
+    ComplexD *h_mat_aux = new ComplexD[F2.get_num_cols() * F2.get_num_rows() * (block_size + 1)];
+    ComplexD *d_mat_aux = F2.get_mat_freq_TOSI_aux();
     gpuErrchk(cudaMemcpy(h_mat_aux, d_mat_aux,
-        F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(Complex),
-        cudaMemcpyDeviceToHost));
+                         F2.get_num_cols() * F2.get_num_rows() * (block_size + 1) * sizeof(ComplexD),
+                         cudaMemcpyDeviceToHost));
 
-    Complex result_aux = { 0.0, 0.0 };
-    for (int t = 0; t < block_size + 1; t++) {
-        for (int r = 0; r < F2.get_num_rows(); r++) {
-            for (int c = 0; c < F2.get_num_cols(); c++) {
+    ComplexD result_aux = {0.0, 0.0};
+    for (int t = 0; t < block_size + 1; t++)
+    {
+        for (int r = 0; r < F2.get_num_rows(); r++)
+        {
+            for (int c = 0; c < F2.get_num_cols(); c++)
+            {
                 size_t ind = t * F2.get_num_rows() * F2.get_num_cols() + r * F2.get_num_cols() + c;
                 result_aux.x += h_mat_aux[ind].x;
                 result_aux.y += h_mat_aux[ind].y;
@@ -515,7 +493,7 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     ASSERT_EQ(F2.is_p2q_mat(), true);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     // Filter out Google Test arguments
     ::testing::InitGoogleTest(&argc, argv);
@@ -527,10 +505,10 @@ int main(int argc, char** argv)
     ::testing::AddGlobalTestEnvironment(new GTestMPIListener::MPIEnvironment);
 
     // Get the event listener list.
-    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+    ::testing::TestEventListeners &listeners = ::testing::UnitTest::GetInstance()->listeners();
 
     // Remove default listener: the default printer and the default XML printer
-    ::testing::TestEventListener* l = listeners.Release(listeners.default_result_printer());
+    ::testing::TestEventListener *l = listeners.Release(listeners.default_result_printer());
 
     // Adds MPI listener; Google Test owns this pointer
     listeners.Append(new GTestMPIListener::MPIWrapperPrinter(l, MPI_COMM_WORLD));
@@ -541,7 +519,8 @@ int main(int argc, char** argv)
     MPICHECK(MPI_Comm_size(MPI_COMM_WORLD, &world_size));
     proc_cols = sqrt(world_size);
     proc_rows = world_size / proc_cols;
-    if (proc_rows > proc_cols) {
+    if (proc_rows > proc_cols)
+    {
         int temp = proc_cols;
         proc_cols = proc_rows;
         proc_rows = temp;
@@ -550,3 +529,130 @@ int main(int argc, char** argv)
 
     return result; // Run tests, then clean up and exit
 }
+
+//============================================================================//
+//               PARAMETERIZED TEST FOR MATVEC COMBINATIONS                   //
+//============================================================================//
+
+// Inherit from MatrixTest to get access to static members like 'comm' and helpers
+class MatrixParameterizedTest : public MatrixTest,
+                                public ::testing::WithParamInterface<std::tuple<LogicalTestConfig, MatvecPrecisionConfig>>
+{};
+
+// This single TEST_P block runs all 256 combinations with the correct logic.
+TEST_P(MatrixParameterizedTest, AllMatvecCombinations)
+{
+    // 1. Get the parameters for this specific test run
+    const auto& logical_config = std::get<0>(GetParam());
+    const auto& precision_config = std::get<1>(GetParam());
+
+    // 2. Create a NEW, LOCAL Matrix for this specific test case.
+    Matrix local_F(*comm, NUM_COLS, NUM_ROWS, BLOCK_SIZE, false, false, precision_config);
+
+    // 3. Initialize the local matrix and the STATIC vectors from the base fixture.
+    local_F.init_mat_ones();
+    if (logical_config.use_aux_mat) {
+        local_F.init_mat_ones(true);
+    }
+    x->init_vec_ones();
+    y->init_vec_ones();
+    x2->init_vec_ones();
+    y2->init_vec_ones();
+    
+    // 4. Select the correct input and output vectors based on your rules.
+    Vector* in_vec = nullptr;
+    Vector* out_vec = nullptr;
+
+    if (logical_config.is_transpose) {
+        // For transpose, input is a row vector, output is a col vector.
+        in_vec = y;
+        out_vec = logical_config.is_full ? y2 : x;
+    } else {
+        // For regular matvec, input is a col vector, output is a row vector.
+        in_vec = x;
+        out_vec = logical_config.is_full ? x2 : y;
+    }
+
+    // 5. Execute the operation using the selected vectors.
+    if (logical_config.is_transpose) {
+        local_F.transpose_matvec(*in_vec, *out_vec, logical_config.use_aux_mat, logical_config.is_full);
+    } else {
+        local_F.matvec(*in_vec, *out_vec, logical_config.use_aux_mat, logical_config.is_full);
+    }
+
+    double tol = 1e-10;
+    // if any of the operations are done in single precision, we need to relax the tolerance
+    if (precision_config.broadcast_and_pad == Precision::SINGLE ||
+        precision_config.fft == Precision::SINGLE ||
+        precision_config.sbgemv == Precision::SINGLE ||
+        precision_config.ifft == Precision::SINGLE ||
+        precision_config.unpad_and_reduce == Precision::SINGLE) {
+        tol = 1e-4;
+    }
+
+    // 6. Verify the result written to the correct output vector.
+    check_ones_matvec(local_F, *out_vec, logical_config.is_transpose, logical_config.is_full, tol);
+    
+    // `local_F` is destroyed automatically when this test scope ends.
+}
+
+// --- Helper functions and INSTANTIATE_TEST_SUITE_P to generate all test cases ---
+
+// --- Helper functions and INSTANTIATE_TEST_SUITE_P remain the same ---
+
+std::vector<LogicalTestConfig> GenerateLogicalConfigs() {
+    return {
+        {"Matvec",           false, false, false},
+        {"Matvec_Conj",      true,  false, false},
+        {"Matvec_Full",      false, false, true},
+        {"Matvec_Full_Conj", true,  false, true},
+        {"Matvec_Aux",       false, true,  false},
+        {"Matvec_Aux_Conj",  true,  true,  false},
+        {"Matvec_Full_Aux",  false, true,  true},
+        {"Matvec_Full_Aux_Conj", true, true, true}
+    };
+}
+
+std::vector<MatvecPrecisionConfig> GeneratePrecisionConfigs() {
+    std::vector<MatvecPrecisionConfig> configs;
+    for (int i = 0; i < 32; ++i) { // 2^5 = 32 combinations
+        MatvecPrecisionConfig config;
+        config.broadcast_and_pad = (i & 1)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.fft               = (i & 2)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.sbgemv            = (i & 4)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.ifft              = (i & 8)  ? Precision::SINGLE : Precision::DOUBLE;
+        config.unpad_and_reduce  = (i & 16) ? Precision::SINGLE : Precision::DOUBLE;
+        configs.push_back(config);
+    }
+    return configs;
+}
+
+auto generateTestName = [](const auto& info) {
+    const auto& logical_config = std::get<0>(info.param);
+    const auto& precision_config = std::get<1>(info.param);
+    
+    auto p_to_s = [](Precision p) { return p == Precision::SINGLE ? "S" : "D"; };
+
+    std::string precision_str = "Precisions_";
+    precision_str += p_to_s(precision_config.broadcast_and_pad);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.fft);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.sbgemv);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.ifft);
+    precision_str += "_";
+    precision_str += p_to_s(precision_config.unpad_and_reduce);
+
+    return logical_config.test_name + "_" + precision_str;
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    MatvecPrecisionTests,
+    MatrixParameterizedTest,
+    ::testing::Combine(
+        ::testing::ValuesIn(GenerateLogicalConfigs()),
+        ::testing::ValuesIn(GeneratePrecisionConfigs())
+    ),
+    generateTestName
+);
