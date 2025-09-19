@@ -7,12 +7,16 @@
 #endif
 #undef Complex 
 
+/**
+ * @brief Enumeration for precision types.
+ */
 enum class Precision
 {
     SINGLE,
     DOUBLE,
 };
 
+/** @brief Configuration for the precision of different components of the matvec operation. */
 struct MatvecPrecisionConfig
 {
     Precision broadcast_and_pad = Precision::DOUBLE;
