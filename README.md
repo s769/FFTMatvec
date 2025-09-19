@@ -1,4 +1,5 @@
 # FFTMatvec
+[![DOI](https://zenodo.org/badge/837359248.svg)](https://zenodo.org/badge/latestdoi/837359248)
 
 This repository contains the code for FFTMatvec, described in the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices with Application to Linear Inverse Problems Governed by Autonomous Dynamical Systems._. SIAM Journal of Scientific Computing. 2025. To appear. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066)."
 
