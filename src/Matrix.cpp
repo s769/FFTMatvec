@@ -589,6 +589,7 @@ void Matrix::matvec(Vector &x, Vector &y, bool use_aux_mat, bool full)
     config.full = full;
     config.transpose = false;
 
+
     double *in_vec, *out_vec;
 
     int in_color = comm.get_row_color();
@@ -970,6 +971,14 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
             mat_freq_TOSI2_F = (mat_freq_TOSI_aux_F) ? mat_freq_TOSI_aux_F : mat_freq_TOSI_F;
         }
     }
+    else if (use_aux_mat)
+    {
+        mat_freq_TOSI1 = mat_freq_TOSI_aux;
+        mat_freq_TOSI2 = mat_freq_TOSI_aux; 
+
+        mat_freq_TOSI1_F = mat_freq_TOSI_aux_F;
+        mat_freq_TOSI2_F = mat_freq_TOSI_aux_F;
+    }
     else
     {
         mat_freq_TOSI1 = mat_freq_TOSI;
@@ -978,7 +987,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         mat_freq_TOSI1_F = mat_freq_TOSI_F;
         mat_freq_TOSI2_F = mat_freq_TOSI_F;
     }
-
+ 
     double *res_vec = (full) ? res_unpad : out_vec;
 
     float *res_vec_F = (full) ? res_unpad_F : out_vec_F;
