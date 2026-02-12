@@ -30,7 +30,7 @@
 #include <omp.h>
 #include <cublas_v2.h>
 
-#define TIME_MPI 1
+#define TIME_MPI 0
 #define ERR_CHK 1
 #define INDICES_64_BIT 0
 #define ROW_SETUP 1
