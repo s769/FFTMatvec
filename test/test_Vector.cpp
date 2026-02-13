@@ -937,6 +937,192 @@ TEST_F(VectorTest, ExtendAndShrinkRoundTrip) {
   }
 }
 
+//============================================================================//
+//                       IN-PLACE EXTEND / SHRINK TESTS                       //
+//============================================================================//
+
+TEST_F(VectorTest, ExtendInPlace) {
+  int small_bs = BLOCK_SIZE;
+  int large_bs = BLOCK_SIZE * 2;
+
+  Vector x = Vector(*comm, NUM_BLOCKS, small_bs, "col");
+  Vector y =
+      Vector(*comm, NUM_BLOCKS, large_bs, "col"); // Pre-allocated destination
+
+  x.init_vec_consecutive();
+
+  // Perform in-place extend
+  x.extend(y);
+
+  if (x.on_grid()) {
+    double *h_x = new double[(size_t)x.get_num_blocks() * small_bs];
+    gpuErrchk(cudaMemcpy(h_x, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * small_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    double *h_y = new double[(size_t)y.get_num_blocks() * large_bs];
+    gpuErrchk(cudaMemcpy(h_y, y.get_d_vec(),
+                         (size_t)y.get_num_blocks() * large_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (int b = 0; b < NUM_BLOCKS; ++b) {
+      for (int i = 0; i < large_bs; ++i) {
+        size_t idx_y = (size_t)b * large_bs + i;
+        if (i < small_bs) {
+          size_t idx_x = (size_t)b * small_bs + i;
+          ASSERT_EQ(h_y[idx_y], h_x[idx_x]);
+        } else {
+          ASSERT_EQ(h_y[idx_y], 0.0);
+        }
+      }
+    }
+    delete[] h_x;
+    delete[] h_y;
+  }
+}
+
+TEST_F(VectorTest, ShrinkInPlace) {
+  int large_bs = BLOCK_SIZE * 2;
+  int small_bs = BLOCK_SIZE;
+
+  Vector x = Vector(*comm, NUM_BLOCKS, large_bs, "col");
+  Vector y =
+      Vector(*comm, NUM_BLOCKS, small_bs, "col"); // Pre-allocated destination
+
+  x.init_vec_consecutive();
+
+  // Perform in-place shrink
+  x.shrink(y);
+
+  if (x.on_grid()) {
+    double *h_x = new double[(size_t)x.get_num_blocks() * large_bs];
+    gpuErrchk(cudaMemcpy(h_x, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * large_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    double *h_y = new double[(size_t)y.get_num_blocks() * small_bs];
+    gpuErrchk(cudaMemcpy(h_y, y.get_d_vec(),
+                         (size_t)y.get_num_blocks() * small_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (int b = 0; b < NUM_BLOCKS; ++b) {
+      for (int i = 0; i < small_bs; ++i) {
+        size_t idx_y = (size_t)b * small_bs + i;
+        size_t idx_x = (size_t)b * large_bs + i;
+        ASSERT_EQ(h_y[idx_y], h_x[idx_x]);
+      }
+    }
+    delete[] h_x;
+    delete[] h_y;
+  }
+}
+
+//============================================================================//
+//                             RESIZE WRAPPER TESTS                           //
+//============================================================================//
+
+TEST_F(VectorTest, ResizeWrapperExpand) {
+  // Test that calling resize() with a larger vector triggers extend logic
+  int small_bs = 4;
+  int large_bs = 8;
+
+  Vector x = Vector(*comm, NUM_BLOCKS, small_bs, "col");
+  x.init_vec_ones(); // All 1.0
+
+  // 1. Test "Return By Value" Resize
+  Vector y = x.resize(large_bs);
+
+  ASSERT_EQ(y.get_block_size(), large_bs);
+
+  if (x.on_grid()) {
+    double *h_y = new double[(size_t)y.get_num_blocks() * large_bs];
+    gpuErrchk(cudaMemcpy(h_y, y.get_d_vec(),
+                         (size_t)y.get_num_blocks() * large_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    // Check first block: first 4 should be 1.0, next 4 should be 0.0
+    for (int i = 0; i < 4; ++i)
+      ASSERT_EQ(h_y[i], 1.0);
+    for (int i = 4; i < 8; ++i)
+      ASSERT_EQ(h_y[i], 0.0);
+
+    delete[] h_y;
+  }
+}
+
+TEST_F(VectorTest, ResizeWrapperShrink) {
+  // Test that calling resize() with a smaller vector triggers shrink logic
+  int large_bs = 8;
+  int small_bs = 4;
+
+  Vector x = Vector(*comm, NUM_BLOCKS, large_bs, "col");
+  x.init_vec_consecutive();
+
+  // 2. Test "In-Place" Resize (passing pre-allocated vector)
+  Vector y = Vector(*comm, NUM_BLOCKS, small_bs, "col");
+  x.resize(y);
+
+  if (x.on_grid()) {
+    double *h_x = new double[(size_t)x.get_num_blocks() * large_bs];
+    gpuErrchk(cudaMemcpy(h_x, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * large_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    double *h_y = new double[(size_t)y.get_num_blocks() * small_bs];
+    gpuErrchk(cudaMemcpy(h_y, y.get_d_vec(),
+                         (size_t)y.get_num_blocks() * small_bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    // Data should match exactly for the first small_bs elements
+    for (int i = 0; i < NUM_BLOCKS * small_bs; ++i) {
+      // We have to map linear index i back to block structure to verify against
+      // X correctly, but since shrink is linear truncation of blocks, and we
+      // use consecutive initialization... Block 0: x[0..3] == y[0..3] Block 1:
+      // x[8..11] == y[4..7]  <-- The indices shift!
+
+      int b = i / small_bs;
+      int offset = i % small_bs;
+
+      size_t idx_x = (size_t)b * large_bs + offset;
+      ASSERT_EQ(h_y[i], h_x[idx_x]);
+    }
+
+    delete[] h_x;
+    delete[] h_y;
+  }
+}
+
+TEST_F(VectorTest, ResizeWrapperCopy) {
+  // Test that calling resize() with SAME size triggers copy
+  int bs = 4;
+  Vector x = Vector(*comm, NUM_BLOCKS, bs, "col");
+  x.init_vec_consecutive();
+
+  Vector y = Vector(*comm, NUM_BLOCKS, bs, "col");
+  y.init_vec_zeros();
+
+  // Resize into y (sizes match, so it should copy)
+  x.resize(y);
+
+  if (x.on_grid()) {
+    double *h_x = new double[(size_t)x.get_num_blocks() * bs];
+    gpuErrchk(cudaMemcpy(h_x, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    double *h_y = new double[(size_t)y.get_num_blocks() * bs];
+    gpuErrchk(cudaMemcpy(h_y, y.get_d_vec(),
+                         (size_t)y.get_num_blocks() * bs * sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (int i = 0; i < NUM_BLOCKS * bs; ++i) {
+      ASSERT_EQ(h_x[i], h_y[i]);
+    }
+    delete[] h_x;
+    delete[] h_y;
+  }
+}
+
 int main(int argc, char **argv) {
   // Filter out Google Test arguments
   ::testing::InitGoogleTest(&argc, argv);

@@ -684,8 +684,10 @@ Vector Vector::extend(int new_block_size) {
   Vector new_vec(comm, glob_num_blocks, new_block_size, row_or_col, true);
   new_vec.init_vec();
   double *d_vec2 = new_vec.get_d_vec();
-  UtilKernels::extend_vector(d_vec, d_vec2, num_blocks, block_size,
-                             new_block_size, 0);
+  if (on_grid()) {
+    UtilKernels::extend_vector(d_vec, d_vec2, num_blocks, block_size,
+                               new_block_size, 0);
+  }
   return new_vec;
 }
 
@@ -702,7 +704,80 @@ Vector Vector::shrink(int new_block_size) {
   Vector new_vec(comm, glob_num_blocks, new_block_size, row_or_col, true);
   new_vec.init_vec();
   double *d_vec2 = new_vec.get_d_vec();
-  UtilKernels::shrink_vector(d_vec, d_vec2, num_blocks, block_size,
-                             new_block_size, 0);
+  if (on_grid()) {
+    UtilKernels::shrink_vector(d_vec, d_vec2, num_blocks, block_size,
+                               new_block_size, 0);
+  }
   return new_vec;
+}
+
+void Vector::extend(Vector &out) {
+  // 1. Check dimensions
+  if (out.get_num_blocks() != num_blocks) {
+    // Handle error: mismatched number of blocks
+    fprintf(stderr, "Error: extend destination has different num_blocks\n");
+    return;
+  }
+  if (out.get_block_size() <= block_size) {
+    fprintf(stderr, "Error: extend destination block size must be larger\n");
+    return;
+  }
+
+  // 2. Launch Kernel
+  if (on_grid()) {
+    UtilKernels::extend_vector(d_vec, out.get_d_vec(), num_blocks, block_size,
+                               out.get_block_size(), nullptr);
+  }
+}
+
+void Vector::shrink(Vector &out) {
+  // 1. Check dimensions
+  if (out.get_num_blocks() != num_blocks) {
+    fprintf(stderr, "Error: shrink destination has different num_blocks\n");
+    return;
+  }
+  if (out.get_block_size() >= block_size) {
+    fprintf(stderr, "Error: shrink destination block size must be smaller\n");
+    return;
+  }
+
+  // 2. Launch Kernel
+  if (on_grid()) {
+    UtilKernels::shrink_vector(d_vec, out.get_d_vec(), num_blocks, block_size,
+                               out.get_block_size(), nullptr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                    RESIZE
+// -----------------------------------------------------------------------------
+
+void Vector::resize(Vector &out) {
+  if (out.get_num_blocks() != num_blocks) {
+    fprintf(stderr, "Error: resize destination has different num_blocks\n");
+    return;
+  }
+
+  int my_bs = block_size;
+  int out_bs = out.get_block_size();
+
+  if (out_bs > my_bs) {
+    this->extend(out);
+  } else if (out_bs < my_bs) {
+    this->shrink(out);
+  } else {
+    // Sizes are equal, just copy
+    this->copy(out);
+  }
+}
+
+// The "return-by-value" version of resize
+Vector Vector::resize(int new_block_size) {
+  // Create new vector with correct dimensions
+  Vector out(comm, num_blocks, new_block_size, row_or_col);
+
+  // Call the void version to fill it
+  this->resize(out);
+
+  return out;
 }

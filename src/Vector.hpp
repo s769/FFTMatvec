@@ -317,11 +317,36 @@ public:
   Vector extend(int new_block_size);
 
   /**
+   * @brief Extends the vector to a new block size.
+   * @param out The vector to be extended.
+   */
+  void extend(Vector &out);
+
+  /**
    * @brief Shrinks the vector to a new block size.
    * @param new_block_size The new block size.
    * @return The shrunken vector.
    */
   Vector shrink(int new_block_size);
+
+  /**
+   * @brief Shrinks the vector to a new block size.
+   * @param out The vector to be shrunken.
+   */
+  void shrink(Vector &out);
+
+  /**
+   * @brief Resizes the vector to a new block size.
+   * @param new_block_size The new block size.
+   * @return The resized vector.
+   */
+  Vector resize(int new_block_size);
+
+  /**
+   * @brief Resizes the vector to a new block size.
+   * @param out The vector to be resized.
+   */
+  void resize(Vector &out);
 
   // /**
   //  * @brief Converts from SOTI to TOSI ordering.
