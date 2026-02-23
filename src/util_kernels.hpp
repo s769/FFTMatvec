@@ -88,13 +88,67 @@ void swap_axes_cutranspose(const T_complex *d_in, T_complex *d_out,
                            const unsigned int num_cols,
                            const unsigned int num_rows,
                            const unsigned int block_size, cudaStream_t s);
+/**
+ * @brief Extends a vector by padding each block with zeros.
+ *
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param num_blocks Number of blocks in the vector.
+ * @param current_block_size Current size of each block.
+ * @param new_block_size New size of each block after padding.
+ * @param s The CUDA stream to use for the operation.
+ */
+void extend_vector(const double *d_in, double *d_out, size_t num_blocks,
+                   size_t current_block_size, size_t new_block_size,
+                   cudaStream_t s);
+/**
+ * @brief Shrinks a vector by removing padding.
+ *
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param num_blocks Number of blocks in the vector.
+ * @param current_block_size Current size of each block.
+ * @param new_block_size New size of each block after padding.
+ * @param s The CUDA stream to use for the operation.
+ */
+void shrink_vector(const double *d_in, double *d_out, size_t num_blocks,
+                   size_t current_block_size, size_t new_block_size,
+                   cudaStream_t s);
 
-void extend_vector(const double *d_in, double *d_out, unsigned int num_blocks,
-                   unsigned int current_block_size, unsigned int new_block_size,
-                   cudaStream_t s);
-void shrink_vector(const double *d_in, double *d_out, unsigned int num_blocks,
-                   unsigned int current_block_size, unsigned int new_block_size,
-                   cudaStream_t s);
+/**
+ * @brief Computes the element-wise (Hadamard) product of two vectors: d_out[i]
+ * = d_in1[i] * d_in2[i]
+ * @param d_in1 Pointer to the first input vector.
+ * @param d_in2 Pointer to the second input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_multiply(const double *d_in1, const double *d_in2,
+                          double *d_out, size_t size, cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise (Hadamard) quotient of two vectors: d_out[i]
+ * = d_in1[i] / d_in2[i]
+ * @param d_in1 Pointer to the first input vector.
+ * @param d_in2 Pointer to the second input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_divide(const double *d_in1, const double *d_in2, double *d_out,
+                        size_t size, cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise inverse of a vector: d_out[i] = 1.0 /
+ * d_in[i]
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_inverse(const double *d_in, double *d_out, size_t size,
+                         cudaStream_t s);
 
 } // namespace UtilKernels
 

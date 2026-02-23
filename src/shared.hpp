@@ -30,12 +30,10 @@
 #include <fstream>
 #include <highfive/highfive.hpp>
 
-
 #include <cublas_v2.h>
 #include <omp.h>
 
-
-#define TIME_MPI 1
+#define TIME_MPI 0
 #define ERR_CHK 1
 #define INDICES_64_BIT 0
 #define ROW_SETUP 1
@@ -68,7 +66,6 @@ typedef float2 ComplexF;
 
 #include "comm_error_checkers.h"
 #include "error_checkers.h"
-
 
 #if TIME_MPI
 template <typename E, class T, std::size_t N>

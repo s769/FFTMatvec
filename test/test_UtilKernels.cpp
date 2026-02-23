@@ -381,8 +381,8 @@ TEST(UtilKernelsResizeTest, ExtendVector) {
   const unsigned int current_block_size = 5;
   const unsigned int new_block_size = 12; // Must be > current_block_size
 
-  const size_t in_count = num_blocks * current_block_size;
-  const size_t out_count = num_blocks * new_block_size;
+  const size_t in_count = (size_t)num_blocks * current_block_size;
+  const size_t out_count = (size_t)num_blocks * new_block_size;
 
   // Allocate Device Memory
   double *d_in = nullptr;
@@ -436,8 +436,8 @@ TEST(UtilKernelsResizeTest, ShrinkVector) {
   const unsigned int current_block_size = 12;
   const unsigned int new_block_size = 5; // Must be < current_block_size
 
-  const size_t in_count = num_blocks * current_block_size;
-  const size_t out_count = num_blocks * new_block_size;
+  const size_t in_count = (size_t)num_blocks * current_block_size;
+  const size_t out_count = (size_t)num_blocks * new_block_size;
 
   // Allocate Device Memory
   double *d_in = nullptr;
@@ -475,6 +475,118 @@ TEST(UtilKernelsResizeTest, ShrinkVector) {
   }
 
   // Cleanup
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
+
+//============================================================================//
+//               ELEMENT-WISE MULTIPLY / DIVIDE KERNEL TESTS                  //
+//============================================================================//
+
+TEST(UtilKernelsMathTest, ElementwiseMultiply) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  // Allocate Device Memory
+  double *d_in1 = nullptr, *d_in2 = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in1, bytes));
+  gpuErrchk(cudaMalloc(&d_in2, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  // Prepare Input Data
+  std::vector<double> h_in1(size);
+  std::vector<double> h_in2(size);
+  for (size_t i = 0; i < size; ++i) {
+    h_in1[i] = 2.0 * i;
+    h_in2[i] = 3.0;
+  }
+
+  gpuErrchk(cudaMemcpy(d_in1, h_in1.data(), bytes, cudaMemcpyHostToDevice));
+  gpuErrchk(cudaMemcpy(d_in2, h_in2.data(), bytes, cudaMemcpyHostToDevice));
+
+  // Run Kernel
+  UtilKernels::elementwise_multiply(d_in1, d_in2, d_out, size, nullptr);
+
+  // Retrieve Output
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  // Verification
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], h_in1[i] * h_in2[i])
+        << "Mismatch at index " << i;
+  }
+
+  // Cleanup
+  cudaFree(d_in1);
+  cudaFree(d_in2);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ElementwiseDivide) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  // Allocate Device Memory
+  double *d_in1 = nullptr, *d_in2 = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in1, bytes));
+  gpuErrchk(cudaMalloc(&d_in2, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  // Prepare Input Data
+  std::vector<double> h_in1(size);
+  std::vector<double> h_in2(size);
+  for (size_t i = 0; i < size; ++i) {
+    h_in1[i] = 10.0 * i;
+    h_in2[i] = 2.0; // Avoid divide by zero
+  }
+
+  gpuErrchk(cudaMemcpy(d_in1, h_in1.data(), bytes, cudaMemcpyHostToDevice));
+  gpuErrchk(cudaMemcpy(d_in2, h_in2.data(), bytes, cudaMemcpyHostToDevice));
+
+  // Run Kernel
+  UtilKernels::elementwise_divide(d_in1, d_in2, d_out, size, nullptr);
+
+  // Retrieve Output
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  // Verification
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], h_in1[i] / h_in2[i])
+        << "Mismatch at index " << i;
+  }
+
+  // Cleanup
+  cudaFree(d_in1);
+  cudaFree(d_in2);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ElementwiseInverse) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in(size);
+  for (size_t i = 0; i < size; ++i) {
+    h_in[i] = 4.0; // Avoid divide by zero
+  }
+
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::elementwise_inverse(d_in, d_out, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 1.0 / h_in[i]) << "Mismatch at index " << i;
+  }
+
   cudaFree(d_in);
   cudaFree(d_out);
 }

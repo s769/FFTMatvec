@@ -330,32 +330,21 @@ template void UtilKernels::unpad_repad_vector<double, float>(
     const double *, float *, unsigned int, unsigned int, bool, cudaStream_t);
 
 // Extend vector kernels (only double for now)
-
+// -----------------------------------------------------------------------------
+//                                    KERNELS
+// -----------------------------------------------------------------------------
 __global__ void extend_vector_kernel(const double *d_in, double *d_out,
-                                     unsigned int num_blocks,
-                                     unsigned int current_block_size,
-                                     unsigned int new_block_size) {
-  // 1. Grid-Stride Loop over the "blocks" (rows)
-  // This allows the kernel to handle any 'num_blocks' regardless of grid size
-  // limits.
-  for (unsigned int bid = blockIdx.x; bid < num_blocks; bid += gridDim.x) {
-
-    // Pre-calculate base pointers for this specific block to save registers
-    // d_in + (bid * current_block_size)
+                                     size_t num_blocks,
+                                     size_t current_block_size,
+                                     size_t new_block_size) {
+  for (size_t bid = blockIdx.x; bid < num_blocks; bid += gridDim.x) {
     const double *block_in_ptr = d_in + (bid * current_block_size);
-
-    // d_out + (bid * new_block_size)
     double *block_out_ptr = d_out + (bid * new_block_size);
 
-    // 2. Block-Stride Loop over elements within the block (columns)
-    // Multiple threads work together to copy/pad one block.
-    for (unsigned int i = threadIdx.x; i < new_block_size; i += blockDim.x) {
-
+    for (size_t i = threadIdx.x; i < new_block_size; i += blockDim.x) {
       if (i < current_block_size) {
-        // Coalesced Read & Write
         block_out_ptr[i] = block_in_ptr[i];
       } else {
-        // Coalesced Write (Padding)
         block_out_ptr[i] = 0.0;
       }
     }
@@ -363,52 +352,46 @@ __global__ void extend_vector_kernel(const double *d_in, double *d_out,
 }
 
 __global__ void shrink_vector_kernel(const double *d_in, double *d_out,
-                                     unsigned int num_blocks,
-                                     unsigned int current_block_size,
-                                     unsigned int new_block_size) {
-  // 1. Grid-Stride Loop over the "blocks" (rows)
-  // Handle situations where num_blocks > gridDim.x
-  for (unsigned int bid = blockIdx.x; bid < num_blocks; bid += gridDim.x) {
-
-    // Calculate the starting position for this specific block
-    // Input jumps by the LARGER size (current_block_size)
+                                     size_t num_blocks,
+                                     size_t current_block_size,
+                                     size_t new_block_size) {
+  for (size_t bid = blockIdx.x; bid < num_blocks; bid += gridDim.x) {
     const double *block_in_ptr = d_in + (bid * current_block_size);
-
-    // Output jumps by the SMALLER size (new_block_size)
     double *block_out_ptr = d_out + (bid * new_block_size);
 
-    // 2. Block-Stride Loop over elements within the block (columns)
-    // CRITICAL: We iterate only up to 'new_block_size' (the truncation limit).
-    // Any data in d_in beyond this index is simply ignored.
-    for (unsigned int i = threadIdx.x; i < new_block_size; i += blockDim.x) {
-
-      // Coalesced Read & Write
-      // Threads 0-31 read/write consecutive addresses.
+    for (size_t i = threadIdx.x; i < new_block_size; i += blockDim.x) {
       block_out_ptr[i] = block_in_ptr[i];
     }
   }
 }
 
-void UtilKernels::extend_vector(const double *d_in, double *d_out,
-                                unsigned int num_blocks,
-                                unsigned int current_block_size,
-                                unsigned int new_block_size, cudaStream_t s) {
-  // 128 or 256 threads is usually the "sweet spot" for occupancy
-  unsigned int threads_per_block = 256;
-
-  // Calculate Grid Size
-  // We map 1 CUDA block to handle 1 (or more) data blocks.
-  // We cap the grid size to prevent launch overhead for massive arrays.
-  // 4 * number of SMs is a good heuristic, but simply using 'num_blocks'
-  // capped at a reasonable limit (e.g., 65535 or device limit) works well.
-
-  unsigned int grid_size = num_blocks;
-
-  // Safety cap: Don't launch 1 million blocks.
-  // 10-20k blocks is usually enough to saturate any modern GPU.
-  if (grid_size > 16384) {
-    grid_size = 16384;
+__global__ void elementwise_multiply_kernel(const double *d_in1,
+                                            const double *d_in2, double *d_out,
+                                            size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = d_in1[i] * d_in2[i];
   }
+}
+
+__global__ void elementwise_divide_kernel(const double *d_in1,
+                                          const double *d_in2, double *d_out,
+                                          size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = d_in1[i] / d_in2[i];
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHERS
+// -----------------------------------------------------------------------------
+void UtilKernels::extend_vector(const double *d_in, double *d_out,
+                                size_t num_blocks, size_t current_block_size,
+                                size_t new_block_size, cudaStream_t s) {
+  unsigned int threads_per_block = 256;
+  unsigned int grid_size =
+      (num_blocks > 16384) ? 16384 : (unsigned int)num_blocks;
 
   extend_vector_kernel<<<grid_size, threads_per_block, 0, s>>>(
       d_in, d_out, num_blocks, current_block_size, new_block_size);
@@ -417,27 +400,72 @@ void UtilKernels::extend_vector(const double *d_in, double *d_out,
 }
 
 void UtilKernels::shrink_vector(const double *d_in, double *d_out,
-                                unsigned int num_blocks,
-                                unsigned int current_block_size,
-                                unsigned int new_block_size, cudaStream_t s) {
+                                size_t num_blocks, size_t current_block_size,
+                                size_t new_block_size, cudaStream_t s) {
   unsigned int threads_per_block = 256;
-
-  // Calculate Grid Size
-  // We map 1 CUDA block to handle 1 (or more) data blocks.
-  // We cap the grid size to prevent launch overhead for massive arrays.
-  // 4 * number of SMs is a good heuristic, but simply using 'num_blocks'
-  // capped at a reasonable limit (e.g., 65535 or device limit) works well.
-
-  unsigned int grid_size = num_blocks;
-
-  // Safety cap: Don't launch 1 million blocks.
-  // 10-20k blocks is usually enough to saturate any modern GPU.
-  if (grid_size > 16384) {
-    grid_size = 16384;
-  }
+  unsigned int grid_size =
+      (num_blocks > 16384) ? 16384 : (unsigned int)num_blocks;
 
   shrink_vector_kernel<<<grid_size, threads_per_block, 0, s>>>(
       d_in, d_out, num_blocks, current_block_size, new_block_size);
 
   gpuErrchk(cudaPeekAtLastError());
+}
+
+void UtilKernels::elementwise_multiply(const double *d_in1, const double *d_in2,
+                                       double *d_out, size_t size,
+                                       cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_multiply_kernel<<<blocks, threads_per_block, 0, s>>>(d_in1, d_in2,
+                                                                   d_out, size);
+}
+
+void UtilKernels::elementwise_divide(const double *d_in1, const double *d_in2,
+                                     double *d_out, size_t size,
+                                     cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_divide_kernel<<<blocks, threads_per_block, 0, s>>>(d_in1, d_in2,
+                                                                 d_out, size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_inverse_kernel(const double *d_in, double *d_out,
+                                           size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = 1.0 / d_in[i];
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_inverse(const double *d_in, double *d_out,
+                                      size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_inverse_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out,
+                                                                  size);
 }

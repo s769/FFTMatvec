@@ -687,18 +687,6 @@ TEST_F(VectorTest, SetDVec) {
   }
 }
 
-TEST_F(VectorTest, DotOperator) {
-
-  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
-  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
-  x.init_vec_ones();
-  y.init_vec_ones();
-  double dot = x * y;
-  if (comm->get_world_rank() == 0) {
-    ASSERT_EQ(dot, x.get_glob_num_blocks() * x.get_block_size());
-  }
-}
-
 TEST_F(VectorTest, CopyToVector) {
 
   Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
@@ -1120,6 +1108,347 @@ TEST_F(VectorTest, ResizeWrapperCopy) {
     }
     delete[] h_x;
     delete[] h_y;
+  }
+}
+
+//============================================================================//
+//                     VECTOR ELEMENT-WISE MATH TESTS                         //
+//============================================================================//
+
+TEST_F(VectorTest, ElementwiseMultiplyMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(2.0); // x is all 2.0
+  y.scale(3.0); // y is all 3.0
+
+  // Explicit Method Return-by-Value
+  Vector z = x.elementwise_multiply(y);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 6.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMultiplyInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(4.0);
+  y.scale(5.0);
+
+  // Explicit In-place Method
+  x.elementwise_multiply_inplace(y);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 20.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseDivideMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(10.0);
+  y.scale(2.0);
+
+  // Explicit Method Return-by-Value
+  Vector z = x.elementwise_divide(y);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 5.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseDivideInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(12.0);
+  y.scale(3.0);
+
+  // Explicit In-place Method
+  x.elementwise_divide_inplace(y);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 4.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMultiplyOperator) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(2.0);
+  y.scale(7.0);
+
+  // Test operator*
+  Vector z = x * y;
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 14.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseDivideOperator) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(15.0);
+  y.scale(3.0);
+
+  // Test operator/
+  Vector z = x / y;
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 5.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMultiplyEqualOperator) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(8.0);
+  y.scale(2.0);
+
+  // Test operator*=
+  x *= y;
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 16.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseDivideEqualOperator) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(20.0);
+  y.scale(4.0);
+
+  // Test operator/=
+  x /= y;
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 5.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseInverseMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(5.0); // x is all 5.0
+
+  // Explicit out-of-place method
+  Vector z = x.elementwise_inverse();
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 0.2); // 1.0 / 5.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseInverseInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(8.0); // x is all 8.0
+
+  // Explicit in-place method
+  x.elementwise_inverse_inplace();
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 0.125); // 1.0 / 8.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseInverseOperator) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(10.0); // x is all 10.0
+
+  // Test the friend operator (1.0 / Vector)
+  Vector z = 1.0 / x;
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 0.1); // 1.0 / 10.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseCombinedFormulas) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+
+  x.scale(2.0); // x is all 2.0
+  y.scale(4.0); // y is all 4.0
+
+  // Test 1: Temporary on the Right -> y * (1.0 / x)
+  // Evaluates to: 4.0 * (1.0 / 2.0) = 2.0
+  Vector z1 = y * (1.0 / x);
+
+  // Test 2: Temporary on both sides -> (1.0 / x) * (1.0 / y)
+  // Evaluates to: (1.0 / 2.0) * (1.0 / 4.0) = 0.125
+  Vector z2 = (1.0 / x) * (1.0 / y);
+
+  // Test 3: Temporary inside friend -> 1.0 / (x * y)
+  // Evaluates to: 1.0 / (2.0 * 4.0) = 0.125
+  Vector z3 = 1.0 / (x * y);
+
+  if (z1.on_grid()) {
+    double *h_vec1 =
+        new double[(size_t)z1.get_num_blocks() * z1.get_block_size()];
+    double *h_vec2 =
+        new double[(size_t)z2.get_num_blocks() * z2.get_block_size()];
+    double *h_vec3 =
+        new double[(size_t)z3.get_num_blocks() * z3.get_block_size()];
+
+    size_t bytes =
+        (size_t)z1.get_num_blocks() * z1.get_block_size() * sizeof(double);
+
+    gpuErrchk(
+        cudaMemcpy(h_vec1, z1.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(
+        cudaMemcpy(h_vec2, z2.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(
+        cudaMemcpy(h_vec3, z3.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z1.get_num_blocks() * z1.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec1[i], 2.0);
+      ASSERT_EQ(h_vec2[i], 0.125);
+      ASSERT_EQ(h_vec3[i], 0.125);
+    }
+    delete[] h_vec1;
+    delete[] h_vec2;
+    delete[] h_vec3;
   }
 }
 

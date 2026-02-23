@@ -116,13 +116,6 @@ public:
   friend Vector operator*(double alpha, Vector &x) { return x.wscale(alpha); }
 
   /**
-   * @brief Dot product operator for the Vector class.
-   * @param x The Vector object with which to compute the dot product.
-   * @return The dot product of the two vectors.
-   */
-  double operator*(Vector &x) { return dot(x); }
-
-  /**
    * @brief Scalar division operator for the Vector class.
    * @param alpha The constant by which to divide the vector.
    * @return The scaled vector.
@@ -168,6 +161,114 @@ public:
   Vector &operator/=(double alpha) {
     this->scale(1.0 / alpha);
     return *this;
+  }
+
+  /**
+   * @brief Computes the element-wise product of this vector and another.
+   * @param other The vector to multiply with.
+   * @return A new vector containing the element-wise product.
+   */
+  Vector elementwise_multiply(Vector &other);
+
+  /**
+   * @brief Performs an in-place element-wise multiplication with another
+   * vector.
+   * @param other The vector to multiply with.
+   */
+  void elementwise_multiply_inplace(Vector &other);
+
+  /**
+   * @brief Computes the element-wise division of this vector by another.
+   * @param other The vector to divide by.
+   * @return A new vector containing the element-wise quotient.
+   */
+  Vector elementwise_divide(Vector &other);
+
+  /**
+   * @brief Performs an in-place element-wise division by another vector.
+   * @param other The vector to divide by.
+   */
+  void elementwise_divide_inplace(Vector &other);
+
+  /**
+   * @brief Element-wise multiplication operator for the Vector class.
+   * @param other The Vector object to multiply with.
+   * @return A new vector containing the element-wise product.
+   */
+  Vector operator*(Vector &other) { return elementwise_multiply(other); }
+
+  /**
+   * @brief Element-wise division operator for the Vector class.
+   * @param other The Vector object to divide by.
+   * @return A new vector containing the element-wise quotient.
+   */
+  Vector operator/(Vector &other) { return elementwise_divide(other); }
+
+  /**
+   * @brief Element-wise multiplicative assignment operator for the Vector
+   * class.
+   * @param other The Vector object to multiply with.
+   * @return The modified vector.
+   */
+  Vector &operator*=(Vector &other) {
+    this->elementwise_multiply_inplace(other);
+    return *this;
+  }
+
+  /**
+   * @brief Element-wise division assignment operator for the Vector class.
+   * @param other The Vector object to divide by.
+   * @return The modified vector.
+   */
+  Vector &operator/=(Vector &other) {
+    this->elementwise_divide_inplace(other);
+    return *this;
+  }
+
+  /**
+   * @brief R-value overload to allow chaining (e.g., y * (1.0 / x))
+   */
+  Vector operator*(Vector &&other) { return elementwise_multiply(other); }
+
+  /**
+   * @brief R-value overload to allow chaining (e.g., y / (1.0 / x))
+   */
+  Vector operator/(Vector &&other) { return elementwise_divide(other); }
+
+  /**
+   * @brief R-value overload to allow chaining (e.g., 1.0 / (x * y))
+   */
+  friend Vector operator/(double numerator, Vector &&v) {
+    Vector res = v.elementwise_inverse();
+    if (numerator != 1.0) {
+      res *= numerator;
+    }
+    return res;
+  }
+
+  /**
+   * @brief Computes the element-wise inverse (1.0 / x_i) of this vector.
+   * @return A new vector containing the inverted elements.
+   */
+  Vector elementwise_inverse();
+
+  /**
+   * @brief Performs an in-place element-wise inversion (x_i = 1.0 / x_i).
+   */
+  void elementwise_inverse_inplace();
+
+  /**
+   * @brief Allows the syntax: Vector y = 1.0 / x;
+   * @param numerator The scalar numerator (typically 1.0).
+   * @param v The Vector object to invert.
+   * @return A new vector containing (numerator / v_i).
+   */
+  friend Vector operator/(double numerator, Vector &v) {
+    Vector res = v.elementwise_inverse();
+    if (numerator != 1.0) {
+      res *= numerator; // Scale if they did something like 5.0 / x
+    }
+    return res;
   }
 
   /**

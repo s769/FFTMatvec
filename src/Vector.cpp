@@ -781,3 +781,108 @@ Vector Vector::resize(int new_block_size) {
 
   return out;
 }
+
+// -----------------------------------------------------------------------------
+//                     ELEMENT-WISE MULTIPLY / DIVIDE
+// -----------------------------------------------------------------------------
+
+Vector Vector::elementwise_multiply(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr, "Error: Vector dimensions must match for elementwise "
+                      "multiplication.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_multiply(d_vec, other.get_d_vec(),
+                                      result.get_d_vec(), total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_multiply_inplace(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr, "Error: Vector dimensions must match for elementwise "
+                      "multiplication.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_multiply(d_vec, other.get_d_vec(), d_vec,
+                                      total_size, nullptr);
+  }
+}
+
+Vector Vector::elementwise_divide(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(
+          stderr,
+          "Error: Vector dimensions must match for elementwise division.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_divide(d_vec, other.get_d_vec(),
+                                    result.get_d_vec(), total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_divide_inplace(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(
+          stderr,
+          "Error: Vector dimensions must match for elementwise division.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_divide(d_vec, other.get_d_vec(), d_vec, total_size,
+                                    nullptr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                            ELEMENT-WISE INVERSE
+// -----------------------------------------------------------------------------
+
+Vector Vector::elementwise_inverse() {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_inverse(d_vec, result.get_d_vec(), total_size,
+                                     nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_inverse_inplace() {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_inverse(d_vec, d_vec, total_size, nullptr);
+  }
+}
