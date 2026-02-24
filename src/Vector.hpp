@@ -191,6 +191,99 @@ public:
   void elementwise_divide_inplace(Vector &other);
 
   /**
+   * @brief Computes the element-wise power (x_i ^ p) of this vector.
+   * @param exponent The power to raise the elements to.
+   * @return A new vector containing the powered elements.
+   */
+  Vector pow(double exponent);
+
+  /**
+   * @brief Performs an in-place element-wise power operation (x_i = x_i ^ p).
+   * @param exponent The power to raise the elements to.
+   */
+  void pow_inplace(double exponent);
+
+  /**
+   * @brief Adds a scalar to each element of this vector.
+   * @param scalar The scalar value to add.
+   * @return A new vector containing the shifted elements.
+   */
+  Vector add_scalar(double scalar);
+
+  /**
+   * @brief Performs an in-place scalar addition (x_i = x_i + scalar).
+   * @param scalar The scalar value to add.
+   */
+  void add_scalar_inplace(double scalar);
+
+  /**
+   * @brief Computes the fused element-wise multiply-add: this_i * y_i + z_i.
+   * @param y The vector to multiply with.
+   * @param z The vector to add.
+   * @return A new vector containing the result.
+   */
+  Vector elementwise_multiply_add(Vector &y, Vector &z);
+
+  /**
+   * @brief Performs an in-place fused element-wise multiply-add: this_i =
+   * this_i * y_i + z_i.
+   * @param y The vector to multiply with.
+   * @param z The vector to add.
+   */
+  void elementwise_multiply_add_inplace(Vector &y, Vector &z);
+
+  /**
+   * @brief Scalar addition operator (Vector + scalar).
+   */
+  Vector operator+(double scalar) { return add_scalar(scalar); }
+
+  /**
+   * @brief Scalar addition operator (scalar + Vector).
+   */
+  friend Vector operator+(double scalar, Vector &v) {
+    return v.add_scalar(scalar);
+  }
+  friend Vector operator+(double scalar, Vector &&v) {
+    return v.add_scalar(scalar);
+  } // R-value overload
+
+  /**
+   * @brief Scalar subtraction operator (Vector - scalar).
+   */
+  Vector operator-(double scalar) { return add_scalar(-scalar); }
+
+  /**
+   * @brief Scalar subtraction operator (scalar - Vector).
+   * Calculates: scalar - x_i
+   */
+  friend Vector operator-(double scalar, Vector &v) {
+    Vector res = v * -1.0;
+    res.add_scalar_inplace(scalar);
+    return res;
+  }
+  friend Vector operator-(double scalar, Vector &&v) {
+    Vector res = v * -1.0;
+    res.add_scalar_inplace(scalar);
+    return res;
+  }
+
+  /**
+   * @brief In-place scalar addition operator (Vector += scalar).
+   */
+  Vector &operator+=(double scalar) {
+    this->add_scalar_inplace(scalar);
+    return *this;
+  }
+
+  /**
+   * @brief In-place scalar subtraction operator (Vector -= scalar).
+   */
+  Vector &operator-=(double scalar) {
+    this->add_scalar_inplace(-scalar);
+    return *this;
+  }
+
+  /**
    * @brief Element-wise multiplication operator for the Vector class.
    * @param other The Vector object to multiply with.
    * @return A new vector containing the element-wise product.

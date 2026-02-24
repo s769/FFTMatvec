@@ -150,6 +150,44 @@ void elementwise_divide(const double *d_in1, const double *d_in2, double *d_out,
 void elementwise_inverse(const double *d_in, double *d_out, size_t size,
                          cudaStream_t s);
 
+/**
+ * @brief Computes the element-wise power of a vector: d_out[i] = pow(d_in[i],
+ * exponent)
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param exponent The scalar power to raise each element to.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_power(const double *d_in, double *d_out, double exponent,
+                       size_t size, cudaStream_t s);
+
+/**
+ * @brief Adds a scalar value to each element of a vector: d_out[i] = d_in[i] +
+ * scalar
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param scalar The scalar value to add.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void add_scalar(const double *d_in, double *d_out, double scalar, size_t size,
+                cudaStream_t s);
+
+/**
+ * @brief Computes the fused element-wise multiply-add of three vectors:
+ * d_out[i] = d_x[i] * d_y[i] + d_z[i]
+ * @param d_x Pointer to the first input vector (multiplicand).
+ * @param d_y Pointer to the second input vector (multiplier).
+ * @param d_z Pointer to the third input vector (addend).
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_multiply_add(const double *d_x, const double *d_y,
+                              const double *d_z, double *d_out, size_t size,
+                              cudaStream_t s);
+
 } // namespace UtilKernels
 
 #endif // __UTIL_KERNELS_H__

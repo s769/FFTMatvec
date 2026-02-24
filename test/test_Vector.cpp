@@ -1452,6 +1452,255 @@ TEST_F(VectorTest, ElementwiseCombinedFormulas) {
   }
 }
 
+TEST_F(VectorTest, ElementwisePowMethodFractional) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(16.0); // x is all 16.0
+
+  // Explicit out-of-place method: square root
+  Vector z = x.pow(0.5);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 4.0); // 16.0 ^ 0.5 = 4.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwisePowMethodNegative) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(10.0); // x is all 10.0
+
+  // Explicit out-of-place method: inverse
+  Vector z = x.pow(-1.0);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 0.1); // 10.0 ^ -1.0 = 0.1
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwisePowInplaceMethodVarious) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  // Part 1: Cube
+  x.init_vec_ones();
+  x.scale(5.0); // x is all 5.0
+  x.pow_inplace(3.0);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 125.0); // 5.0 ^ 3.0 = 125.0
+    }
+    delete[] h_vec;
+  }
+
+  // Part 2: Negative Fractional (-0.5) applied to the 125.0
+  // 125.0 ^ (-1/3) = 1/5 = 0.2
+  x.pow_inplace(-1.0 / 3.0);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      // Because -1/3 is a floating point representation, use ASSERT_NEAR for
+      // tolerance
+      ASSERT_NEAR(h_vec[i], 0.2, 1e-12);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ScalarAddMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(2.0); // x is all 2.0
+
+  // Explicit out-of-place method
+  Vector z = x.add_scalar(5.0);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 7.0); // 2.0 + 5.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ScalarAddInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(10.0); // x is all 10.0
+
+  // Explicit in-place method with negative number (subtraction)
+  x.add_scalar_inplace(-4.0);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 6.0); // 10.0 - 4.0
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ScalarOperators) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones(); // x is all 1.0
+
+  // Test 1: Vector + scalar
+  Vector z1 = x + 3.0; // Expected: 4.0
+
+  // Test 2: scalar + Vector
+  Vector z2 = 5.0 + x; // Expected: 6.0
+
+  // Test 3: Vector - scalar
+  Vector z3 = x - 0.5; // Expected: 0.5
+
+  // Test 4: scalar - Vector
+  Vector z4 = 10.0 - x; // Expected: 9.0
+
+  // Test 5: Vector += scalar
+  x += 7.0; // x is now 8.0
+
+  if (z1.on_grid()) {
+    size_t elements = (size_t)x.get_num_blocks() * x.get_block_size();
+    size_t bytes = elements * sizeof(double);
+
+    double *h_z1 = new double[elements];
+    double *h_z2 = new double[elements];
+    double *h_z3 = new double[elements];
+    double *h_z4 = new double[elements];
+    double *h_x = new double[elements];
+
+    gpuErrchk(cudaMemcpy(h_z1, z1.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(h_z2, z2.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(h_z3, z3.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(h_z4, z4.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(h_x, x.get_d_vec(), bytes, cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < elements; i++) {
+      ASSERT_EQ(h_z1[i], 4.0);
+      ASSERT_EQ(h_z2[i], 6.0);
+      ASSERT_EQ(h_z3[i], 0.5);
+      ASSERT_EQ(h_z4[i], 9.0);
+      ASSERT_EQ(h_x[i], 8.0);
+    }
+
+    delete[] h_z1;
+    delete[] h_z2;
+    delete[] h_z3;
+    delete[] h_z4;
+    delete[] h_x;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMultiplyAddMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector z = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  z.init_vec_ones();
+
+  x.scale(4.0);  // x is 4.0
+  y.scale(5.0);  // y is 5.0
+  z.scale(10.0); // z is 10.0
+
+  // Explicit out-of-place method: x * y + z = 4*5 + 10 = 30
+  Vector res = x.elementwise_multiply_add(y, z);
+
+  if (res.on_grid()) {
+    double *h_vec =
+        new double[(size_t)res.get_num_blocks() * res.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, res.get_d_vec(),
+                         (size_t)res.get_num_blocks() * res.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)res.get_num_blocks() * res.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 30.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMultiplyAddInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector z = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  z.init_vec_ones();
+
+  x.scale(2.0); // x is 2.0
+  y.scale(6.0); // y is 6.0
+  z.scale(8.0); // z is 8.0
+
+  // Explicit in-place method: x = x * y + z = 2*6 + 8 = 20
+  x.elementwise_multiply_add_inplace(y, z);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 20.0);
+    }
+    delete[] h_vec;
+  }
+}
+
 int main(int argc, char **argv) {
   // Filter out Google Test arguments
   ::testing::InitGoogleTest(&argc, argv);

@@ -886,3 +886,92 @@ void Vector::elementwise_inverse_inplace() {
     UtilKernels::elementwise_inverse(d_vec, d_vec, total_size, nullptr);
   }
 }
+
+// -----------------------------------------------------------------------------
+//                            ELEMENT-WISE POWER
+// -----------------------------------------------------------------------------
+
+Vector Vector::pow(double exponent) {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_power(d_vec, result.get_d_vec(), exponent,
+                                   total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::pow_inplace(double exponent) {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_power(d_vec, d_vec, exponent, total_size, nullptr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                            SCALAR ADDITION
+// -----------------------------------------------------------------------------
+
+Vector Vector::add_scalar(double scalar) {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::add_scalar(d_vec, result.get_d_vec(), scalar, total_size,
+                            nullptr);
+  }
+  return result;
+}
+
+void Vector::add_scalar_inplace(double scalar) {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::add_scalar(d_vec, d_vec, scalar, total_size, nullptr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                     ELEMENT-WISE MULTIPLY-ADD (FMA)
+// -----------------------------------------------------------------------------
+
+Vector Vector::elementwise_multiply_add(Vector &y, Vector &z) {
+  if (num_blocks != y.get_num_blocks() || block_size != y.get_block_size() ||
+      num_blocks != z.get_num_blocks() || block_size != z.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr, "Error: Vector dimensions must match for elementwise "
+                      "multiply-add.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_multiply_add(d_vec, y.get_d_vec(), z.get_d_vec(),
+                                          result.get_d_vec(), total_size,
+                                          nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_multiply_add_inplace(Vector &y, Vector &z) {
+  if (num_blocks != y.get_num_blocks() || block_size != y.get_block_size() ||
+      num_blocks != z.get_num_blocks() || block_size != z.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr, "Error: Vector dimensions must match for elementwise "
+                      "multiply-add.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_multiply_add(d_vec, y.get_d_vec(), z.get_d_vec(),
+                                          d_vec, total_size, nullptr);
+  }
+}

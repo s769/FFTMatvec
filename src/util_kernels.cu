@@ -469,3 +469,93 @@ void UtilKernels::elementwise_inverse(const double *d_in, double *d_out,
   elementwise_inverse_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out,
                                                                   size);
 }
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_power_kernel(const double *d_in, double *d_out,
+                                         double exponent, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    // Uses the CUDA math device function pow()
+    d_out[i] = pow(d_in[i], exponent);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_power(const double *d_in, double *d_out,
+                                    double exponent, size_t size,
+                                    cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_power_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out,
+                                                                exponent, size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void add_scalar_kernel(const double *d_in, double *d_out,
+                                  double scalar, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = d_in[i] + scalar;
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::add_scalar(const double *d_in, double *d_out, double scalar,
+                             size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  add_scalar_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out, scalar,
+                                                         size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_multiply_add_kernel(const double *d_x,
+                                                const double *d_y,
+                                                const double *d_z,
+                                                double *d_out, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    // fma(x, y, z) computes (x * y) + z as a single hardware operation
+    d_out[i] = fma(d_x[i], d_y[i], d_z[i]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_multiply_add(const double *d_x, const double *d_y,
+                                           const double *d_z, double *d_out,
+                                           size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_multiply_add_kernel<<<blocks, threads_per_block, 0, s>>>(
+      d_x, d_y, d_z, d_out, size);
+}

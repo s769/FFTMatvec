@@ -125,15 +125,85 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
            py::arg("other"))
       .def("elementwise_inverse", &Vector::elementwise_inverse)
       .def("elementwise_inverse_inplace", &Vector::elementwise_inverse_inplace)
+      .def("pow", &Vector::pow, py::arg("exponent"))
+      .def("pow_inplace", &Vector::pow_inplace, py::arg("exponent"))
+      .def("add_scalar", &Vector::add_scalar, py::arg("scalar"))
+      .def("add_scalar_inplace", &Vector::add_scalar_inplace, py::arg("scalar"))
+      .def("elementwise_multiply_add", &Vector::elementwise_multiply_add,
+           py::arg("y"), py::arg("z"))
+      .def("elementwise_multiply_add_inplace",
+           &Vector::elementwise_multiply_add_inplace, py::arg("y"),
+           py::arg("z"))
 
-      // Standard Python Magic Methods
+      // ==========================================
+      // Standard Python Magic Methods (Vector & Vector)
+      // ==========================================
       .def("__add__", [](Vector &a, Vector &b) { return a + b; })
       .def("__sub__", [](Vector &a, Vector &b) { return a - b; })
+      .def("__mul__", [](Vector &a, Vector &b) { return a * b; })
+      .def("__truediv__", [](Vector &a, Vector &b) { return a / b; })
+
+      // In-place Vector-Vector operations
+      .def("__iadd__",
+           [](Vector &a, Vector &b) -> Vector & {
+             a += b;
+             return a;
+           })
+      .def("__isub__",
+           [](Vector &a, Vector &b) -> Vector & {
+             a -= b;
+             return a;
+           })
+      .def("__imul__",
+           [](Vector &a, Vector &b) -> Vector & {
+             a *= b;
+             return a;
+           })
+      .def("__itruediv__",
+           [](Vector &a, Vector &b) -> Vector & {
+             a /= b;
+             return a;
+           })
+
+      // ==========================================
+      // Standard Python Magic Methods (Vector & Scalar)
+      // ==========================================
+      .def("__add__", [](Vector &a, double scalar) { return a + scalar; })
+      .def("__radd__", [](Vector &a, double scalar) { return scalar + a; })
+      .def("__sub__", [](Vector &a, double scalar) { return a - scalar; })
+      .def("__rsub__", [](Vector &a, double scalar) { return scalar - a; })
       .def("__mul__", [](Vector &a, double alpha) { return a * alpha; })
       .def("__rmul__", [](Vector &a, double alpha) { return alpha * a; })
       .def("__truediv__", [](Vector &a, double alpha) { return a / alpha; })
-      .def("__mul__", [](Vector &a, Vector &b) { return a * b; })
-      .def("__truediv__", [](Vector &a, Vector &b) { return a / b; })
+
+      // Right-side scalar division (e.g., 1.0 / x)
+      .def("__rtruediv__",
+           [](Vector &a, double numerator) { return numerator / a; })
+
+      .def("__pow__",
+           [](Vector &a, double exponent) { return a.pow(exponent); })
+
+      // In-place Vector-Scalar operations
+      .def("__iadd__",
+           [](Vector &a, double scalar) -> Vector & {
+             a += scalar;
+             return a;
+           })
+      .def("__isub__",
+           [](Vector &a, double scalar) -> Vector & {
+             a -= scalar;
+             return a;
+           })
+      .def("__imul__",
+           [](Vector &a, double alpha) -> Vector & {
+             a *= alpha;
+             return a;
+           })
+      .def("__itruediv__",
+           [](Vector &a, double alpha) -> Vector & {
+             a /= alpha;
+             return a;
+           })
 
       // Utilities
       .def("print", &Vector::print, py::arg("name") = "")
