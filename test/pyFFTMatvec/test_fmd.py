@@ -20,7 +20,7 @@ def test_fmd():
     if proc_rows > proc_cols:
         proc_cols, proc_rows = proc_rows, proc_cols
 
-    grid_comm = pyFFTMatvec.Comm(proc_rows, proc_cols)
+    grid_comm = pyFFTMatvec.Comm(comm, proc_rows, proc_cols)
 
     # Resolve Paths (assuming data is in test/data/)
     # We use relpath to go up one directory from test/pyFFTMatvec/ to test/data/

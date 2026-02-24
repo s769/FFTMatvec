@@ -40,11 +40,17 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
   // 2. Bind Comm
   // ==========================================
   py::class_<Comm>(m, "Comm")
-      .def(py::init([](int proc_rows, int proc_cols) {
-             MPI_Comm comm = MPI_COMM_WORLD;
+      .def(py::init([](py::object py_comm, int proc_rows, int proc_cols) {
+             // Extract the underlying Fortran integer handle from the mpi4py
+             // object
+             MPI_Fint f_comm = py_comm.attr("py2f")().cast<MPI_Fint>();
+
+             // Convert the Fortran handle back to a native C++ MPI_Comm
+             MPI_Comm comm = MPI_Comm_f2c(f_comm);
+
              return new Comm(comm, proc_rows, proc_cols, 0);
            }),
-           py::arg("proc_rows"), py::arg("proc_cols"))
+           py::arg("comm"), py::arg("proc_rows"), py::arg("proc_cols"))
       .def("get_device", &Comm::get_device)
       .def("get_world_rank", &Comm::get_world_rank)
       .def("get_world_size", &Comm::get_world_size)

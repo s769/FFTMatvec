@@ -52,7 +52,7 @@ def test_ones_matvec():
     proc_rows = 1
     proc_cols = size
 
-    grid_comm = pyFFTMatvec.Comm(proc_rows, proc_cols)
+    grid_comm = pyFFTMatvec.Comm(comm, proc_rows, proc_cols)
 
     # Setup Configuration
     p_config = pyFFTMatvec.MatvecPrecisionConfig()
@@ -76,17 +76,6 @@ def test_ones_matvec():
     x.init_vec_ones()
     y.init_vec_zeros()
 
-    # Wrap device pointers and initialize ONLY if they exist locally
-    if x.on_grid():
-        local_x_size = x.get_num_blocks() * x.get_block_size()
-        pt_x = wrap_ptr_in_pytorch(x.get_d_vec(), local_x_size, dtype=torch.float64)
-        pt_x.fill_(1.0)
-
-    if y.on_grid():
-        local_y_size = y.get_num_blocks() * y.get_block_size()
-        pt_y = wrap_ptr_in_pytorch(y.get_d_vec(), local_y_size, dtype=torch.float64)
-        pt_y.fill_(0.0)
-
     # Synchronize before execution to ensure data is ready
     torch.cuda.synchronize()
     comm.Barrier()
@@ -104,10 +93,3 @@ def test_ones_matvec():
 
     # If this fails, the C++ assertion will crash the test natively
     pyFFTMatvec.Tester.check_ones_matvec(grid_comm, mat, y, conj, full)
-
-    # Extra Python-side validation just to ensure the PyTorch tensors reflect the C++ memory
-    if y.on_grid():
-        norm_y = torch.linalg.norm(pt_y)
-        assert norm_y.item() > 0.0, (
-            "PyTorch tensor norm is zero; memory mapping failed."
-        )

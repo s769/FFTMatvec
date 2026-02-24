@@ -19,3 +19,4 @@ cmake.args = ["-DCMAKE_BUILD_TYPE=Release",
               "-DCUDA_ARCH=80;90", 
               "-DBUILD_PYTHON_BINDINGS=ON", 
               "-DENABLE_PROFILING=OFF"] # set to ON for profiling
+wheel.packages = ["src/pyFFTMatvec"]
