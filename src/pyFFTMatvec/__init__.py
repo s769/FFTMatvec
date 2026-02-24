@@ -66,5 +66,37 @@ def _vector_to_torch(self, dtype=torch.float64):
     return torch.as_tensor(cuda_mem, device=torch.device("cuda"))
 
 
-# Dynamically attach the method to the C++ Vector class!
+def _vector_from_torch(self, tensor):
+    """
+    Safely copies data from a PyTorch tensor into the FFTMatvec Vector's memory.
+    The input tensor must be on the GPU and match the vector's size and dtype.
+    """
+    if not self.on_grid():
+        return
+
+    # Grab the zero-copy view of our C++ memory
+    view = self.to_torch(tensor.dtype)
+
+    if view is None:
+        return
+
+    # Ensure sizes match so we don't cause a CUDA segfault
+    if view.shape != tensor.shape:
+        # If the tensor is multidimensional (e.g., [batch, features]),
+        # try flattening it to see if the total elements match.
+        if view.numel() == tensor.numel():
+            tensor = tensor.view(-1)
+        else:
+            raise ValueError(
+                f"Shape mismatch: FFTMatvec Vector expects {view.numel()} elements, "
+                f"but PyTorch tensor has {tensor.numel()}.",
+            )
+
+    # Perform a highly optimized CUDA device-to-device copy
+    # This safely copies the data FROM the PyTorch tensor INTO the C++ memory
+    view.copy_(tensor)
+
+
+# Attach both methods to the C++ Vector class
 Vector.to_torch = _vector_to_torch
+Vector.from_torch = _vector_from_torch

@@ -13,3 +13,5 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+test/data/test_vec.h5
