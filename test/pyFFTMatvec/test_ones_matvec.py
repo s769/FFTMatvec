@@ -4,42 +4,6 @@ import pyFFTMatvec  # MUST BE BEFORE mpi4py!
 from mpi4py import MPI
 
 
-class CUDAPointer:
-    """
-    A lightweight object that implements the CUDA Array Interface.
-    PyTorch uses this to wrap raw device memory without copying it.
-    """
-
-    def __init__(self, ptr, size, dtype_str="<f8"):
-        self.ptr = ptr
-        self.size = size
-        self.dtype_str = dtype_str
-
-    @property
-    def __cuda_array_interface__(self):
-        return {
-            "shape": (self.size,),
-            "typestr": self.dtype_str,
-            "data": (self.ptr, False),
-            "version": 2,
-        }
-
-
-def wrap_ptr_in_pytorch(ptr, size, dtype=torch.float64):
-    """
-    Wraps a raw device pointer in a PyTorch tensor without taking ownership.
-    """
-    if dtype == torch.float64:
-        typestr = "<f8"
-    elif dtype == torch.float32:
-        typestr = "<f4"
-    else:
-        raise ValueError(f"Unsupported dtype: {dtype}")
-
-    cuda_mem = CUDAPointer(ptr, size, typestr)
-    return torch.as_tensor(cuda_mem, device=torch.device("cuda"))
-
-
 def test_ones_matvec():
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -93,3 +57,11 @@ def test_ones_matvec():
 
     # If this fails, the C++ assertion will crash the test natively
     pyFFTMatvec.Tester.check_ones_matvec(grid_comm, mat, y, conj, full)
+
+    # Extra Python-side validation to ensure the PyTorch tensors reflect the C++ memory
+    pt_y = y.to_torch()
+    if pt_y is not None:
+        norm_y = torch.linalg.norm(pt_y)
+        assert norm_y.item() > 0.0, (
+            "PyTorch tensor norm is zero; memory mapping failed."
+        )
