@@ -7,6 +7,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # --- Option for HIP Build ---
 option(BUILD_WITH_HIP "Build with HIP support instead of CUDA" OFF)
 
+# --- Option for Python Bindings ---
+option(BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" ON)
+
+# 1. Define the option (this makes it show up in ccmake/cmake-gui)
+option(ENABLE_PROFILING "Enable MPI timing and profiling" OFF)
+
+# 2. Apply the definition globally
+if(ENABLE_PROFILING)
+    add_compile_definitions(TIME_MPI=1)
+    message(STATUS "Build Mode: PROFILING ENABLED")
+else()
+    add_compile_definitions(TIME_MPI=0)
+    message(STATUS "Build Mode: PROFILING DISABLED")
+endif()
+
+
 if(BUILD_WITH_HIP)
     message(STATUS "Selected GPU Platform: HIP")
     enable_language(HIP)
@@ -155,9 +171,9 @@ endif()
 
 # HighFive is added as a subdirectory, it should set up its own targets and includes
 add_subdirectory(HighFive) # Assuming HighFive/CMakeLists.txt handles its linkage and includes correctly
-include_directories(HighFive/include 
-                    ${HDF5_ROOT}/include 
-                    $ENV{MPICH_DIR}/include) # Ensure HDF5 includes are available for HighFive
+include_directories(HighFive/include
+    ${HDF5_ROOT}/include
+    $ENV{MPICH_DIR}/include) # Ensure HDF5 includes are available for HighFive
 # --- Global Include Directories (for common libraries like MPI, HDF5) ---
 # Prefer target_include_directories for project sources, but global ones are okay for widely used external libs.
 
@@ -165,6 +181,18 @@ include_directories(HighFive/include
 # find_package results (e.g. ${HIP_INCLUDE_DIRS}, ${CUDAToolkit_INCLUDE_DIRS}) and applied
 # via target_include_directories in src/CMakeLists.txt, or by imported targets.
 # The old global include_directories for CUDA/NCCL/CUTENSOR has been removed.
+
+if(BUILD_PYTHON_BINDINGS)
+    find_package(Python COMPONENTS Interpreter Development REQUIRED)
+
+    include(FetchContent)
+    FetchContent_Declare(
+        pybind11
+        GIT_REPOSITORY https://github.com/pybind/pybind11.git
+        GIT_TAG v2.11.1
+    )
+    FetchContent_MakeAvailable(pybind11)
+endif()
 
 # --- Add Source and Test Subdirectories ---
 # These subdirectories will use the BUILD_WITH_HIP option.
@@ -175,6 +203,7 @@ if(ENABLE_TESTING)
     enable_testing()
     add_subdirectory(test) # Assuming test/CMakeLists.txt will also be adapted for CUDA/HIP
 endif()
+
 
 message(STATUS "---------------------------------------------------------")
 message(STATUS "Project Name: ${PROJECT_NAME}")

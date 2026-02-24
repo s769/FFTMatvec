@@ -83,7 +83,7 @@ if(BUILD_WITH_HIP)
     endforeach()
     # Also do this for the main executable's source file
     if(HIP_MAIN_CPP_FILE_FOR_EXEC AND "${HIP_MAIN_CPP_FILE_FOR_EXEC}" MATCHES "\\.cpp$")
-         set_source_files_properties("${HIP_MAIN_CPP_FILE_FOR_EXEC}" PROPERTIES LANGUAGE HIP)
+        set_source_files_properties("${HIP_MAIN_CPP_FILE_FOR_EXEC}" PROPERTIES LANGUAGE HIP)
     endif()
 
     add_library(FFT_mvec STATIC
@@ -92,6 +92,7 @@ if(BUILD_WITH_HIP)
         ${FFT_MVEC_PURE_CPP_SOURCES} # Pure C++ sources
         ${FFT_MVEC_PURE_CPP_HEADERS} # Pure C++ headers
     )
+    set_target_properties(FFT_mvec PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
     if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
         set_target_properties(FFT_mvec PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
@@ -144,6 +145,7 @@ else() # Building with CUDA
         ${FFT_MVEC_PURE_CPP_SOURCES} # Pure C++ sources
         ${FFT_MVEC_PURE_CPP_HEADERS} # Pure C++ headers
     )
+    set_target_properties(FFT_mvec PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
     target_include_directories(FFT_mvec PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}" # For all headers from the source directory
@@ -217,3 +219,32 @@ if(BUILD_WITH_HIP AND TARGET HipifyAll)
     add_dependencies(FFT_mvec HipifyAll)
     add_dependencies(fft_matvec HipifyAll)
 endif()
+
+# --- Python Bindings ---
+if(BUILD_PYTHON_BINDINGS)
+    pybind11_add_module(_pyFFTMatvec "${CMAKE_CURRENT_SOURCE_DIR}/python_bindings.cpp")
+
+    target_link_libraries(_pyFFTMatvec PRIVATE
+        FFT_mvec
+        ${COMMON_LINK_LIBS}
+        ${GPU_SPECIFIC_LIBS}
+    )
+
+    if(BUILD_WITH_HIP)
+        target_compile_definitions(_pyFFTMatvec PRIVATE CUTENSOR_AVAILABLE=0)
+    else()
+        if(USE_CUTENSOR)
+            target_compile_definitions(_pyFFTMatvec PRIVATE CUTENSOR_AVAILABLE=1)
+        else()
+            target_compile_definitions(_pyFFTMatvec PRIVATE CUTENSOR_AVAILABLE=0)
+        endif()
+    endif()
+
+    # We copy the shared library to the build path so it's easy to import
+    set_target_properties(_pyFFTMatvec PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/src"
+    )
+    # Install the shared library to the install path
+    install(TARGETS _pyFFTMatvec DESTINATION pyFFTMatvec)
+endif()
+

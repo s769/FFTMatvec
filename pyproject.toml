@@ -1,0 +1,21 @@
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pyFFTMatvec"
+version = "0.1.0"
+description = "High-performance distributed FFT Matvec operations"
+dependencies = [
+    "mpi4py",
+    "torch",
+    "h5py",
+    "numpy",
+]
+
+[tool.scikit-build]
+# Optional: pass specific flags to CMake if needed
+cmake.args = ["-DCMAKE_BUILD_TYPE=Release", 
+              "-DCUDA_ARCH=80;90", 
+              "-DBUILD_PYTHON_BINDINGS=ON", 
+              "-DENABLE_PROFILING=OFF"] # set to ON for profiling
