@@ -375,8 +375,8 @@ double Vector::norm(int order, std::string name) {
       cublasSafeCall(cublasDasum_64(
           cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
 #endif
-      MPICHECK(MPI_Reduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_SUM, 0,
-                          grid_comm));
+      MPICHECK(MPI_Allreduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_SUM,
+                             grid_comm));
 
       break;
     case 2:
@@ -388,8 +388,8 @@ double Vector::norm(int order, std::string name) {
           cublasHandle, (size_t)num_blocks * block_size, d_vec, 1, &norm));
 #endif
       norm = norm * norm;
-      MPICHECK(MPI_Reduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_SUM, 0,
-                          grid_comm));
+      MPICHECK(MPI_Allreduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_SUM,
+                             grid_comm));
       global_norm = std::sqrt(global_norm);
       break;
     case -1:
@@ -408,8 +408,8 @@ double Vector::norm(int order, std::string name) {
       cublasSafeCall(cublasGetVector_64(1, sizeof(double),
                                         d_vec + max_index - 1, 1, &norm, 1));
 #endif
-      MPICHECK(MPI_Reduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_MAX, 0,
-                          grid_comm));
+      MPICHECK(MPI_Allreduce(&norm, &global_norm, 1, MPI_DOUBLE, MPI_MAX,
+                             grid_comm));
 
       break;
     default:
@@ -571,7 +571,7 @@ double Vector::dot(Vector &x) {
     MPI_Comm grid_comm =
         (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
     MPICHECK(
-        MPI_Reduce(&dot, &global_dot, 1, MPI_DOUBLE, MPI_SUM, 0, grid_comm));
+        MPI_Allreduce(&dot, &global_dot, 1, MPI_DOUBLE, MPI_SUM, grid_comm));
   }
 
   return global_dot; // only rank 0 has the global dot product

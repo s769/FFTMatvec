@@ -433,7 +433,7 @@ public:
    * @param order The order of the norm (e.g., "2" for the 2-norm, "1" for the
    * 1-norm, "-1" for the infinity norm).
    * @param name The name of the vector. Prints the norm if name is not empty.
-   * @return The norm of the vector. Only rank 0 has the global norm.
+   * @return The norm of the vector. All ranks have the global norm.
    */
   double norm(int order = 2, std::string name = "");
 
@@ -484,7 +484,7 @@ public:
   /**
    * @brief Computes the dot product of the vector with another vector.
    * @param x The vector with which to compute the dot product.
-   * @return The dot product of the two vectors. Only rank 0 has the global dot
+   * @return The dot product of the two vectors. All ranks have the global dot
    * product.
    */
   double dot(Vector &x);

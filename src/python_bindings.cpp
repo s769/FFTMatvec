@@ -204,6 +204,11 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
              a /= alpha;
              return a;
            })
+      .def("__ipow__",
+           [](Vector &a, double exponent) -> Vector & {
+             a.pow_inplace(exponent);
+             return a;
+           })
 
       // Utilities
       .def("print", &Vector::print, py::arg("name") = "")
