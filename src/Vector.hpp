@@ -501,7 +501,7 @@ public:
    * @brief Copies a vector to another vector.
    * @param x The vector to be copied to.
    */
-  void copy(Vector &x);
+  void copy_to(Vector &x);
 
   /**
    * @brief Extends the vector to a new block size.

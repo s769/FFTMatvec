@@ -693,7 +693,7 @@ TEST_F(VectorTest, CopyToVector) {
   x.init_vec_ones();
   Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
   y.init_vec();
-  x.copy(y);
+  x.copy_to(y);
   if (y.on_grid()) {
     double *h_vec = new double[(size_t)y.get_num_blocks() * y.get_block_size()];
     gpuErrchk(cudaMemcpy(h_vec, y.get_d_vec(),

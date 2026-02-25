@@ -60,8 +60,18 @@ Vector::Vector(Vector &vec, bool deep_copy)
 }
 
 Vector &Vector::operator=(Vector &vec) {
-  // Copy assignment operator for the Vector class. Copy the data from vec.
   if (this != &vec) {
+    // 1. Check if we actually need to allocate new memory (sizes don't match)
+    bool need_realloc = (this->num_blocks * this->block_size) !=
+                        (vec.num_blocks * vec.block_size);
+
+    // 2. If sizes don't match, FREE the old memory to prevent a leak
+    if (need_realloc && this->d_vec != nullptr && on_grid()) {
+      gpuErrchk(cudaFree(this->d_vec));
+      this->d_vec = nullptr;
+    }
+
+    // 3. Copy Metadata
     comm = vec.comm;
     num_blocks = vec.num_blocks;
     glob_num_blocks = vec.glob_num_blocks;
@@ -71,9 +81,12 @@ Vector &Vector::operator=(Vector &vec) {
     SOTI_ordering = vec.SOTI_ordering;
     initialized = vec.initialized;
 
+    // 4. Safely Allocate (if needed) and Copy Data
     if (on_grid()) {
-      gpuErrchk(cudaMalloc((void **)&d_vec,
-                           (size_t)num_blocks * block_size * sizeof(double)));
+      if (need_realloc) {
+        gpuErrchk(cudaMalloc((void **)&d_vec,
+                             (size_t)num_blocks * block_size * sizeof(double)));
+      }
       gpuErrchk(cudaMemcpy(d_vec, vec.d_vec,
                            (size_t)num_blocks * block_size * sizeof(double),
                            cudaMemcpyDeviceToDevice));
@@ -81,32 +94,36 @@ Vector &Vector::operator=(Vector &vec) {
       d_vec = nullptr;
     }
   }
-
   return *this;
 }
 
 Vector &Vector::operator=(Vector &&vec) {
-  // Move assignment operator for the Vector class. Move the data from vec.
   if (this != &vec) {
+    // 1. FREE our existing memory before stealing the new memory!
+    if (this->d_vec != nullptr && on_grid()) {
+      gpuErrchk(cudaFree(this->d_vec));
+    }
+
+    // 2. Copy metadata
     comm = vec.comm;
     num_blocks = vec.num_blocks;
     glob_num_blocks = vec.glob_num_blocks;
     padded_size = vec.padded_size;
     block_size = vec.block_size;
     row_or_col = vec.row_or_col;
-    d_vec = vec.d_vec;
     initialized = vec.initialized;
     SOTI_ordering = vec.SOTI_ordering;
 
+    // 3. Steal the pointer and nullify the source
+    d_vec = vec.d_vec;
     vec.d_vec = nullptr;
   }
-
   return *this;
 }
 
 Vector::~Vector() {
   // Free the memory allocated for the vector
-  if (on_grid()) {
+  if (on_grid() && d_vec != nullptr) {
     gpuErrchk(cudaFree(d_vec));
   }
 }
@@ -644,8 +661,8 @@ void Vector::set_d_vec(double *vec) {
   }
 }
 
-void Vector::copy(Vector &x) {
-  // Copy the data from x
+void Vector::copy_to(Vector &x) {
+  // Copy this vector to x
   // If the vector is not initialized, print an error message and abort the
   // program.
 
@@ -767,7 +784,7 @@ void Vector::resize(Vector &out) {
     this->shrink(out);
   } else {
     // Sizes are equal, just copy
-    this->copy(out);
+    this->copy_to(out);
   }
 }
 

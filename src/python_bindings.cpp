@@ -208,7 +208,7 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
       // Utilities
       .def("print", &Vector::print, py::arg("name") = "")
       .def("save", &Vector::save, py::arg("filename"), py::arg("QoI") = false)
-      .def("copy", &Vector::copy, py::arg("x"))
+      .def("copy_to", &Vector::copy_to, py::arg("x"))
       .def("on_grid", &Vector::on_grid)
 
       // Overloaded Memory/Size Operations
