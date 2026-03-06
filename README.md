@@ -25,6 +25,7 @@ FFTMatvec is now performance portable to AMD GPUs and supports mixed-precision c
 
 View an animation of the FFTMatvec algorithm [here](https://www.youtube.com/embed/hc81_WzGF_Q?si=U6o0cGKMnjdLI-QU).
 
+
 **Note: This is the main branch, which only supports NVIDIA GPUs. For AMD and (experimental) Intel support as well as mixed-precision computation, use the `mp` branch.**
 
 ## Documentation
