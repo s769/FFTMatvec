@@ -9,7 +9,6 @@ theme:
     - content.code.select
     - content.code.annotate
 
-
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -19,24 +18,31 @@ markdown_extensions:
   - pymdownx.snippets:
       check_paths: true
   - pymdownx.superfences
+  # Add the arithmatex extension here:
+  - pymdownx.arithmatex:
+      generic: true
 
-
+# Add the JavaScript loaders here:
+extra_javascript:
+  - javascript/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
   - search
   - mkdoxy:
       projects:
-        FFTMatvec: # name of project must be alphanumeric + numbers (without spaces)
-          src-dirs: src/ # path to source code (support multiple paths separated by space) => INPUT
-          full-doc: True # if you want to generate full documentation
-          doxy-cfg: # standard doxygen configuration (key: value)
-            FILE_PATTERNS: "Comm.*pp main.cpp Matrix.*pp shared.hpp tester.*pp utils.*pp util_kernels.cu util_kernels.hpp Vector.*pp error_checkers.h comm_error_checkers.h" # specify file patterns to filter out
-            RECURSIVE: True # recursive search in source directories
+        FFTMatvec: 
+          src-dirs: src/ 
+          full-doc: True 
+          doxy-cfg: 
+            FILE_PATTERNS: "Comm.*pp main.cpp Matrix.*pp shared.hpp tester.*pp utils.*pp util_kernels.cu util_kernels.hpp Vector.*pp error_checkers.h comm_error_checkers.h" 
+            RECURSIVE: True 
 
 nav:
   - Getting Started: "getting_started.md"
-  - I/O Data Formats: "io_format.md"
-  - Python Bindings: "python_bindings.md"
+  - I/O and Data Formats: "io_format.md"
+  - pyFFTMatvec: "python_bindings.md"
   - API Reference:
     - "Classes":
         - "Comm": "FFTMatvec/classComm.md"
@@ -47,4 +53,3 @@ nav:
         - "UtilKernels": "FFTMatvec/namespaceUtilKernels.md"
         - "Tester": "FFTMatvec/namespaceTester.md"
   - LICENSE: "license.md"
-

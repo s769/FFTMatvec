@@ -1,4 +1,4 @@
-# Python Bindings
+# pyFFTMatvec
 
 FFTMatvec provides Python bindings via the `pyFFTMatvec` package, built with [pybind11](https://pybind11.readthedocs.io/). The package exposes the core C++ classes (`Comm`, `Vector`, `Matrix`) to Python and includes zero-copy [PyTorch](https://pytorch.org/) GPU integration.
 
@@ -242,7 +242,7 @@ z = x.resize(new_block_size)   # extend or shrink as needed
 
 ## File I/O
 
-See the [I/O Data Formats](io_format.md) page for details on the file format.
+See the [I/O and Data Formats](io_format.md) page for details on the file format.
 
 ### Reading Vectors
 

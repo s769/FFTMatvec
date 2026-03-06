@@ -1,9 +1,9 @@
 # FFTMatvec
 [![DOI](https://zenodo.org/badge/837359248.svg)](https://zenodo.org/badge/latestdoi/837359248)
 
-This repository contains the code for FFTMatvec, described in the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices with Application to Linear Inverse Problems Governed by Autonomous Dynamical Systems._. SIAM Journal of Scientific Computing. 2025. To appear. arXiv preprint [arXiv:2407.13066](https://arxiv.org/abs/2407.13066)."
+This repository contains the code for FFTMatvec, described in the paper "Sreeram Venkat, Milinda Fernando, Stefan Henneking, and Omar Ghattas. _Fast and Scalable FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices with Application to Linear Inverse Problems Governed by Autonomous Dynamical Systems._. SIAM Journal of Scientific Computing. 2025. [SISC Paper](https://doi.org/10.1137/24M1683172)."
 
-FFTMatvec is now performance portable to AMD GPUs and supports mixed-precision computations. See "Sreeram Venkat, Kasia Swirydowicz, Noah Wolfe, and Omar Ghattas. _Mixed-Precision Performance Portability of FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices_. Workshops of the International Conference for High Performance Computing, Networking, Storage and Analysis. 2025. To appear. arXiv preprint [arXiv:2508.10202] (https://arxiv.org/abs/2508.10202)."
+FFTMatvec is now performance portable to AMD GPUs and supports mixed-precision computations. See "Sreeram Venkat, Kasia Swirydowicz, Noah Wolfe, and Omar Ghattas. _Mixed-Precision Performance Portability of FFT-Based GPU-Accelerated Algorithms for Block-Triangular Toeplitz Matrices_. Workshops of the International Conference for High Performance Computing, Networking, Storage and Analysis. 2025. arXiv preprint [P3HPC Paper] (https://dl.acm.org/doi/full/10.1145/3731599.3767490)."
 
 
 
@@ -32,8 +32,8 @@ View an animation of the FFTMatvec algorithm [here](https://www.youtube.com/embe
 The full documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/), including:
 
 - [Getting Started](https://fftmatvec.readthedocs.io/en/latest/getting_started/) — Installation, build options, and usage
-- [I/O Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) — How to format matrix directories and vector files (HDF5)
-- [Python Bindings](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) — Using `pyFFTMatvec` from Python with PyTorch integration
+- [I/O and Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) — How to format matrix directories and vector files (HDF5)
+- [pyFFTMatvec](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) — Using `pyFFTMatvec` from Python with PyTorch integration
 - [API Reference](https://fftmatvec.readthedocs.io/en/latest/FFTMatvec/classMatrix/) — Auto-generated C++ API docs
 
 ## Installation
@@ -110,16 +110,16 @@ mpiexec -np 4 ./build/fft_matvec -pr 2 -pc 2 -g -Nm 20 -Nd 10 -Nt 7 -nm 4 -nd 3 
 will run the code with 4 processors, a 2x2 processor grid, global sizes, 20 global block columns, 10 global block rows, a block size of 7, 4 local block columns, 3 local block rows, print input/output vectors, and use 100 matvecs for timing. The FFT and SBGEMV will be computed in single precision; all other components in double precision. Deterministic double precision values that cannot be represented as single precision floats without error will be used to initialize the matrix/vector, and output vectors will be saved in the current directory.
 
 
-## I/O Data Formats
+## I/O and Data Formats
 
-FFTMatvec reads matrices from directories containing HDF5 files and a plain-text metadata file. Vectors are stored as single HDF5 files. See the [I/O Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) documentation for full details on:
+FFTMatvec reads matrices from directories containing HDF5 files and a plain-text metadata file. Vectors are stored as single HDF5 files. See the [I/O and Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) documentation for full details on:
 
 - Matrix directory layout (`binary/meta_adj` + zero-padded `.h5` block-row files)
 - Vector HDF5 format (column vs. row vector attributes)
-- SOTI (Sensors-Ordered-Then-Indexed) data ordering convention
+- SOTI (Space-Outer-Time-Inner) index ordering convention (see [SISC Paper](https://doi.org/10.1137/24M1683172) for more info)
 - Code examples for creating input data with Python/h5py
 
-## Python Bindings
+## pyFFTMatvec
 
 FFTMatvec provides Python bindings via the `pyFFTMatvec` package (built with pybind11). Install with:
 
@@ -142,7 +142,7 @@ F.matvec(x, y)
 y.save("output.h5")
 ```
 
-The package includes zero-copy PyTorch GPU integration via `Vector.to_torch()` and `Vector.from_torch()`. See the [Python Bindings](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) documentation for the complete API.
+The package includes zero-copy PyTorch GPU integration via `Vector.to_torch()` and `Vector.from_torch()`. See the [pyFFTMatvec](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) documentation for the complete API.
 
 ## License
 

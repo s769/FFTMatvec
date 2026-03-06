@@ -1,4 +1,4 @@
-# I/O Data Formats
+# I/O and Data Formats
 
 FFTMatvec uses [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (via the [HighFive](https://github.com/BlueBrain/HighFive) C++ library) for all on-disk storage. Parallel HDF5 with MPI collective I/O is used for both reading and writing, so the same files work seamlessly across any number of MPI ranks.
 
@@ -22,7 +22,7 @@ A block-triangular Toeplitz (BTT) matrix $F$ has shape $(N_d \cdot N_t) \times (
 
 ## Data Ordering (SOTI)
 
-FFTMatvec uses **SOTI (Sensors/parameters-Ordered-Then-Indexed)** ordering for all data. In this convention, data is stored with the block (sensor/parameter) index as the outer dimension and the time-step index as the inner dimension. Concretely, a vector $\mathbf{v}$ of $N$ blocks of size $N_t$ is stored as:
+FFTMatvec uses **SOTI (Space-Outer-Time-Inner)** ordering for all data. In this convention, data is stored with the block (sensor/parameter) index as the outer dimension and the time-step index as the inner dimension. Concretely, a vector $\mathbf{v}$ of $N$ blocks of size $N_t$ is stored as:
 
 $$
 [\underbrace{v_{0,0}, v_{0,1}, \ldots, v_{0,N_t-1}}_{\text{block 0}},\; \underbrace{v_{1,0}, v_{1,1}, \ldots, v_{1,N_t-1}}_{\text{block 1}},\; \ldots]
@@ -39,11 +39,12 @@ A matrix is stored as a directory with a specific layout. When you construct a `
 ```
 my_matrix/
 └── binary/
-    ├── meta_adj              ← plain-text metadata file
-    ├── <prefix>000000.h5     ← block row 0
-    ├── <prefix>000001.h5     ← block row 1
-    ├── <prefix>000002.h5     ← block row 2
-    └── ...                   ← one file per block row
+    ├──adj/
+    |    ├── <prefix>000000.h5     ← block row 0
+    |    ├── <prefix>000001.h5     ← block row 1
+    |    ├── <prefix>000002.h5     ← block row 2
+    |    └── ...                   ← one file per block row
+    └── meta_adj              ← plain-text metadata file
 ```
 
 ### The `meta_adj` File
@@ -137,10 +138,12 @@ Consider a small matrix with:
 ```
 my_matrix/
 └── binary/
-    ├── meta_adj
-    ├── F_000000.h5
-    ├── F_000001.h5
-    └── F_000002.h5
+    ├── adj/
+    │   ├── <prefix>000000.h5     ← block row 0
+    │   ├── <prefix>000001.h5     ← block row 1
+    │   ├── <prefix>000002.h5     ← block row 2
+    │   └── ...                   ← one file per block row
+    └── meta_adj              ← plain-text metadata file
 ```
 
 ### Contents of `meta_adj`
