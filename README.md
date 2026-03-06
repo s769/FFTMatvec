@@ -29,7 +29,12 @@ View an animation of the FFTMatvec algorithm [here](https://www.youtube.com/embe
 
 ## Documentation
 
-The documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/). 
+The full documentation for the code can be found [here](https://fftmatvec.readthedocs.io/en/latest/), including:
+
+- [Getting Started](https://fftmatvec.readthedocs.io/en/latest/getting_started/) — Installation, build options, and usage
+- [I/O Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) — How to format matrix directories and vector files (HDF5)
+- [Python Bindings](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) — Using `pyFFTMatvec` from Python with PyTorch integration
+- [API Reference](https://fftmatvec.readthedocs.io/en/latest/FFTMatvec/classMatrix/) — Auto-generated C++ API docs
 
 ## Installation
 
@@ -105,13 +110,40 @@ mpiexec -np 4 ./build/fft_matvec -pr 2 -pc 2 -g -Nm 20 -Nd 10 -Nt 7 -nm 4 -nd 3 
 will run the code with 4 processors, a 2x2 processor grid, global sizes, 20 global block columns, 10 global block rows, a block size of 7, 4 local block columns, 3 local block rows, print input/output vectors, and use 100 matvecs for timing. The FFT and SBGEMV will be computed in single precision; all other components in double precision. Deterministic double precision values that cannot be represented as single precision floats without error will be used to initialize the matrix/vector, and output vectors will be saved in the current directory.
 
 
+## I/O Data Formats
+
+FFTMatvec reads matrices from directories containing HDF5 files and a plain-text metadata file. Vectors are stored as single HDF5 files. See the [I/O Data Formats](https://fftmatvec.readthedocs.io/en/latest/io_format/) documentation for full details on:
+
+- Matrix directory layout (`binary/meta_adj` + zero-padded `.h5` block-row files)
+- Vector HDF5 format (column vs. row vector attributes)
+- SOTI (Sensors-Ordered-Then-Indexed) data ordering convention
+- Code examples for creating input data with Python/h5py
+
+## Python Bindings
+
+FFTMatvec provides Python bindings via the `pyFFTMatvec` package (built with pybind11). Install with:
+
+```bash
+pip install .
+```
+
+**Important:** `pyFFTMatvec` must be imported *before* `mpi4py`:
+
+```python
+import pyFFTMatvec
+from mpi4py import MPI
+
+comm = pyFFTMatvec.Comm(MPI.COMM_WORLD, proc_rows=2, proc_cols=2)
+F = pyFFTMatvec.Matrix(comm, path="/path/to/my_matrix")
+x = F.get_vec("input")
+y = F.get_vec("output")
+x.init_vec_from_file("input.h5")
+F.matvec(x, y)
+y.save("output.h5")
+```
+
+The package includes zero-copy PyTorch GPU integration via `Vector.to_torch()` and `Vector.from_torch()`. See the [Python Bindings](https://fftmatvec.readthedocs.io/en/latest/python_bindings/) documentation for the complete API.
 
 ## License
 
 This code is released under the MIT License. See [LICENSE](LICENSE) for more information.
-
-
-
-
-
-

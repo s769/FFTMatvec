@@ -33,6 +33,13 @@ The source code is available on [GitHub](https://github.com/s769/FFTMatvec).
 
 To learn how to build and run the code, along with a working example, see the [Getting Started](getting_started.md) guide.
 
+## I/O Data Formats
+
+To learn how matrices and vectors are stored on disk (HDF5 format, directory layout, and data ordering), see the [I/O Data Formats](io_format.md) guide.
+
+## Python Bindings
+
+For using FFTMatvec from Python — including installation, the `pyFFTMatvec` API, and PyTorch GPU integration — see the [Python Bindings](python_bindings.md) guide.
 
 ## License
 

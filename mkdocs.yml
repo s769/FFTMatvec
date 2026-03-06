@@ -35,6 +35,8 @@ plugins:
 
 nav:
   - Getting Started: "getting_started.md"
+  - I/O Data Formats: "io_format.md"
+  - Python Bindings: "python_bindings.md"
   - API Reference:
     - "Classes":
         - "Comm": "FFTMatvec/classComm.md"
