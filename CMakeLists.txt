@@ -7,6 +7,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # --- Option for HIP Build ---
 option(BUILD_WITH_HIP "Build with HIP support instead of CUDA" OFF)
 
+# --- Option for NCCL on CUDA builds ---
+option(FFT_MVEC_ENABLE_NCCL "Enable NCCL backend for CUDA builds (optional)" ON)
+
+# --- RCCL on CUDA builds (opt-in only; HIP builds always use RCCL) ---
+option(FFT_MVEC_ENABLE_RCCL "Enable RCCL backend for CUDA builds (opt-in; not the default fallback)" OFF)
+
 # --- Option for Python Bindings ---
 option(BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" ON)
 
@@ -88,15 +94,54 @@ else() # CUDA Build
         set(USE_CUTENSOR OFF)
     endif()
 
-    # make sure $NCCL_ROOT is set in the environment
-    if(NOT "${NCCL_ROOT}" STREQUAL "")
-        message(STATUS "Using NCCL from NCCL_ROOT: ${NCCL_ROOT}")
+    set(FFT_MVEC_HAVE_NCCL OFF)
+    if(FFT_MVEC_ENABLE_NCCL)
+        if(NOT "${NCCL_ROOT}" STREQUAL "")
+            message(STATUS "NCCL enabled; using NCCL_ROOT hint: ${NCCL_ROOT}")
+            find_path(FFT_MVEC_NCCL_INCLUDE_DIR nccl.h HINTS "${NCCL_ROOT}/include")
+            find_library(FFT_MVEC_NCCL_LIBRARY NAMES nccl HINTS "${NCCL_ROOT}/lib" "${NCCL_ROOT}/lib64")
+        else()
+            message(STATUS "NCCL enabled; NCCL_ROOT not set, using default search paths")
+            find_path(FFT_MVEC_NCCL_INCLUDE_DIR nccl.h)
+            find_library(FFT_MVEC_NCCL_LIBRARY NAMES nccl)
+        endif()
+
+        if(FFT_MVEC_NCCL_INCLUDE_DIR AND FFT_MVEC_NCCL_LIBRARY)
+            set(FFT_MVEC_HAVE_NCCL ON)
+            add_library(FFT_MVEC::NCCL UNKNOWN IMPORTED)
+            set_target_properties(FFT_MVEC::NCCL PROPERTIES
+                IMPORTED_LOCATION "${FFT_MVEC_NCCL_LIBRARY}"
+                INTERFACE_INCLUDE_DIRECTORIES "${FFT_MVEC_NCCL_INCLUDE_DIR}"
+            )
+            message(STATUS "Found NCCL: ${FFT_MVEC_NCCL_LIBRARY}")
+        else()
+            message(WARNING "NCCL requested but not found; using MPI-staged GPU collectives instead. Set NCCL_ROOT or disable FFT_MVEC_ENABLE_NCCL.")
+        endif()
     else()
-        message(FATAL_ERROR "NCCL_ROOT environment variable is not set. Please set it to the NCCL installation path.")
+        message(STATUS "NCCL disabled (FFT_MVEC_ENABLE_NCCL=OFF); using MPI-staged GPU collectives.")
     endif()
 
-    include_directories(${NCCL_ROOT}/include) # Ensure NCCL includes are available
-    link_directories(${NCCL_ROOT}/lib) # Ensure NCCL libs are available
+    set(FFT_MVEC_HAVE_RCCL_CUDA OFF)
+    if(FFT_MVEC_ENABLE_RCCL)
+        if(DEFINED ENV{ROCM_PATH} AND NOT "$ENV{ROCM_PATH}" STREQUAL "")
+            set(_FFT_MVEC_ROCM_ROOT "$ENV{ROCM_PATH}")
+        else()
+            set(_FFT_MVEC_ROCM_ROOT "/opt/rocm")
+        endif()
+        find_path(FFT_MVEC_RCCL_INCLUDE_DIR rccl.h HINTS "${_FFT_MVEC_ROCM_ROOT}/include")
+        find_library(FFT_MVEC_RCCL_LIBRARY NAMES rccl HINTS "${_FFT_MVEC_ROCM_ROOT}/lib" "${_FFT_MVEC_ROCM_ROOT}/lib64")
+        if(FFT_MVEC_RCCL_INCLUDE_DIR AND FFT_MVEC_RCCL_LIBRARY)
+            set(FFT_MVEC_HAVE_RCCL_CUDA ON)
+            add_library(FFT_MVEC::RCCL UNKNOWN IMPORTED)
+            set_target_properties(FFT_MVEC::RCCL PROPERTIES
+                IMPORTED_LOCATION "${FFT_MVEC_RCCL_LIBRARY}"
+                INTERFACE_INCLUDE_DIRECTORIES "${FFT_MVEC_RCCL_INCLUDE_DIR}"
+            )
+            message(STATUS "Found RCCL for CUDA build: ${FFT_MVEC_RCCL_LIBRARY}")
+        else()
+            message(WARNING "FFT_MVEC_ENABLE_RCCL=ON but rccl.h/rccl library not found under ${_FFT_MVEC_ROCM_ROOT}.")
+        endif()
+    endif()
 
     # Find CUDA specific libraries
     # find_package(CUDAToolkit REQUIRED COMPONENTS cublas cufft curand nvjpeg ...)

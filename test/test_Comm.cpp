@@ -11,6 +11,9 @@ int proc_rows, proc_cols;
 TEST(CommTest, Constructor)
 {
     Comm comm(MPI_COMM_WORLD, proc_rows, proc_cols);
+    if (!comm.collectives_available()) {
+        GTEST_SKIP() << "GPU collectives backend unavailable";
+    }
     ASSERT_EQ(comm.get_global_comm(), MPI_COMM_WORLD);
     ASSERT_EQ(comm.get_proc_rows(), proc_rows);
     ASSERT_EQ(comm.get_proc_cols(), proc_cols);
@@ -31,18 +34,14 @@ TEST(CommTest, Constructor)
     ASSERT_EQ(row_sz, proc_cols);
     ASSERT_EQ(col_sz, proc_rows);
 
-    ncclComm_t gpu_row_comm = comm.get_gpu_row_comm();
-    ncclComm_t gpu_col_comm = comm.get_gpu_col_comm();
-
     int gpu_row_size, gpu_col_size;
-    NCCLCHECK(ncclCommCount(gpu_row_comm, &gpu_row_size));
-    NCCLCHECK(ncclCommCount(gpu_col_comm, &gpu_col_size));
+    gpu_row_size = GpuCollectives::comm_size(comm.row_collectives_comm());
+    gpu_col_size = GpuCollectives::comm_size(comm.col_collectives_comm());
     ASSERT_EQ(gpu_row_size, proc_cols);
     ASSERT_EQ(gpu_col_size, proc_rows);
 
-    int nccl_device;
-    NCCLCHECK(ncclCommCuDevice(gpu_row_comm, &nccl_device));
-    ASSERT_EQ(nccl_device, comm.get_device());
+    int comm_device = GpuCollectives::comm_device(comm.row_collectives_comm());
+    ASSERT_EQ(comm_device, comm.get_device());
 
     cudaStream_t cublas_stream;
     cublasHandle_t cublas_handle = comm.get_cublasHandle();
@@ -62,6 +61,9 @@ TEST(CommTest, ConstructorExternalStream)
     cudaStreamCreate(&stream);
 
     Comm comm(MPI_COMM_WORLD, proc_rows, proc_cols, stream);
+    if (!comm.collectives_available()) {
+        GTEST_SKIP() << "GPU collectives backend unavailable";
+    }
     ASSERT_EQ(comm.get_global_comm(), MPI_COMM_WORLD);
     ASSERT_EQ(comm.get_proc_rows(), proc_rows);
     ASSERT_EQ(comm.get_proc_cols(), proc_cols);
@@ -82,18 +84,14 @@ TEST(CommTest, ConstructorExternalStream)
     ASSERT_EQ(row_sz, proc_cols);
     ASSERT_EQ(col_sz, proc_rows);
 
-    ncclComm_t gpu_row_comm = comm.get_gpu_row_comm();
-    ncclComm_t gpu_col_comm = comm.get_gpu_col_comm();
-
     int gpu_row_size, gpu_col_size;
-    NCCLCHECK(ncclCommCount(gpu_row_comm, &gpu_row_size));
-    NCCLCHECK(ncclCommCount(gpu_col_comm, &gpu_col_size));
+    gpu_row_size = GpuCollectives::comm_size(comm.row_collectives_comm());
+    gpu_col_size = GpuCollectives::comm_size(comm.col_collectives_comm());
     ASSERT_EQ(gpu_row_size, proc_cols);
     ASSERT_EQ(gpu_col_size, proc_rows);
 
-    int nccl_device;
-    NCCLCHECK(ncclCommCuDevice(gpu_row_comm, &nccl_device));
-    ASSERT_EQ(nccl_device, comm.get_device());
+    int comm_device = GpuCollectives::comm_device(comm.row_collectives_comm());
+    ASSERT_EQ(comm_device, comm.get_device());
 
     cudaStream_t cublas_stream;
     cublasHandle_t cublas_handle = comm.get_cublasHandle();

@@ -56,7 +56,7 @@ git checkout mp
 
 Then, build the code (CUDA):
 ```bash
-cmake -B build -DNCCL_ROOT=/path/to/nccl -DCMAKE_BUILD_TYPE=Release [-DCUTENSOR_ROOT=/path/to/cutensor] [-DCUDA_ARCH=XX]
+cmake -B build -DCMAKE_BUILD_TYPE=Release [-DFFT_MVEC_ENABLE_NCCL=ON -DNCCL_ROOT=/path/to/nccl] [-DCUTENSOR_ROOT=/path/to/cutensor] [-DCUDA_ARCH=XX]
 cmake --build build --parallel
 ```
 or (HIP)

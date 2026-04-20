@@ -826,7 +826,7 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
 
     double scale = 1.0 / padded_size;
 
-    cublasSafeCall(cublasZdscal_64(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
+    cublasSafeCall(cublasZdscal(cublasHandle, (size_t)(padded_size / 2 + 1) * num_cols * num_rows,
                                 &scale, *mat_freq_TOSI, 1));
 
     ComplexD *d_mat_freq_trans;
@@ -993,8 +993,8 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
     float *res_vec_F = (full) ? res_unpad_F : out_vec_F;
 
     int device = comm.get_device();
-    ncclComm_t comm1 = (conjugate) ? comm.get_gpu_row_comm() : comm.get_gpu_col_comm();
-    ncclComm_t comm2 = (conjugate) ? comm.get_gpu_col_comm() : comm.get_gpu_row_comm();
+    const auto& comm1 = (conjugate) ? comm.row_collectives_comm() : comm.col_collectives_comm();
+    const auto& comm2 = (conjugate) ? comm.col_collectives_comm() : comm.row_collectives_comm();
     cudaStream_t s = comm.get_stream();
     cublasHandle_t cublasHandle = comm.get_cublasHandle();
 
@@ -1017,14 +1017,14 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
     if (p_config.broadcast_and_pad == Precision::SINGLE && current_precision == Precision::DOUBLE)
     {
         UtilKernels::cast_vector(in_vec, in_vec_F, vec_in_len * padded_size / 2, s);
-        NCCLCHECK(ncclBroadcast((const void *)in_vec_F, (void *)in_vec_F,
-                                (size_t)vec_in_len * padded_size / 2, ncclFloat, 0, comm1, s));
+        GpuCollectives::broadcast((const void*)in_vec_F, (void*)in_vec_F, (size_t)vec_in_len * padded_size / 2,
+                                 GpuCollectives::DataType::Float32, 0, comm1, s);
         current_precision = Precision::SINGLE;
     }
     else
     {
-        NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
-                                (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm1, s));
+        GpuCollectives::broadcast((const void*)in_vec, (void*)in_vec, (size_t)vec_in_len * padded_size / 2,
+                                 GpuCollectives::DataType::Float64, 0, comm1, s);
     }
 
 #if TIME_MPI
@@ -1203,27 +1203,27 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            GpuCollectives::reduce((const void*)res_vec_F, (void*)res_vec_F, (size_t)vec_out_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, 0, comm2, s);
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            GpuCollectives::reduce((const void*)res_vec_F, (void*)res_vec_F, (size_t)vec_out_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, 0, comm2, s);
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
-                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            GpuCollectives::reduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, 0, comm2, s);
             current_precision = Precision::DOUBLE;
         }
         else
         {
-            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
-                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            GpuCollectives::reduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, 0, comm2, s);
         }
 
         if (current_precision == Precision::SINGLE)
@@ -1248,27 +1248,27 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            GpuCollectives::allreduce((const void*)res_vec_F, (void*)res_vec_F, (size_t)vec_out_len * padded_size / 2,
+                                     GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, comm2, s);
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size /2, s);
-            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            GpuCollectives::allreduce((const void*)res_vec_F, (void*)res_vec_F, (size_t)vec_out_len * padded_size / 2,
+                                     GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, comm2, s);
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size /2, s);
-            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
-                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            GpuCollectives::allreduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size / 2,
+                                     GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, comm2, s);
             current_precision = Precision::DOUBLE;
         }
         else
         {
-            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
-                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            GpuCollectives::allreduce((const void*)res_vec, (void*)res_vec, (size_t)vec_out_len * padded_size / 2,
+                                     GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, comm2, s);
         }
 
 #if TIME_MPI
@@ -1430,26 +1430,26 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
-                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            GpuCollectives::reduce((const void*)out_vec_F, (void*)out_vec_F, (size_t)vec_in_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, 0, comm1, s);
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(out_vec, out_vec_F, vec_in_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
-                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            GpuCollectives::reduce((const void*)out_vec_F, (void*)out_vec_F, (size_t)vec_in_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float32, GpuCollectives::ReduceOp::Sum, 0, comm1, s);
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
-                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            GpuCollectives::reduce((const void*)out_vec, (void*)out_vec, (size_t)vec_in_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, 0, comm1, s);
             current_precision = Precision::DOUBLE;
         }
         else
-            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
-                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            GpuCollectives::reduce((const void*)out_vec, (void*)out_vec, (size_t)vec_in_len * padded_size / 2,
+                                  GpuCollectives::DataType::Float64, GpuCollectives::ReduceOp::Sum, 0, comm1, s);
         if (current_precision == Precision::SINGLE)
         {
             UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);

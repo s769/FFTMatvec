@@ -69,29 +69,27 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
         external_stream = false;
     }
 
-    ncclUniqueId row_id;
-
-    if (row_group_rank == 0)
-        ncclGetUniqueId(&row_id);
-
-    MPICHECK(MPI_Bcast((void*)&row_id, sizeof(row_id), MPI_BYTE, 0, row_comm));
-
-    NCCLCHECK(ncclCommInitRank(&gpu_row_comm, row_group_size, row_id, row_group_rank));
+    auto row_id = GpuCollectives::UniqueId{};
+    if (row_group_rank == 0) {
+        row_id = GpuCollectives::get_unique_id();
+    }
+    MPICHECK(MPI_Bcast(row_id.data(), static_cast<int>(row_id.size()), MPI_BYTE, 0, row_comm));
+    gpu_row_comm = GpuCollectives::create_comm(row_group_size, row_id, row_group_rank, row_comm, device);
 
     col_color = world_rank / proc_rows;
     int col_group_rank, col_group_size;
-    ncclUniqueId col_id;
+    auto col_id = GpuCollectives::UniqueId{};
 
     MPICHECK(MPI_Comm_split(global_comm, col_color, world_rank, &col_comm));
 
     MPI_Comm_rank(col_comm, &col_group_rank);
     MPI_Comm_size(col_comm, &col_group_size);
 
-    if (col_group_rank == 0)
-        ncclGetUniqueId(&col_id);
-    MPICHECK(MPI_Bcast((void*)&col_id, sizeof(col_id), MPI_BYTE, 0, col_comm));
-
-    NCCLCHECK(ncclCommInitRank(&gpu_col_comm, col_group_size, col_id, col_group_rank));
+    if (col_group_rank == 0) {
+        col_id = GpuCollectives::get_unique_id();
+    }
+    MPICHECK(MPI_Bcast(col_id.data(), static_cast<int>(col_id.size()), MPI_BYTE, 0, col_comm));
+    gpu_col_comm = GpuCollectives::create_comm(col_group_size, col_id, col_group_rank, col_comm, device);
 
     cublasSafeCall(cublasCreate(&(cublasHandle)));
     cublasSafeCall(cublasSetStream(cublasHandle, s));
@@ -102,8 +100,6 @@ Comm::~Comm()
 {
     MPICHECK(MPI_Comm_free(&row_comm));
     MPICHECK(MPI_Comm_free(&col_comm));
-    NCCLCHECK(ncclCommDestroy(gpu_row_comm));
-    NCCLCHECK(ncclCommDestroy(gpu_col_comm));
     cublasSafeCall(cublasDestroy(cublasHandle));
     if (!external_stream)
         gpuErrchk(cudaStreamDestroy(s));

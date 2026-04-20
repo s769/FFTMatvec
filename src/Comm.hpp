@@ -8,6 +8,7 @@
 
 #include "shared.hpp"
 #include "utils.hpp"
+#include "gpu_collectives.hpp"
 
 /**
  * @class Comm
@@ -25,8 +26,8 @@ private:
     int device; /**< GPU device ID */
     int proc_rows; /**< Number of process rows */
     int proc_cols; /**< Number of process columns */
-    ncclComm_t gpu_row_comm; /**< NCCL communicator for GPU row communication */
-    ncclComm_t gpu_col_comm; /**< NCCL communicator for GPU column communication */
+    GpuCollectives::Comm gpu_row_comm; /**< GPU collectives communicator for row communication */
+    GpuCollectives::Comm gpu_col_comm; /**< GPU collectives communicator for column communication */
     cudaStream_t s; /**< CUDA stream */
     cublasHandle_t cublasHandle; /**< cuBLAS handle */
     bool external_stream; /**< Flag indicating if an external stream was provided */
@@ -70,16 +71,24 @@ public:
     ~Comm();
 
     /**
-     * @brief Get the NCCL communicator for GPU row communication.
-     * @return The NCCL communicator for GPU row communication.
+     * @brief Get the GPU collectives communicator for row communication.
      */
-    ncclComm_t get_gpu_row_comm() { return gpu_row_comm; }
+    const GpuCollectives::Comm& row_collectives_comm() const { return gpu_row_comm; }
 
     /**
-     * @brief Get the NCCL communicator for GPU column communication.
-     * @return The NCCL communicator for GPU column communication.
+     * @brief Get the GPU collectives communicator for column communication.
      */
-    ncclComm_t get_gpu_col_comm() { return gpu_col_comm; }
+    const GpuCollectives::Comm& col_collectives_comm() const { return gpu_col_comm; }
+
+    /**
+     * @brief Whether GPU collectives backend is available.
+     */
+    bool collectives_available() const { return GpuCollectives::available(); }
+
+    /**
+     * @brief Backend in use for GPU collectives.
+     */
+    GpuCollectives::Backend collectives_backend() const { return GpuCollectives::backend(); }
 
     /**
      * @brief Get the GPU device ID.

@@ -59,15 +59,9 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
       .def("get_row_color", &Comm::get_row_color)
       .def("get_col_color", &Comm::get_col_color)
       .def("has_external_stream", &Comm::has_external_stream)
-      // Hardware / low-level handles cast to uintptr_t
-      .def("get_gpu_row_comm",
-           [](Comm &c) {
-             return reinterpret_cast<uintptr_t>(c.get_gpu_row_comm());
-           })
-      .def("get_gpu_col_comm",
-           [](Comm &c) {
-             return reinterpret_cast<uintptr_t>(c.get_gpu_col_comm());
-           })
+      .def("collectives_available", &Comm::collectives_available)
+      .def("collectives_backend",
+           [](Comm &c) { return static_cast<int>(c.collectives_backend()); })
       .def("get_stream",
            [](Comm &c) { return reinterpret_cast<uintptr_t>(c.get_stream()); })
       .def("get_cublasHandle",

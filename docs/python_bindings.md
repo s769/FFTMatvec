@@ -62,7 +62,7 @@ import pyFFTMatvec  # raises ImportError
 
 ### `Comm` — MPI + GPU Communication
 
-The `Comm` object manages MPI communicators, NCCL communicators, CUDA streams, and cuBLAS handles. It must be created first and passed to all `Matrix` and `Vector` constructors.
+The `Comm` object manages MPI communicators, GPU collectives communicators (NCCL on CUDA when available, RCCL on HIP), CUDA streams, and cuBLAS handles. It must be created first and passed to all `Matrix` and `Vector` constructors.
 
 ```python
 import pyFFTMatvec

@@ -51,12 +51,7 @@ typedef int fft_int_t;
 
 #include <mpi.h>
 #include <unistd.h>
-#if defined(__HIP_PLATFORM_AMD__) ||                                           \
-    defined(__HIP_PLATFORM_NVIDIA__) // Macros defined by hipcc
-#include <rccl.h>                    // For HIP compilation
-#else
-#include <nccl.h> // For CUDA compilation
-#endif
+// GPU collectives (NCCL/RCCL) are intentionally *not* included here to keep them optional.
 
 #if TIME_MPI
 #include "profiler.hpp"

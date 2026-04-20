@@ -31,6 +31,7 @@ set(FFT_MVEC_CUDA_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/util_kernels.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/error_checkers.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/comm_error_checkers.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/gpu_collectives.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/precision.hpp"
 )
 
@@ -44,6 +45,17 @@ set(FFT_MVEC_CUDA_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tester.cpp"
 )
+
+# Exactly one GPU collectives backend is built into FFT_mvec (HIP: RCCL; CUDA: NCCL, opt-in RCCL, or MPI-staged).
+if(BUILD_WITH_HIP)
+    list(APPEND FFT_MVEC_CUDA_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gpu_collectives_rccl.cpp")
+elseif(FFT_MVEC_ENABLE_NCCL AND FFT_MVEC_HAVE_NCCL)
+    list(APPEND FFT_MVEC_CUDA_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gpu_collectives_nccl.cpp")
+elseif(FFT_MVEC_HAVE_RCCL_CUDA)
+    list(APPEND FFT_MVEC_CUDA_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gpu_collectives_rccl.cpp")
+else()
+    list(APPEND FFT_MVEC_CUDA_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gpu_collectives_mpi_cuda.cpp")
+endif()
 
 set(ORIGINAL_MAIN_CPP "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
@@ -158,22 +170,35 @@ else() # Building with CUDA
         target_compile_definitions(FFT_mvec PUBLIC CUTENSOR_AVAILABLE=0)
     endif()
 
-    target_link_directories(FFT_mvec PUBLIC ${NCCL_LIBRARIES})
     if(USE_CUTENSOR)
         set(GPU_SPECIFIC_LIBS
-            CUDA::cufft CUDA::cublas nccl cutensor
+            CUDA::cufft CUDA::cublas cutensor
             ${CUDAToolkit_LIBRARIES}
         )
     else()
 
         set(GPU_SPECIFIC_LIBS
-            CUDA::cufft CUDA::cublas nccl
+            CUDA::cufft CUDA::cublas
             ${CUDAToolkit_LIBRARIES}
         )
     endif()
 
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
     target_compile_options(FFT_mvec PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-fopenmp>)
+
+    if(FFT_MVEC_ENABLE_NCCL AND FFT_MVEC_HAVE_NCCL)
+        target_link_libraries(FFT_mvec PUBLIC FFT_MVEC::NCCL)
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_ENABLE_NCCL=1)
+    else()
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_ENABLE_NCCL=0)
+    endif()
+
+    if(FFT_MVEC_HAVE_RCCL_CUDA)
+        target_link_libraries(FFT_mvec PUBLIC FFT_MVEC::RCCL)
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_ENABLE_RCCL_CUDA=1)
+    else()
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_ENABLE_RCCL_CUDA=0)
+    endif()
 
     set(MAIN_EXECUTABLE_SOURCE ${ORIGINAL_MAIN_CPP})
 endif()

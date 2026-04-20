@@ -18,7 +18,6 @@ else() # CUDA Build
         set(TEST_GPU_LIBS
             CUDA::cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
             CUDA::cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
-            nccl # Link if tests directly call nccl APIs not covered by FFT_mvec
             cutensor # Link if tests directly call cutensor APIs not covered by FFT_mvec
             ${CUDAToolkit_LIBRARIES} # General CUDA runtime from find_package(CUDAToolkit)
         )
@@ -26,7 +25,6 @@ else() # CUDA Build
         set(TEST_GPU_LIBS
             CUDA::cufft # Link if tests directly call cufft APIs not covered by FFT_mvec
             CUDA::cublas # Link if tests directly call cublas APIs not covered by FFT_mvec
-            nccl # Link if tests directly call nccl APIs not covered by FFT_mvec
             ${CUDAToolkit_LIBRARIES} # General CUDA runtime from find_package(CUDAToolkit)
         )
     endif()
