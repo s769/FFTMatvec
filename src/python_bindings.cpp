@@ -134,6 +134,22 @@ PYBIND11_MODULE(_pyFFTMatvec, m) {
       .def("elementwise_multiply_add_inplace",
            &Vector::elementwise_multiply_add_inplace, py::arg("y"),
            py::arg("z"))
+      .def("elementwise_sign", &Vector::elementwise_sign)
+      .def("elementwise_sign_inplace", &Vector::elementwise_sign_inplace)
+      .def("elementwise_abs", &Vector::elementwise_abs)
+      .def("elementwise_abs_inplace", &Vector::elementwise_abs_inplace)
+      .def("elementwise_max", &Vector::elementwise_max, py::arg("other"))
+      .def("elementwise_max_inplace", &Vector::elementwise_max_inplace,
+           py::arg("other"))
+      .def("elementwise_min", &Vector::elementwise_min, py::arg("other"))
+      .def("elementwise_min_inplace", &Vector::elementwise_min_inplace,
+           py::arg("other"))
+      .def("max_scalar", &Vector::max_scalar, py::arg("scalar"))
+      .def("max_scalar_inplace", &Vector::max_scalar_inplace, py::arg("scalar"))
+      .def("min_scalar", &Vector::min_scalar, py::arg("scalar"))
+      .def("min_scalar_inplace", &Vector::min_scalar_inplace, py::arg("scalar"))
+      .def("global_max", &Vector::global_max)
+      .def("global_min", &Vector::global_min)
 
       // ==========================================
       // Standard Python Magic Methods (Vector & Vector)

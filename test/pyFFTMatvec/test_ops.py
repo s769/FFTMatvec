@@ -127,3 +127,53 @@ def test_fused_multiply_add(setup_env):
         v1.norm(), get_expected_norm(10.0, total_elements), rel_tol=1e-5
     )
     assert v1.get_d_vec() == original_ptr, "Memory leaked! FMA allocated a new vector."
+
+
+def test_sign_abs_max_min(setup_env):
+    """Tests sign, abs, elementwise/scalar max/min, and global reductions."""
+    grid_comm, num_blocks, block_size, total_elements = setup_env
+
+    v = pyFFTMatvec.Vector(grid_comm, num_blocks, block_size, "col", False, True)
+    v.init_vec_ones()
+    v.scale(-3.0)
+
+    original_ptr = v.get_d_vec()
+
+    signed = v.elementwise_sign()
+    assert math.isclose(signed.norm(), math.sqrt(total_elements), rel_tol=1e-5)
+
+    v.elementwise_sign_inplace()
+    assert math.isclose(v.norm(), math.sqrt(total_elements), rel_tol=1e-5)
+    assert v.get_d_vec() == original_ptr
+
+    v.init_vec_ones()
+    v.scale(-3.0)
+    absed = v.elementwise_abs()
+    assert math.isclose(
+        absed.norm(), get_expected_norm(3.0, total_elements), rel_tol=1e-5
+    )
+
+    v.init_vec_ones()
+    v.scale(-2.0)
+    v.max_scalar_inplace(0.0)
+    assert math.isclose(v.norm(), 0.0, abs_tol=1e-12)
+    assert v.get_d_vec() == original_ptr
+
+    v.init_vec_ones()
+    v.scale(2.0)
+    other = pyFFTMatvec.Vector(grid_comm, num_blocks, block_size, "col", False, True)
+    other.init_vec_ones()
+    other.scale(5.0)
+
+    vmax = v.elementwise_max(other)
+    assert math.isclose(
+        vmax.norm(), get_expected_norm(5.0, total_elements), rel_tol=1e-5
+    )
+
+    v.elementwise_min_inplace(other)
+    assert math.isclose(
+        v.norm(), get_expected_norm(2.0, total_elements), rel_tol=1e-5
+    )
+
+    assert v.global_max() == 2.0
+    assert v.global_min() == 2.0

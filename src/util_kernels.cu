@@ -559,3 +559,294 @@ void UtilKernels::elementwise_multiply_add(const double *d_x, const double *d_y,
   elementwise_multiply_add_kernel<<<blocks, threads_per_block, 0, s>>>(
       d_x, d_y, d_z, d_out, size);
 }
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_sign_kernel(const double *d_in, double *d_out,
+                                        size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    double x = d_in[i];
+    d_out[i] = (x > 0.0) - (x < 0.0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_sign(const double *d_in, double *d_out,
+                                   size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_sign_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out,
+                                                               size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_abs_kernel(const double *d_in, double *d_out,
+                                       size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = fabs(d_in[i]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_abs(const double *d_in, double *d_out, size_t size,
+                                  cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_abs_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out,
+                                                              size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_max_kernel(const double *d_in1, const double *d_in2,
+                                       double *d_out, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = fmax(d_in1[i], d_in2[i]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_max(const double *d_in1, const double *d_in2,
+                                  double *d_out, size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_max_kernel<<<blocks, threads_per_block, 0, s>>>(d_in1, d_in2,
+                                                              d_out, size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void elementwise_min_kernel(const double *d_in1, const double *d_in2,
+                                       double *d_out, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = fmin(d_in1[i], d_in2[i]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::elementwise_min(const double *d_in1, const double *d_in2,
+                                  double *d_out, size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  elementwise_min_kernel<<<blocks, threads_per_block, 0, s>>>(d_in1, d_in2,
+                                                              d_out, size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void max_scalar_kernel(const double *d_in, double *d_out,
+                                  double scalar, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = fmax(d_in[i], scalar);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::max_scalar(const double *d_in, double *d_out, double scalar,
+                             size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  max_scalar_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out, scalar,
+                                                         size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void min_scalar_kernel(const double *d_in, double *d_out,
+                                  double scalar, size_t size) {
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    d_out[i] = fmin(d_in[i], scalar);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::min_scalar(const double *d_in, double *d_out, double scalar,
+                             size_t size, cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  min_scalar_kernel<<<blocks, threads_per_block, 0, s>>>(d_in, d_out, scalar,
+                                                         size);
+}
+
+namespace {
+__device__ double atomicMaxDouble(double *address, double val) {
+  unsigned long long int *address_as_ull =
+      reinterpret_cast<unsigned long long int *>(address);
+  unsigned long long int old = *address_as_ull, assumed;
+  do {
+    assumed = old;
+    old = atomicCAS(address_as_ull, assumed,
+                  __double_as_longlong(fmax(val, __longlong_as_double(assumed))));
+  } while (assumed != old);
+  return __longlong_as_double(old);
+}
+
+__device__ double atomicMinDouble(double *address, double val) {
+  unsigned long long int *address_as_ull =
+      reinterpret_cast<unsigned long long int *>(address);
+  unsigned long long int old = *address_as_ull, assumed;
+  do {
+    assumed = old;
+    old = atomicCAS(address_as_ull, assumed,
+                  __double_as_longlong(fmin(val, __longlong_as_double(assumed))));
+  } while (assumed != old);
+  return __longlong_as_double(old);
+}
+} // namespace
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void reduce_max_kernel(const double *d_in, double *d_out,
+                                  size_t size) {
+  double thread_max = -INFINITY;
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    thread_max = fmax(thread_max, d_in[i]);
+  }
+
+  extern __shared__ double sdata[];
+  sdata[threadIdx.x] = thread_max;
+  __syncthreads();
+
+  for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      sdata[threadIdx.x] = fmax(sdata[threadIdx.x], sdata[threadIdx.x + stride]);
+    }
+    __syncthreads();
+  }
+
+  if (threadIdx.x == 0) {
+    atomicMaxDouble(d_out, sdata[0]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::reduce_max(const double *d_in, double *d_out, size_t size,
+                             cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  double init = -INFINITY;
+  gpuErrchk(cudaMemcpyAsync(d_out, &init, sizeof(double), cudaMemcpyHostToDevice,
+                            s));
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  reduce_max_kernel<<<blocks, threads_per_block, threads_per_block * sizeof(double),
+                      s>>>(d_in, d_out, size);
+}
+
+// -----------------------------------------------------------------------------
+//                                    KERNEL
+// -----------------------------------------------------------------------------
+__global__ void reduce_min_kernel(const double *d_in, double *d_out,
+                                  size_t size) {
+  double thread_min = INFINITY;
+  for (size_t i = blockIdx.x * blockDim.x + threadIdx.x; i < size;
+       i += (size_t)blockDim.x * gridDim.x) {
+    thread_min = fmin(thread_min, d_in[i]);
+  }
+
+  extern __shared__ double sdata[];
+  sdata[threadIdx.x] = thread_min;
+  __syncthreads();
+
+  for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+    if (threadIdx.x < stride) {
+      sdata[threadIdx.x] = fmin(sdata[threadIdx.x], sdata[threadIdx.x + stride]);
+    }
+    __syncthreads();
+  }
+
+  if (threadIdx.x == 0) {
+    atomicMinDouble(d_out, sdata[0]);
+  }
+}
+
+// -----------------------------------------------------------------------------
+//                                HOST LAUNCHER
+// -----------------------------------------------------------------------------
+void UtilKernels::reduce_min(const double *d_in, double *d_out, size_t size,
+                             cudaStream_t s) {
+  if (size == 0)
+    return;
+
+  double init = INFINITY;
+  gpuErrchk(cudaMemcpyAsync(d_out, &init, sizeof(double), cudaMemcpyHostToDevice,
+                            s));
+
+  unsigned int threads_per_block = 256;
+  size_t blocks_calc = (size + threads_per_block - 1) / threads_per_block;
+  unsigned int blocks =
+      (blocks_calc > 16384) ? 16384 : (unsigned int)blocks_calc;
+
+  reduce_min_kernel<<<blocks, threads_per_block, threads_per_block * sizeof(double),
+                      s>>>(d_in, d_out, size);
+}

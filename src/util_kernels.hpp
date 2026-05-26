@@ -188,6 +188,96 @@ void elementwise_multiply_add(const double *d_x, const double *d_y,
                               const double *d_z, double *d_out, size_t size,
                               cudaStream_t s);
 
+/**
+ * @brief Computes the element-wise sign of a vector: d_out[i] = sign(d_in[i])
+ * (returns -1, 0, or 1).
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_sign(const double *d_in, double *d_out, size_t size,
+                      cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise absolute value of a vector: d_out[i] =
+ * fabs(d_in[i])
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_abs(const double *d_in, double *d_out, size_t size,
+                     cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise maximum of two vectors: d_out[i] =
+ * fmax(d_in1[i], d_in2[i])
+ * @param d_in1 Pointer to the first input vector.
+ * @param d_in2 Pointer to the second input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_max(const double *d_in1, const double *d_in2, double *d_out,
+                     size_t size, cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise minimum of two vectors: d_out[i] =
+ * fmin(d_in1[i], d_in2[i])
+ * @param d_in1 Pointer to the first input vector.
+ * @param d_in2 Pointer to the second input vector.
+ * @param d_out Pointer to the output vector.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void elementwise_min(const double *d_in1, const double *d_in2, double *d_out,
+                     size_t size, cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise maximum of a vector and a scalar: d_out[i] =
+ * fmax(d_in[i], scalar)
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param scalar The scalar value to compare against.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void max_scalar(const double *d_in, double *d_out, double scalar, size_t size,
+                cudaStream_t s);
+
+/**
+ * @brief Computes the element-wise minimum of a vector and a scalar: d_out[i] =
+ * fmin(d_in[i], scalar)
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to the output vector.
+ * @param scalar The scalar value to compare against.
+ * @param size Total number of elements in the vectors.
+ * @param s The CUDA stream to use for the operation.
+ */
+void min_scalar(const double *d_in, double *d_out, double scalar, size_t size,
+                cudaStream_t s);
+
+/**
+ * @brief Reduces a vector to its maximum element value on the device.
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to a single device double storing the result.
+ * @param size Total number of elements in the input vector.
+ * @param s The CUDA stream to use for the operation.
+ */
+void reduce_max(const double *d_in, double *d_out, size_t size,
+                cudaStream_t s);
+
+/**
+ * @brief Reduces a vector to its minimum element value on the device.
+ * @param d_in Pointer to the input vector.
+ * @param d_out Pointer to a single device double storing the result.
+ * @param size Total number of elements in the input vector.
+ * @param s The CUDA stream to use for the operation.
+ */
+void reduce_min(const double *d_in, double *d_out, size_t size,
+                cudaStream_t s);
+
 } // namespace UtilKernels
 
 #endif // __UTIL_KERNELS_H__

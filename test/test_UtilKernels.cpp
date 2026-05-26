@@ -749,3 +749,198 @@ TEST(UtilKernelsMathTest, ElementwiseMultiplyAdd) {
   cudaFree(d_z);
   cudaFree(d_out);
 }
+
+TEST(UtilKernelsMathTest, ElementwiseSign) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in(size);
+  for (size_t i = 0; i < size; ++i) {
+    if (i % 3 == 0)
+      h_in[i] = 2.5;
+    else if (i % 3 == 1)
+      h_in[i] = 0.0;
+    else
+      h_in[i] = -1.5;
+  }
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::elementwise_sign(d_in, d_out, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    if (i % 3 == 0)
+      ASSERT_DOUBLE_EQ(h_out[i], 1.0);
+    else if (i % 3 == 1)
+      ASSERT_DOUBLE_EQ(h_out[i], 0.0);
+    else
+      ASSERT_DOUBLE_EQ(h_out[i], -1.0);
+  }
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ElementwiseAbs) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in(size, -7.5);
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::elementwise_abs(d_in, d_out, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 7.5);
+  }
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ElementwiseMax) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in1 = nullptr, *d_in2 = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in1, bytes));
+  gpuErrchk(cudaMalloc(&d_in2, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in1(size, 3.0);
+  std::vector<double> h_in2(size, 5.0);
+  gpuErrchk(cudaMemcpy(d_in1, h_in1.data(), bytes, cudaMemcpyHostToDevice));
+  gpuErrchk(cudaMemcpy(d_in2, h_in2.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::elementwise_max(d_in1, d_in2, d_out, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 5.0);
+  }
+
+  cudaFree(d_in1);
+  cudaFree(d_in2);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ElementwiseMin) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in1 = nullptr, *d_in2 = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in1, bytes));
+  gpuErrchk(cudaMalloc(&d_in2, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in1(size, 3.0);
+  std::vector<double> h_in2(size, 5.0);
+  gpuErrchk(cudaMemcpy(d_in1, h_in1.data(), bytes, cudaMemcpyHostToDevice));
+  gpuErrchk(cudaMemcpy(d_in2, h_in2.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::elementwise_min(d_in1, d_in2, d_out, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 3.0);
+  }
+
+  cudaFree(d_in1);
+  cudaFree(d_in2);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, MaxScalar) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in(size, -2.0);
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::max_scalar(d_in, d_out, 0.0, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 0.0);
+  }
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, MinScalar) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr, *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, bytes));
+
+  std::vector<double> h_in(size, 4.0);
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::min_scalar(d_in, d_out, 1.0, size, nullptr);
+
+  std::vector<double> h_out(size);
+  gpuErrchk(cudaMemcpy(h_out.data(), d_out, bytes, cudaMemcpyDeviceToHost));
+
+  for (size_t i = 0; i < size; ++i) {
+    ASSERT_DOUBLE_EQ(h_out[i], 1.0);
+  }
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
+
+TEST(UtilKernelsMathTest, ReduceMaxMin) {
+  const size_t size = 1000;
+  const size_t bytes = size * sizeof(double);
+
+  double *d_in = nullptr;
+  double *d_out = nullptr;
+  gpuErrchk(cudaMalloc(&d_in, bytes));
+  gpuErrchk(cudaMalloc(&d_out, sizeof(double)));
+
+  std::vector<double> h_in(size, -3.0);
+  h_in[42] = 9.5;
+  h_in[999] = -10.0;
+  gpuErrchk(cudaMemcpy(d_in, h_in.data(), bytes, cudaMemcpyHostToDevice));
+
+  UtilKernels::reduce_max(d_in, d_out, size, nullptr);
+  double h_max = 0.0;
+  gpuErrchk(
+      cudaMemcpy(&h_max, d_out, sizeof(double), cudaMemcpyDeviceToHost));
+  ASSERT_DOUBLE_EQ(h_max, 9.5);
+
+  UtilKernels::reduce_min(d_in, d_out, size, nullptr);
+  double h_min = 0.0;
+  gpuErrchk(
+      cudaMemcpy(&h_min, d_out, sizeof(double), cudaMemcpyDeviceToHost));
+  ASSERT_DOUBLE_EQ(h_min, -10.0);
+
+  cudaFree(d_in);
+  cudaFree(d_out);
+}
