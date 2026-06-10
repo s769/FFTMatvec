@@ -269,11 +269,22 @@ int main(int argc, char **argv)
 #endif
 
 #if TIME_MPI
+        for (int i = 0; i < WARMUP; i++)
+        {
+            F.matvec(in_F, out_F);
+            F.transpose_matvec(in_FS, out_FS);
+        }
+
+        for (auto &timer : t_list_f)
+            timer.clear();
+        for (auto &timer : t_list_fs)
+            timer.clear();
+
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         t_list[ProfilerTimesFull::FULL].start();
 #endif
         // Perform matrix-vector multiplication
-        for (int i = 0; i < reps + WARMUP; i++)
+        for (int i = 0; i < reps; i++)
         {
             F.matvec(in_F, out_F);
             F.transpose_matvec(in_FS, out_FS);
