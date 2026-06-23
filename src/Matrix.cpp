@@ -1029,6 +1029,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 
 #if TIME_MPI
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
+    gpuErrchk(cudaDeviceSynchronize());
     (*tl)[ProfilerTimes::BROADCAST].stop();
 #endif
 
@@ -1233,6 +1234,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         }
 
 #if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].stop();
         (*tl)[ProfilerTimes::TOT].stop();
@@ -1272,6 +1274,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         }
 
 #if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl)[ProfilerTimes::NCCLC].stop();
         (*tl)[ProfilerTimes::TOT].stop();
@@ -1457,6 +1460,7 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
         }
 
 #if TIME_MPI
+        gpuErrchk(cudaDeviceSynchronize());
         MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
         (*tl2)[ProfilerTimes::NCCLC].stop();
         (*tl2)[ProfilerTimes::TOT].stop();
