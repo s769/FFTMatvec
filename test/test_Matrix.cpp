@@ -7,6 +7,9 @@
 #include "shared.hpp"
 #include "utils.hpp"
 #include <gtest/gtest.h>
+#include <array>
+#include <cmath>
+#include <vector>
 
 int proc_rows, proc_cols;
 int NUM_ROWS = 2;
@@ -491,6 +494,108 @@ TEST_F(MatrixTest, ReadFromFileQoI)
     delete[] h_mat_aux;
 
     ASSERT_EQ(F2.is_p2q_mat(), true);
+}
+
+// Nonuniform coefficients expose row/column/frequency permutations that ones
+// cannot detect. Include singleton axes, an odd time length and both
+// borrowed (D) and separately owned (S) matrix-setup FFT plans.
+TEST(MatrixSetupTest, NonuniformCoefficientsAndMatvecs)
+{
+    Comm local_comm(MPI_COMM_WORLD, proc_rows, proc_cols);
+    const std::vector<std::array<int, 3>> shapes = {{1, 1, 1}, {1, 3, 7}, {5, 1, 8}, {7, 3, 17}};
+    for (const auto &shape : shapes)
+    {
+        const int nc = shape[0], nr = shape[1], nt = shape[2];
+        for (bool single : {false, true})
+        {
+            SCOPED_TRACE(::testing::Message() << "cols=" << nc << " rows=" << nr
+                         << " Nt=" << nt << " single=" << single);
+            MatvecPrecisionConfig precision;
+            if (single)
+            {
+                precision.broadcast_and_pad = precision.fft = precision.sbgemv =
+                    precision.ifft = precision.unpad_and_reduce = Precision::SINGLE;
+            }
+            Matrix matrix(local_comm, nc, nr, nt, false, false, precision);
+            matrix.init_mat_doubles();
+            matrix.init_mat_doubles(true);
+            auto coefficient = [=](int r, int c, int t) {
+                return Utils::generate_double(((size_t)r * nc + c) * (2 * nt) + t);
+            };
+            for (ComplexD *device_matrix : {matrix.get_mat_freq_TOSI(), matrix.get_mat_freq_TOSI_aux()})
+            {
+                std::vector<ComplexD> actual((size_t)nc * nr * (nt + 1));
+                gpuErrchk(cudaMemcpy(actual.data(), device_matrix, actual.size() * sizeof(ComplexD),
+                                     cudaMemcpyDeviceToHost));
+                for (int k = 0; k <= nt; ++k)
+                    for (int c = 0; c < nc; ++c)
+                        for (int r = 0; r < nr; ++r)
+                        {
+                            double real = 0, imag = 0;
+                            for (int t = 0; t < nt; ++t)
+                            {
+                                const double angle = -2 * std::acos(-1.0) * k * t / (2 * nt);
+                                real += coefficient(r, c, t) * std::cos(angle) / (2 * nt);
+                                imag += coefficient(r, c, t) * std::sin(angle) / (2 * nt);
+                            }
+                            const auto &value = actual[((size_t)k * nc + c) * nr + r];
+                            EXPECT_NEAR(value.x, real, 1e-12);
+                            EXPECT_NEAR(value.y, imag, 1e-12);
+                        }
+            }
+
+            Vector x = matrix.get_vec("input"), y = matrix.get_vec("output");
+            Vector fx(y, false), fty(x, false);
+            x.init_vec(); y.init_vec(); fx.init_vec(); fty.init_vec();
+            auto x_value = [](int c, int t) { return 0.2 + 0.03 * c - 0.01 * t; };
+            auto y_value = [](int r, int t) { return -0.3 + 0.07 * r + 0.02 * t; };
+            std::vector<double> hx(nc * nt), hy(nr * nt);
+            for (int c = 0; c < nc; ++c)
+                for (int t = 0; t < nt; ++t) hx[c * nt + t] = x_value(c, t);
+            for (int r = 0; r < nr; ++r)
+                for (int t = 0; t < nt; ++t) hy[r * nt + t] = y_value(r, t);
+            if (x.on_grid())
+                gpuErrchk(cudaMemcpy(x.get_d_vec(), hx.data(), hx.size() * sizeof(double), cudaMemcpyHostToDevice));
+            if (y.on_grid())
+                gpuErrchk(cudaMemcpy(y.get_d_vec(), hy.data(), hy.size() * sizeof(double), cudaMemcpyHostToDevice));
+            for (bool aux : {false, true})
+            {
+                matrix.matvec(x, fx, aux);
+                matrix.transpose_matvec(y, fty, aux);
+                const double tolerance = single ? 2e-5 : 1e-11;
+                if (fx.on_grid())
+                {
+                    std::vector<double> actual(nr * nt);
+                    gpuErrchk(cudaMemcpy(actual.data(), fx.get_d_vec(), actual.size() * sizeof(double), cudaMemcpyDeviceToHost));
+                    for (int r = 0; r < nr; ++r)
+                        for (int t = 0; t < nt; ++t)
+                        {
+                            double expected = 0;
+                            for (int c = 0; c < nc; ++c)
+                                for (int lag = 0; lag <= t; ++lag)
+                                    expected += coefficient(r, c, lag) * x_value(c, t - lag);
+                            expected *= proc_cols;
+                            EXPECT_NEAR(actual[r * nt + t], expected, tolerance * std::max(1.0, std::abs(expected)));
+                        }
+                }
+                if (fty.on_grid())
+                {
+                    std::vector<double> actual(nc * nt);
+                    gpuErrchk(cudaMemcpy(actual.data(), fty.get_d_vec(), actual.size() * sizeof(double), cudaMemcpyDeviceToHost));
+                    for (int c = 0; c < nc; ++c)
+                        for (int t = 0; t < nt; ++t)
+                        {
+                            double expected = 0;
+                            for (int r = 0; r < nr; ++r)
+                                for (int lag = 0; lag < nt - t; ++lag)
+                                    expected += coefficient(r, c, lag) * y_value(r, t + lag);
+                            expected *= proc_rows;
+                            EXPECT_NEAR(actual[c * nt + t], expected, tolerance * std::max(1.0, std::abs(expected)));
+                        }
+                }
+            }
+        }
+    }
 }
 
 int main(int argc, char **argv)

@@ -16,6 +16,15 @@
  */
 namespace UtilKernels {
 /**
+ * @brief Scale one FFT row from [column][frequency] into the final
+ * [frequency][column][row] matrix layout. Other rows are left untouched.
+ * Sizes and offsets use size_t to support matrices larger than 2^32 entries.
+ */
+void scatter_row_freq_TOSI(const ComplexD *in, ComplexD *out, size_t row,
+                          size_t num_cols, size_t num_rows, size_t freq_size,
+                          double scale, cudaStream_t stream);
+
+/**
  * @brief Casts a vector from one type to another.
  * @param d_in Pointer to the input vector.
  * @param d_out Pointer to the output vector.
