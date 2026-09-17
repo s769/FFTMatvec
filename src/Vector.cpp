@@ -1,6 +1,7 @@
 #include "Vector.hpp"
 #include "util_kernels.hpp"
 #include <cublas_v2.h>
+#include <limits>
 
 Vector::Vector(Comm &comm, unsigned int blocks, unsigned int block_size,
                std::string row_or_col, bool global_sizes, bool SOTI_ordering)
@@ -991,4 +992,216 @@ void Vector::elementwise_multiply_add_inplace(Vector &y, Vector &z) {
     UtilKernels::elementwise_multiply_add(d_vec, y.get_d_vec(), z.get_d_vec(),
                                           d_vec, total_size, nullptr);
   }
+}
+
+// -----------------------------------------------------------------------------
+//                     ELEMENT-WISE SIGN / ABS / MAX / MIN
+// -----------------------------------------------------------------------------
+
+Vector Vector::elementwise_sign() {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_sign(d_vec, result.get_d_vec(), total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_sign_inplace() {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_sign(d_vec, d_vec, total_size, nullptr);
+  }
+}
+
+Vector Vector::elementwise_abs() {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_abs(d_vec, result.get_d_vec(), total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_abs_inplace() {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_abs(d_vec, d_vec, total_size, nullptr);
+  }
+}
+
+Vector Vector::elementwise_max(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr,
+              "Error: Vector dimensions must match for elementwise max.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_max(d_vec, other.get_d_vec(), result.get_d_vec(),
+                                 total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_max_inplace(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr,
+              "Error: Vector dimensions must match for elementwise max.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_max(d_vec, other.get_d_vec(), d_vec, total_size,
+                                 nullptr);
+  }
+}
+
+Vector Vector::elementwise_min(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr,
+              "Error: Vector dimensions must match for elementwise min.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_min(d_vec, other.get_d_vec(), result.get_d_vec(),
+                                 total_size, nullptr);
+  }
+  return result;
+}
+
+void Vector::elementwise_min_inplace(Vector &other) {
+  if (num_blocks != other.get_num_blocks() ||
+      block_size != other.get_block_size()) {
+    if (comm.get_world_rank() == 0) {
+      fprintf(stderr,
+              "Error: Vector dimensions must match for elementwise min.\n");
+    }
+    MPICHECK(MPI_Abort(comm.get_global_comm(), 1));
+  }
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::elementwise_min(d_vec, other.get_d_vec(), d_vec, total_size,
+                                 nullptr);
+  }
+}
+
+Vector Vector::max_scalar(double scalar) {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::max_scalar(d_vec, result.get_d_vec(), scalar, total_size,
+                            nullptr);
+  }
+  return result;
+}
+
+void Vector::max_scalar_inplace(double scalar) {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::max_scalar(d_vec, d_vec, scalar, total_size, nullptr);
+  }
+}
+
+Vector Vector::min_scalar(double scalar) {
+  Vector result(*this, false);
+  result.init_vec();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::min_scalar(d_vec, result.get_d_vec(), scalar, total_size,
+                            nullptr);
+  }
+  return result;
+}
+
+void Vector::min_scalar_inplace(double scalar) {
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    UtilKernels::min_scalar(d_vec, d_vec, scalar, total_size, nullptr);
+  }
+}
+
+double Vector::global_max() {
+  if (!initialized) {
+    if (comm.get_world_rank() == 0)
+      fprintf(stderr, "Vector not initialized.\n");
+    MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+  }
+
+  double local_max = -std::numeric_limits<double>::infinity();
+  double global_max = -std::numeric_limits<double>::infinity();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    if (total_size > 0) {
+      double *d_result = nullptr;
+      gpuErrchk(cudaMalloc(&d_result, sizeof(double)));
+      UtilKernels::reduce_max(d_vec, d_result, total_size, nullptr);
+      gpuErrchk(cudaMemcpy(&local_max, d_result, sizeof(double),
+                           cudaMemcpyDeviceToHost));
+      gpuErrchk(cudaFree(d_result));
+    }
+    MPI_Comm grid_comm =
+        (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
+    MPICHECK(MPI_Allreduce(&local_max, &global_max, 1, MPI_DOUBLE, MPI_MAX,
+                           grid_comm));
+  }
+
+  return global_max;
+}
+
+double Vector::global_min() {
+  if (!initialized) {
+    if (comm.get_world_rank() == 0)
+      fprintf(stderr, "Vector not initialized.\n");
+    MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+  }
+
+  double local_min = std::numeric_limits<double>::infinity();
+  double global_min = std::numeric_limits<double>::infinity();
+
+  if (on_grid()) {
+    size_t total_size = (size_t)num_blocks * block_size;
+    if (total_size > 0) {
+      double *d_result = nullptr;
+      gpuErrchk(cudaMalloc(&d_result, sizeof(double)));
+      UtilKernels::reduce_min(d_vec, d_result, total_size, nullptr);
+      gpuErrchk(cudaMemcpy(&local_min, d_result, sizeof(double),
+                           cudaMemcpyDeviceToHost));
+      gpuErrchk(cudaFree(d_result));
+    }
+    MPI_Comm grid_comm =
+        (row_or_col == "col") ? comm.get_row_comm() : comm.get_col_comm();
+    MPICHECK(MPI_Allreduce(&local_min, &global_min, 1, MPI_DOUBLE, MPI_MIN,
+                           grid_comm));
+  }
+
+  return global_min;
 }

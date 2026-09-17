@@ -1701,6 +1701,138 @@ TEST_F(VectorTest, ElementwiseMultiplyAddInplaceMethod) {
   }
 }
 
+TEST_F(VectorTest, ElementwiseSignMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(-3.0);
+
+  Vector z = x.elementwise_sign();
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], -1.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseAbsMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(-4.0);
+
+  Vector z = x.elementwise_abs();
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 4.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMaxScalarMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(-2.0);
+
+  Vector z = x.max_scalar(0.0);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 0.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMaxVectorMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(2.0);
+  y.scale(5.0);
+
+  Vector z = x.elementwise_max(y);
+
+  if (z.on_grid()) {
+    double *h_vec = new double[(size_t)z.get_num_blocks() * z.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, z.get_d_vec(),
+                         (size_t)z.get_num_blocks() * z.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)z.get_num_blocks() * z.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 5.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, ElementwiseMinInplaceMethod) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  Vector y = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+
+  x.init_vec_ones();
+  y.init_vec_ones();
+  x.scale(7.0);
+  y.scale(3.0);
+
+  x.elementwise_min_inplace(y);
+
+  if (x.on_grid()) {
+    double *h_vec = new double[(size_t)x.get_num_blocks() * x.get_block_size()];
+    gpuErrchk(cudaMemcpy(h_vec, x.get_d_vec(),
+                         (size_t)x.get_num_blocks() * x.get_block_size() *
+                             sizeof(double),
+                         cudaMemcpyDeviceToHost));
+
+    for (size_t i = 0; i < (size_t)x.get_num_blocks() * x.get_block_size();
+         i++) {
+      ASSERT_EQ(h_vec[i], 3.0);
+    }
+    delete[] h_vec;
+  }
+}
+
+TEST_F(VectorTest, GlobalMaxMin) {
+  Vector x = Vector(*comm, NUM_BLOCKS, BLOCK_SIZE, "col");
+  x.init_vec_ones();
+  x.scale(2.0);
+
+  double gmax = x.global_max();
+  double gmin = x.global_min();
+
+  if (comm->get_world_rank() == 0) {
+    ASSERT_EQ(gmax, 2.0);
+    ASSERT_EQ(gmin, 2.0);
+  }
+}
+
 int main(int argc, char **argv) {
   // Filter out Google Test arguments
   ::testing::InitGoogleTest(&argc, argv);

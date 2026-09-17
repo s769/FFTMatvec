@@ -233,6 +233,92 @@ public:
   void elementwise_multiply_add_inplace(Vector &y, Vector &z);
 
   /**
+   * @brief Computes the element-wise sign of this vector.
+   * @return A new vector containing sign(d_in[i]) in {-1, 0, 1}.
+   */
+  Vector elementwise_sign();
+
+  /**
+   * @brief Performs an in-place element-wise sign operation.
+   */
+  void elementwise_sign_inplace();
+
+  /**
+   * @brief Computes the element-wise absolute value of this vector.
+   * @return A new vector containing |x_i|.
+   */
+  Vector elementwise_abs();
+
+  /**
+   * @brief Performs an in-place element-wise absolute value operation.
+   */
+  void elementwise_abs_inplace();
+
+  /**
+   * @brief Computes the element-wise maximum of this vector and another.
+   * @param other The vector to compare against.
+   * @return A new vector containing max(x_i, y_i).
+   */
+  Vector elementwise_max(Vector &other);
+
+  /**
+   * @brief Performs an in-place element-wise maximum with another vector.
+   * @param other The vector to compare against.
+   */
+  void elementwise_max_inplace(Vector &other);
+
+  /**
+   * @brief Computes the element-wise minimum of this vector and another.
+   * @param other The vector to compare against.
+   * @return A new vector containing min(x_i, y_i).
+   */
+  Vector elementwise_min(Vector &other);
+
+  /**
+   * @brief Performs an in-place element-wise minimum with another vector.
+   * @param other The vector to compare against.
+   */
+  void elementwise_min_inplace(Vector &other);
+
+  /**
+   * @brief Computes the element-wise maximum of this vector and a scalar.
+   * @param scalar The scalar value broadcast to each element.
+   * @return A new vector containing max(x_i, scalar).
+   */
+  Vector max_scalar(double scalar);
+
+  /**
+   * @brief Performs an in-place element-wise maximum with a scalar.
+   * @param scalar The scalar value broadcast to each element.
+   */
+  void max_scalar_inplace(double scalar);
+
+  /**
+   * @brief Computes the element-wise minimum of this vector and a scalar.
+   * @param scalar The scalar value broadcast to each element.
+   * @return A new vector containing min(x_i, scalar).
+   */
+  Vector min_scalar(double scalar);
+
+  /**
+   * @brief Performs an in-place element-wise minimum with a scalar.
+   * @param scalar The scalar value broadcast to each element.
+   */
+  void min_scalar_inplace(double scalar);
+
+  /**
+   * @brief Computes the global maximum element across the distributed vector.
+   * @return The maximum value over all local and remote elements.
+   */
+  double global_max();
+
+  /**
+   * @brief Computes the global minimum element across the distributed vector.
+   * @return The minimum value over all local and remote elements.
+   */
+  double global_min();
+
+  /**
    * @brief Scalar addition operator (Vector + scalar).
    */
   Vector operator+(double scalar) { return add_scalar(scalar); }
