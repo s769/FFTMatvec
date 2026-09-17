@@ -2,6 +2,35 @@
 #define MAX_GRID_DIM 65535
 #include <type_traits> // Required for std::is_floating_point
 
+namespace {
+__global__ void scatter_row_freq_TOSI_kernel(const ComplexD *in, ComplexD *out,
+                                             size_t row, size_t num_cols,
+                                             size_t num_rows, size_t freq_size,
+                                             double scale) {
+  const size_t count = num_cols * freq_size;
+  const size_t stride = (size_t)blockDim.x * gridDim.x;
+  for (size_t i = (size_t)blockIdx.x * blockDim.x + threadIdx.x; i < count; i += stride) {
+    const size_t col = i / freq_size;
+    const size_t freq = i % freq_size;
+    const size_t dst = (freq * num_cols + col) * num_rows + row;
+    out[dst].x = scale * in[i].x;
+    out[dst].y = scale * in[i].y;
+  }
+}
+} // namespace
+
+void UtilKernels::scatter_row_freq_TOSI(const ComplexD *in, ComplexD *out,
+                                      size_t row, size_t num_cols, size_t num_rows,
+                                      size_t freq_size, double scale, cudaStream_t stream) {
+  const size_t count = num_cols * freq_size;
+  if (count == 0) return;
+  constexpr unsigned int threads = 256;
+  const unsigned int blocks = std::min<size_t>((count - 1) / threads + 1, MAX_GRID_DIM);
+  scatter_row_freq_TOSI_kernel<<<blocks, threads, 0, stream>>>(
+      in, out, row, num_cols, num_rows, freq_size, scale);
+  gpuErrchk(cudaPeekAtLastError());
+}
+
 typedef struct {
   int y, z;
 } grid_factors_t;

@@ -245,11 +245,11 @@ void Matrix::init_mat_ones(bool aux_mat)
     }
     double *h_mat = new double[(size_t)padded_size * num_cols * num_rows];
 #pragma omp parallel for collapse(3)
-    for (int i = 0; i < num_rows; i++)
+    for (size_t i = 0; i < num_rows; i++)
     {
-        for (int j = 0; j < num_cols; j++)
+        for (size_t j = 0; j < num_cols; j++)
         {
-            for (int k = 0; k < padded_size; k++)
+            for (size_t k = 0; k < padded_size; k++)
             {
                 // set to 1 if k < padded_size / 2, 0 otherwise.
                 h_mat[(size_t)i * num_cols * padded_size + (size_t)j * padded_size + k] = (k < padded_size / 2) ? 1.0 : 0.0;
@@ -288,11 +288,11 @@ void Matrix::init_mat_doubles(bool aux_mat)
     double *h_mat = new double[(size_t)padded_size * num_cols * num_rows];
     std::uniform_real_distribution<double> dist(0.0, 1.0);
 #pragma omp parallel for collapse(3)
-    for (int i = 0; i < num_rows; i++)
+    for (size_t i = 0; i < num_rows; i++)
     {
-        for (int j = 0; j < num_cols; j++)
+        for (size_t j = 0; j < num_cols; j++)
         {
-            for (int k = 0; k < padded_size; k++)
+            for (size_t k = 0; k < padded_size; k++)
             {
                 size_t index = (size_t)i * num_cols * padded_size + (size_t)j * padded_size + k;
                 h_mat[index] = (k < padded_size / 2) ? Utils::generate_double(index) : 0.0;
@@ -766,6 +766,54 @@ void Matrix::check_matvec(Vector &x, Vector &y, bool transpose, bool full, bool 
 
 void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
 {
+#if ROW_SETUP
+    const size_t freq_size = padded_size / 2 + 1;
+    const size_t row_size = (size_t)num_cols * padded_size;
+    const size_t row_freq_size = (size_t)num_cols * freq_size;
+    const cudaStream_t stream = comm.get_stream();
+
+    // Matrix coefficients are transformed in double precision, even when
+    // the execution FFT uses single precision and needs a separate plan.
+    cufftHandle row_plan = forward_plan;
+    const bool owns_plan = p_config.fft != Precision::DOUBLE;
+    if (owns_plan)
+    {
+        fft_int_t n[] = {(fft_int_t)padded_size};
+        fft_int_t embed[] = {0};
+#if !INDICES_64_BIT
+        cufftSafeCall(cufftPlanMany(&row_plan, 1, n, embed, 1, padded_size,
+                                  embed, 1, freq_size, CUFFT_D2Z, num_cols));
+#else
+        size_t workspace = 0;
+        cufftSafeCall(cufftCreate(&row_plan));
+        cufftSafeCall(cufftMakePlanMany64(row_plan, 1, n, embed, 1, padded_size,
+                                        embed, 1, freq_size, CUFFT_D2Z, num_cols, &workspace));
+#endif
+    }
+    cufftSafeCall(cufftSetStream(row_plan, stream));
+
+    double *row;
+    ComplexD *row_freq;
+    gpuErrchk(cudaMalloc((void **)mat_freq_TOSI, row_freq_size * num_rows * sizeof(ComplexD)));
+    gpuErrchk(cudaMalloc((void **)&row, row_size * sizeof(double)));
+    gpuErrchk(cudaMalloc((void **)&row_freq, row_freq_size * sizeof(ComplexD)));
+    for (size_t r = 0; r < num_rows; ++r)
+    {
+        gpuErrchk(cudaMemcpyAsync(row, h_mat + r * row_size, row_size * sizeof(double),
+                                 cudaMemcpyHostToDevice, stream));
+        cufftSafeCall(cufftExecD2Z(row_plan, row, row_freq));
+        // Write directly to [frequency][column][row], avoiding a second
+        // full-size matrix for the final transpose and scaling pass.
+        UtilKernels::scatter_row_freq_TOSI(row_freq, *mat_freq_TOSI, r, num_cols,
+                                         num_rows, freq_size, 1.0 / padded_size, stream);
+    }
+    // The caller may release h_mat immediately; also finish before freeing scratch.
+    gpuErrchk(cudaStreamSynchronize(stream));
+    gpuErrchk(cudaFree(row_freq));
+    gpuErrchk(cudaFree(row));
+    if (owns_plan)
+        cufftSafeCall(cufftDestroy(row_plan));
+#else
     cublasHandle_t cublasHandle = comm.get_cublasHandle();
     double *d_mat;
     cufftHandle forward_plan_mat;
@@ -784,43 +832,21 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
     fft_int_t ostride = 1;
 
 #if !INDICES_64_BIT
-#if !ROW_SETUP
     cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
                                 ostride, odist, CUFFT_D2Z, (size_t)num_cols * num_rows));
-#else
-    if(p_config.fft == Precision::DOUBLE)
-    {
-        forward_plan_mat = forward_plan;
-    }
-    else
-    {
-        cufftSafeCall(cufftPlanMany(&forward_plan_mat, rank, n, inembed, istride, idist, onembed,
-                                ostride, odist, CUFFT_D2Z, num_cols));
-    }
-#endif
 #else
     size_t ws = 0;
     cufftSafeCall(cufftCreate(&forward_plan_mat));
     cufftSafeCall(cufftMakePlanMany64(forward_plan_mat, rank, n, inembed, istride, idist, onembed,
-                                      ostride, odist, CUFFT_D2Z, num_cols * num_rows, &ws));
+                                      ostride, odist, CUFFT_D2Z, (size_t)num_cols * num_rows, &ws));
 #endif
     gpuErrchk(cudaMalloc((void **)&d_mat, mat_len));
     gpuErrchk(cudaMemcpy(d_mat, h_mat, mat_len, cudaMemcpyHostToDevice));
     gpuErrchk(cudaMalloc((void **)mat_freq_TOSI,
                          (size_t)(padded_size / 2 + 1) * num_cols * num_rows * sizeof(ComplexD)));
 
-#if !ROW_SETUP
     cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat, *mat_freq_TOSI));
-    if (p_config.fft != Precision::DOUBLE)
-        cufftSafeCall(cufftDestroy(forward_plan_mat));
-#else
-    for (int i = 0; i < num_rows; i++)
-    {
-        cufftSafeCall(cufftExecD2Z(forward_plan_mat, d_mat + (size_t)i * padded_size * num_cols,
-                                   *mat_freq_TOSI + (size_t)i * num_cols * (padded_size / 2 + 1)));
-    }
-#endif
-
+    cufftSafeCall(cufftDestroy(forward_plan_mat));
 
     gpuErrchk(cudaFree(d_mat));
 
@@ -869,6 +895,7 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
 
     gpuErrchk(cudaFree(*mat_freq_TOSI));
     *mat_freq_TOSI = d_mat_freq_trans;
+#endif
 }
 
 void Matrix::setup_mat_freq_TOSI_F(ComplexF **mat_freq_TOSI_F, const ComplexD *const mat_freq_TOSI)
