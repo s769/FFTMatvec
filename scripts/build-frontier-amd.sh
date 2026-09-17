@@ -15,6 +15,14 @@ export ROCR_VISIBLE_DEVICES=0
 AMD_VER="${AMD_VER:-7.2.0}"
 ROCM_VER="${ROCM_VER:-7.2.0}"
 LIBFABRIC_VER="${LIBFABRIC_VER:-}"
+ROCM_ROOT="${ROCM_ROOT:-/opt/rocm-${ROCM_VER}}"
+ENABLE_TESTING_HIP="${ENABLE_TESTING_HIP:-OFF}"
+
+# Scrub SCALE and stray ROCm installs from the search path for a clean HIP build.
+export PATH=$(echo "${PATH}" | tr ':' '\n' | grep -vE 'scale|/opt/rocm-' | paste -sd: -)
+export LD_LIBRARY_PATH=$(echo "${LD_LIBRARY_PATH:-}" | tr ':' '\n' | grep -vE 'scale|/opt/rocm-' | paste -sd: -)
+export LIBRARY_PATH=$(echo "${LIBRARY_PATH:-}" | tr ':' '\n' | grep -vE 'scale|/opt/rocm-' | paste -sd: -)
+unset CPATH CPLUS_INCLUDE_PATH C_INCLUDE_PATH
 
 ml unload darshan-runtime 2>/dev/null || true
 if [[ -n "$LIBFABRIC_VER" ]]; then
@@ -23,14 +31,15 @@ else
   ml PrgEnv-amd cray-hdf5-parallel "amd/${AMD_VER}" "rocm/${ROCM_VER}" xpmem
 fi
 export LIBRARY_PATH=/opt/xpmem/lib64:${LIBRARY_PATH:-}
-export LD_LIBRARY_PATH=$(echo "${LD_LIBRARY_PATH:-}" | tr ":" "\n" | grep -v scale | paste -sd: -)
+export PATH="${ROCM_ROOT}/bin:${ROCM_ROOT}/llvm/bin:${PATH}"
+export LD_LIBRARY_PATH="${ROCM_ROOT}/lib:${ROCM_ROOT}/llvm/lib:${LD_LIBRARY_PATH:-}"
+export ROCM_PATH="${ROCM_PATH:-${ROCM_ROOT}}"
 
 # Link Cray MPI GTL into the CUDA/SCALE binary (needed if experimenting with
 # MPICH_GPU_SUPPORT_ENABLED). SCALE multiproc defaults to host-staged MPI.
 
-ROCM_ROOT="${ROCM_ROOT:-/opt/rocm-${ROCM_VER}}"
 # Preserve system ROCm for RCCL when SCALE env is sourced later
-export FFT_MVEC_ROCM_FOR_RCCL="${ROCM_PATH:-$ROCM_ROOT}"
+export FFT_MVEC_ROCM_FOR_RCCL="${ROCM_PATH}"
 
 echo "=== Modules for HIP build ==="
 module list 2>&1
@@ -49,7 +58,7 @@ cmake -B "${BUILD_HIP}" \
   -DENABLE_PROFILING=ON \
   -DFFT_MVEC_ENABLE_NCCL=OFF \
   -DBUILD_PYTHON_BINDINGS=OFF \
-  -DENABLE_TESTING=OFF
+  -DENABLE_TESTING="${ENABLE_TESTING_HIP}"
 cmake --build "${BUILD_HIP}" -j
 
 # --- SCALE AMD (clean CUDA build) ---

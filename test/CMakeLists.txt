@@ -97,8 +97,22 @@ if(BUILD_WITH_HIP)
         GENERATED_HIP_SOURCES_VAR "GENERATED_HIP_TEST_SOURCES"
         GENERATED_HIP_HEADERS_VAR "GENERATED_HIP_TEST_HEADERS"
     )
+    # Hipified tests contain device code / HIP types — compile as HIP, not host CXX.
+    foreach(hip_test_src IN LISTS GENERATED_HIP_TEST_SOURCES)
+        if("${hip_test_src}" MATCHES "\\.cpp$")
+            set_source_files_properties("${hip_test_src}" PROPERTIES LANGUAGE HIP)
+            if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
+                set_source_files_properties("${hip_test_src}" PROPERTIES
+                    HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+            endif()
+        endif()
+    endforeach()
     # Ensure generated test headers (if any) can be found by generated test sources
-    include_directories("${HIP_GENERATED_TEST_SRC_DIR} ${HIP_GENERATED_SRC_DIR_FOR_FFT_MVEC}")
+    set(_FFT_MVEC_HIP_INC "${CMAKE_BINARY_DIR}/src/hipified")
+    include_directories("${HIP_GENERATED_TEST_SRC_DIR}")
+    if(EXISTS "${_FFT_MVEC_HIP_INC}")
+        include_directories("${_FFT_MVEC_HIP_INC}")
+    endif()
 else()
     include_directories(${CMAKE_SOURCE_DIR}/src)
 endif()
@@ -131,21 +145,29 @@ endif()
 
 # Add each test using the conditional source file path
 get_conditional_test_source(UTILS_TEST_SRC test_Utils.cpp)
-add_gtest(UtilsTest "${UTILS_TEST_SRC}" "${TEST_ALL_LIBS}" 1)
-
 get_conditional_test_source(UTILKERNELS_TEST_SRC test_UtilKernels.cpp)
-add_gtest(UtilKernelsTest "${UTILKERNELS_TEST_SRC}" "${TEST_ALL_LIBS}" 1)
-
 get_conditional_test_source(COMM_TEST_SRC test_Comm.cpp)
-add_gtest(CommTest "${COMM_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
-
 get_conditional_test_source(VECTOR_TEST_SRC test_Vector.cpp)
-add_gtest(VectorTest "${VECTOR_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
-
 get_conditional_test_source(MATRIX_TEST_SRC test_Matrix.cpp)
-add_gtest(MatrixTest "${MATRIX_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
-
 get_conditional_test_source(MATVEC_TEST_SRC test_Matvec.cpp)
+
+if(BUILD_WITH_HIP)
+    foreach(_t_src IN ITEMS
+            "${UTILS_TEST_SRC}" "${UTILKERNELS_TEST_SRC}" "${COMM_TEST_SRC}"
+            "${VECTOR_TEST_SRC}" "${MATRIX_TEST_SRC}" "${MATVEC_TEST_SRC}")
+        set_source_files_properties("${_t_src}" PROPERTIES LANGUAGE HIP)
+        if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
+            set_source_files_properties("${_t_src}" PROPERTIES
+                HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        endif()
+    endforeach()
+endif()
+
+add_gtest(UtilsTest "${UTILS_TEST_SRC}" "${TEST_ALL_LIBS}" 1)
+add_gtest(UtilKernelsTest "${UTILKERNELS_TEST_SRC}" "${TEST_ALL_LIBS}" 1)
+add_gtest(CommTest "${COMM_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
+add_gtest(VectorTest "${VECTOR_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
+add_gtest(MatrixTest "${MATRIX_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
 add_gtest(MatvecTest "${MATVEC_TEST_SRC}" "${TEST_ALL_LIBS}" ${NUM_PROCS})
 
 # If you have a global HipifyAll target and want test hipification to be part of it:

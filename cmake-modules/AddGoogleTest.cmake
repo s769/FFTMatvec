@@ -5,6 +5,8 @@
 #
 #
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+# HIP/clang links need PIC objects in static gtest when using ld.lld.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -45,6 +47,13 @@ macro(add_gtest TESTNAME FILES LIBRARIES NPROCS)
     target_link_libraries(${TESTNAME} PUBLIC gtest gmock gtest_main ${LIBRARIES})
     target_compile_definitions(${TESTNAME} PUBLIC SKIP_CUTENSOR_FOR_HIPIFY=1)
     set_target_properties(${TESTNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Tests")
+    if(BUILD_WITH_HIP)
+        set_target_properties(${TESTNAME} PROPERTIES LINKER_LANGUAGE HIP)
+        # Avoid leaking HIP --offload-arch into host CXX when mixed languages appear.
+        if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
+            set_property(TARGET ${TESTNAME} PROPERTY HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        endif()
+    endif()
     if(GOOGLE_TEST_INDIVIDUAL)
         if(CMAKE_VERSION VERSION_LESS 3.10)
             gtest_add_tests(TARGET ${TESTNAME}

@@ -37,6 +37,8 @@ ml PrgEnv-amd cray-hdf5-parallel amd/7.2.0 rocm/7.2.0 xpmem
 export LIBRARY_PATH=/opt/xpmem/lib64:${LIBRARY_PATH:-}
 ```
 
+**ROCm 10 note:** `amd/10.0` + `rocm/10.0` + `PrgEnv-amd/8.7` works for **SCALE**. For native HIP, pass `nullptr` (not `{0}`) embeds into `hipfftPlanMany` — hipFFT 1.0.25 rejects non-null zero embeds with `HIPFFT_INVALID_SIZE` (repro: `scripts/test_hipfft_planmany.cpp`). HIP builds also need LLVM `libomp` (not GCC `libgomp`) and PIC for gtest. Prefer **`rocm/7.2.0`** as the HIP baseline for compares; validate ROCm 10 separately after a clean rebuild.
+
 ## Build both binaries
 
 From the repo root (needs an interactive allocation if you prefer building on a compute node; login-node builds are fine):

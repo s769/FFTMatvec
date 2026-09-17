@@ -251,6 +251,28 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 
 find_package(MPI REQUIRED)
+# HIP/clang OpenMP uses LLVM libomp (__kmpc_*), not GCC libgomp. Prefer ROCm's
+# libomp so device+host HIP links resolve OpenMP symbols from Vector.cpp etc.
+if(BUILD_WITH_HIP)
+    set(_FFT_MVEC_ROCM_ROOT "$ENV{ROCM_PATH}")
+    if(NOT _FFT_MVEC_ROCM_ROOT AND DEFINED ROCM_PATH)
+        set(_FFT_MVEC_ROCM_ROOT "${ROCM_PATH}")
+    endif()
+    foreach(_omp_cand
+            "${_FFT_MVEC_ROCM_ROOT}/llvm/lib/libomp.so"
+            "${_FFT_MVEC_ROCM_ROOT}/lib/llvm/lib/libomp.so"
+            "/opt/rocm/llvm/lib/libomp.so")
+        if(EXISTS "${_omp_cand}")
+            set(OpenMP_CXX_FLAGS "-fopenmp" CACHE STRING "OpenMP CXX flags" FORCE)
+            set(OpenMP_C_FLAGS "-fopenmp" CACHE STRING "OpenMP C flags" FORCE)
+            set(OpenMP_CXX_LIB_NAMES "omp" CACHE STRING "OpenMP CXX libs" FORCE)
+            set(OpenMP_C_LIB_NAMES "omp" CACHE STRING "OpenMP C libs" FORCE)
+            set(OpenMP_omp_LIBRARY "${_omp_cand}" CACHE FILEPATH "LLVM OpenMP runtime" FORCE)
+            message(STATUS "HIP build: using LLVM OpenMP at ${_omp_cand}")
+            break()
+        endif()
+    endforeach()
+endif()
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED) # Request CXX and HL components
 

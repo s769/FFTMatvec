@@ -51,8 +51,11 @@ void Matrix::initialize(
     fft_int_t idist = padded_size;
     fft_int_t odist = (padded_size / 2 + 1);
 
-    fft_int_t inembed[] = {0};
-    fft_int_t onembed[] = {0};
+    // Pass NULL embeds for default contiguous layout. A non-null {0} array is NOT
+    // equivalent: hipFFT >= 1.0.25 (ROCm 10 / late 7.x) returns HIPFFT_INVALID_SIZE,
+    // while older hipFFT and NVIDIA cuFFT historically accepted it.
+    fft_int_t *inembed = nullptr;
+    fft_int_t *onembed = nullptr;
 
     fft_int_t istride = 1;
     fft_int_t ostride = 1;
@@ -779,7 +782,8 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
     if (owns_plan)
     {
         fft_int_t n[] = {(fft_int_t)padded_size};
-        fft_int_t embed[] = {0};
+        // nullptr embeds = default contiguous layout (non-null {0} fails on hipFFT 1.0.25+)
+        fft_int_t *embed = nullptr;
 #if !INDICES_64_BIT
         cufftSafeCall(cufftPlanMany(&row_plan, 1, n, embed, 1, padded_size,
                                   embed, 1, freq_size, CUFFT_D2Z, num_cols));
@@ -825,8 +829,8 @@ void Matrix::setup_matvec(ComplexD **mat_freq_TOSI, const double *const h_mat)
     fft_int_t idist = padded_size;
     fft_int_t odist = (padded_size / 2 + 1);
 
-    fft_int_t inembed[] = {0};
-    fft_int_t onembed[] = {0};
+    fft_int_t *inembed = nullptr;
+    fft_int_t *onembed = nullptr;
 
     fft_int_t istride = 1;
     fft_int_t ostride = 1;
