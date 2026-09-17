@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH -A GEO165
+#SBATCH -J fftmatvec_pp
+#SBATCH -o /lustre/orion/scratch/srvenkat/geo165/FFTMatvec/logs/fftmatvec_pp-%j.out
+#SBATCH -t 1:00:00
+#SBATCH -p batch
+#SBATCH -q debug
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 7
+#SBATCH --gpus-per-task 1
+#SBATCH --gpu-bind=closest
+
+set -euo pipefail
+source ~/.bash_profile
+cd "$HOME/FFTMatvec"
+bash scripts/run-frontier-pp.sh

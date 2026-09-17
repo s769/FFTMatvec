@@ -8,6 +8,9 @@ build/*
 build*
 *build*
 
+# Explicitly track Frontier build helper (matches build* above)
+!scripts/build-frontier-amd.sh
+
 # Python bytecode
 __pycache__/
 *.pyc
@@ -15,3 +18,6 @@ __pycache__/
 *.pyd
 
 test/data/test_vec.h5
+
+# local run logs
+logs/

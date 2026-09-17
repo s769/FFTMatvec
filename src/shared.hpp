@@ -37,7 +37,9 @@
 #define TIME_MPI 0
 #endif
 #define ERR_CHK 1
+#ifndef INDICES_64_BIT
 #define INDICES_64_BIT 0
+#endif
 #define ROW_SETUP 1
 
 #if INDICES_64_BIT

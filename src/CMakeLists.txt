@@ -98,17 +98,25 @@ if(BUILD_WITH_HIP)
         set_source_files_properties("${HIP_MAIN_CPP_FILE_FOR_EXEC}" PROPERTIES LANGUAGE HIP)
     endif()
 
+    add_library(FFT_mvec_profiler OBJECT
+        ${FFT_MVEC_PURE_CPP_SOURCES}
+        ${FFT_MVEC_PURE_CPP_HEADERS}
+    )
+    set_target_properties(FFT_mvec_profiler PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    target_compile_options(FFT_mvec_profiler PRIVATE ${OpenMP_CXX_FLAGS} -fPIC)
+
     add_library(FFT_mvec STATIC
-        ${FFT_MVEC_LIBRARY_HIP_SOURCES} # Hipified CUDA-entangled sources
-        ${FFT_MVEC_LIBRARY_HIP_HEADERS} # Hipified CUDA-entangled headers
-        ${FFT_MVEC_PURE_CPP_SOURCES} # Pure C++ sources
-        ${FFT_MVEC_PURE_CPP_HEADERS} # Pure C++ headers
+        ${FFT_MVEC_LIBRARY_HIP_SOURCES}
+        ${FFT_MVEC_LIBRARY_HIP_HEADERS}
+        $<TARGET_OBJECTS:FFT_mvec_profiler>
     )
     set_target_properties(FFT_mvec PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
     if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
-        set_target_properties(FFT_mvec PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
-        message(STATUS "FFT_mvec: Setting HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
+        foreach(hip_source_file IN LISTS FFT_MVEC_LIBRARY_HIP_SOURCES)
+            set_source_files_properties("${hip_source_file}" PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        endforeach()
+        message(STATUS "FFT_mvec: Setting per-source HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
     else()
         message(WARNING "FFT_mvec: CMAKE_HIP_ARCHITECTURES is not defined or empty. Library might not be compiled for specific HIP architectures.")
     endif()
@@ -147,6 +155,7 @@ if(BUILD_WITH_HIP)
         ${COMMON_LINK_LIBS}
         ${GPU_SPECIFIC_LIBS}
     )
+    target_link_libraries(FFT_mvec_profiler PUBLIC ${COMMON_LINK_LIBS})
 
     set(MAIN_EXECUTABLE_SOURCE ${HIP_MAIN_CPP_FILE_FOR_EXEC})
 
@@ -161,6 +170,7 @@ else() # Building with CUDA
 
     target_include_directories(FFT_mvec PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}" # For all headers from the source directory
+        ${CUDAToolkit_INCLUDE_DIRS}
     )
 
     if(USE_CUTENSOR)
@@ -200,6 +210,19 @@ else() # Building with CUDA
         target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_ENABLE_RCCL_CUDA=0)
     endif()
 
+    if(FFT_MVEC_HAVE_MPI_GTL)
+        # Must be linked into the final image so Cray MPICH accepts MPICH_GPU_SUPPORT_ENABLED=1.
+        target_link_libraries(FFT_mvec PUBLIC FFT_MVEC::MPI_GTL)
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_HAVE_MPI_GTL=1)
+    else()
+        target_compile_definitions(FFT_mvec PUBLIC FFT_MVEC_HAVE_MPI_GTL=0)
+    endif()
+
+    target_link_libraries(FFT_mvec PUBLIC
+        ${COMMON_LINK_LIBS}
+        ${GPU_SPECIFIC_LIBS}
+    )
+
     set(MAIN_EXECUTABLE_SOURCE ${ORIGINAL_MAIN_CPP})
 endif()
 
@@ -208,8 +231,8 @@ add_executable(fft_matvec "${MAIN_EXECUTABLE_SOURCE}")
 
 if(BUILD_WITH_HIP)
     if(DEFINED CMAKE_HIP_ARCHITECTURES AND NOT CMAKE_HIP_ARCHITECTURES STREQUAL "")
-        set_target_properties(fft_matvec PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
-        message(STATUS "fft_matvec: Setting HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
+        set_source_files_properties("${MAIN_EXECUTABLE_SOURCE}" PROPERTIES HIP_ARCHITECTURES "${CMAKE_HIP_ARCHITECTURES}")
+        message(STATUS "fft_matvec: Setting per-source HIP_ARCHITECTURES to ${CMAKE_HIP_ARCHITECTURES}")
     endif()
     target_include_directories(fft_matvec PRIVATE
         "${HIP_GENERATED_OUTPUT_DIR}" # In case hipified main.cpp includes other hipified headers from the lib
@@ -229,15 +252,26 @@ target_link_libraries(fft_matvec PUBLIC
     ${GPU_SPECIFIC_LIBS} #are transitively linked via FFT_mvec
 )
 
+if(NOT BUILD_WITH_HIP AND DEFINED ENV{HDF5_DIR})
+    set(_FFT_MVEC_HDF5_SO "$ENV{HDF5_DIR}/lib/libhdf5.so")
+    if(EXISTS "${_FFT_MVEC_HDF5_SO}")
+        target_link_libraries(fft_matvec PRIVATE "${_FFT_MVEC_HDF5_SO}")
+    endif()
+endif()
+
 target_compile_options(fft_matvec PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
 if(BUILD_WITH_HIP)
     target_compile_options(fft_matvec PRIVATE $<$<COMPILE_LANGUAGE:HIP>:-fopenmp>)
+    target_link_options(fft_matvec PRIVATE -fopenmp)
     target_compile_definitions(fft_matvec PRIVATE
         CUTENSOR_AVAILABLE=0
         # Add other necessary defines for HIP compilation of main.cpp
     )
 else() # CUDA
     target_compile_options(fft_matvec PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-fopenmp>)
+    if(DEFINED CUDAToolkit_LIBRARY_DIR)
+        target_link_directories(fft_matvec PRIVATE ${CUDAToolkit_LIBRARY_DIR})
+    endif()
 endif()
 
 if(BUILD_WITH_HIP AND TARGET HipifyAll)

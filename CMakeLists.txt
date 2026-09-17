@@ -121,6 +121,44 @@ else() # CUDA Build
         message(STATUS "NCCL disabled (FFT_MVEC_ENABLE_NCCL=OFF); using MPI-staged GPU collectives.")
     endif()
 
+    # Cray MPICH GPU Transport Layer (needed for device-pointer MPI on Frontier).
+    # SCALE CUDA builds allocate HIP device memory; use the HSA GTL on AMD.
+    option(FFT_MVEC_LINK_MPI_GTL "Link Cray MPICH GTL for GPU-aware MPI (CUDA builds)" ON)
+    set(FFT_MVEC_HAVE_MPI_GTL OFF)
+    if(FFT_MVEC_LINK_MPI_GTL)
+        set(_FFT_MVEC_GTL_ROOT "")
+        if(DEFINED ENV{CRAY_MPICH_ROOTDIR} AND NOT "$ENV{CRAY_MPICH_ROOTDIR}" STREQUAL "")
+            set(_FFT_MVEC_GTL_ROOT "$ENV{CRAY_MPICH_ROOTDIR}/gtl")
+        elseif(EXISTS "/opt/cray/pe/mpich/9.1.0/gtl")
+            set(_FFT_MVEC_GTL_ROOT "/opt/cray/pe/mpich/9.1.0/gtl")
+        elseif(EXISTS "/opt/cray/pe/mpich/gtl")
+            set(_FFT_MVEC_GTL_ROOT "/opt/cray/pe/mpich/gtl")
+        endif()
+        # Prefer HSA (AMD/HIP/SCALE); fall back to CUDA GTL on NVIDIA.
+        find_library(FFT_MVEC_MPI_GTL_LIBRARY
+            NAMES mpi_gtl_hsa mpi_gtl_cuda
+            HINTS "${_FFT_MVEC_GTL_ROOT}/lib"
+                  "$ENV{CRAY_LD_LIBRARY_PATH}"
+                  "/opt/cray/pe/mpich/9.1.0/gtl/lib"
+            NO_DEFAULT_PATH)
+        if(NOT FFT_MVEC_MPI_GTL_LIBRARY)
+            find_library(FFT_MVEC_MPI_GTL_LIBRARY NAMES mpi_gtl_hsa mpi_gtl_cuda)
+        endif()
+        if(FFT_MVEC_MPI_GTL_LIBRARY)
+            set(FFT_MVEC_HAVE_MPI_GTL ON)
+            add_library(FFT_MVEC::MPI_GTL UNKNOWN IMPORTED)
+            get_filename_component(_FFT_MVEC_GTL_LIBDIR "${FFT_MVEC_MPI_GTL_LIBRARY}" DIRECTORY)
+            set_target_properties(FFT_MVEC::MPI_GTL PROPERTIES
+                IMPORTED_LOCATION "${FFT_MVEC_MPI_GTL_LIBRARY}"
+                INTERFACE_LINK_DIRECTORIES "${_FFT_MVEC_GTL_LIBDIR}"
+            )
+            message(STATUS "Found MPI GTL for GPU-aware MPI: ${FFT_MVEC_MPI_GTL_LIBRARY}")
+            message(STATUS "  Runtime: export MPICH_GPU_SUPPORT_ENABLED=1")
+        else()
+            message(WARNING "FFT_MVEC_LINK_MPI_GTL=ON but libmpi_gtl_hsa/cuda not found; GPU-aware MPI will not work.")
+        endif()
+    endif()
+
     set(FFT_MVEC_HAVE_RCCL_CUDA OFF)
     if(FFT_MVEC_ENABLE_RCCL)
         if(DEFINED ENV{ROCM_PATH} AND NOT "$ENV{ROCM_PATH}" STREQUAL "")
@@ -128,7 +166,9 @@ else() # CUDA Build
         else()
             set(_FFT_MVEC_ROCM_ROOT "/opt/rocm")
         endif()
-        find_path(FFT_MVEC_RCCL_INCLUDE_DIR rccl.h HINTS "${_FFT_MVEC_ROCM_ROOT}/include")
+        find_path(FFT_MVEC_RCCL_INCLUDE_DIR rccl.h
+            HINTS "${_FFT_MVEC_ROCM_ROOT}/include" "${_FFT_MVEC_ROCM_ROOT}/include/rccl"
+            PATH_SUFFIXES rccl)
         find_library(FFT_MVEC_RCCL_LIBRARY NAMES rccl HINTS "${_FFT_MVEC_ROCM_ROOT}/lib" "${_FFT_MVEC_ROCM_ROOT}/lib64")
         if(FFT_MVEC_RCCL_INCLUDE_DIR AND FFT_MVEC_RCCL_LIBRARY)
             set(FFT_MVEC_HAVE_RCCL_CUDA ON)
@@ -137,7 +177,12 @@ else() # CUDA Build
                 IMPORTED_LOCATION "${FFT_MVEC_RCCL_LIBRARY}"
                 INTERFACE_INCLUDE_DIRECTORIES "${FFT_MVEC_RCCL_INCLUDE_DIR}"
             )
-            message(STATUS "Found RCCL for CUDA build: ${FFT_MVEC_RCCL_LIBRARY}")
+            # Headers live under include/rccl/rccl.h; also need parent include for transitive deps
+            get_filename_component(_FFT_MVEC_RCCL_PARENT "${FFT_MVEC_RCCL_INCLUDE_DIR}" DIRECTORY)
+            if(EXISTS "${_FFT_MVEC_RCCL_PARENT}/hip")
+                set_property(TARGET FFT_MVEC::RCCL APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${_FFT_MVEC_RCCL_PARENT}")
+            endif()
+            message(STATUS "Found RCCL for CUDA build: ${FFT_MVEC_RCCL_LIBRARY} (include ${FFT_MVEC_RCCL_INCLUDE_DIR})")
         else()
             message(WARNING "FFT_MVEC_ENABLE_RCCL=ON but rccl.h/rccl library not found under ${_FFT_MVEC_ROCM_ROOT}.")
         endif()
@@ -208,6 +253,19 @@ endif()
 find_package(MPI REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED) # Request CXX and HL components
+
+# Cray PrgEnv-amd may report HDF5 as "Included by compiler wrappers" without
+# populating HDF5::HDF5's imported location; fix that when HDF5_DIR is set.
+if(DEFINED ENV{HDF5_DIR})
+    set(_FFT_MVEC_HDF5_LIB "$ENV{HDF5_DIR}/lib/libhdf5.so")
+    if(EXISTS "${_FFT_MVEC_HDF5_LIB}")
+        if(NOT TARGET HDF5::HDF5)
+            add_library(HDF5::HDF5 SHARED IMPORTED GLOBAL)
+        endif()
+        set_target_properties(HDF5::HDF5 PROPERTIES IMPORTED_LOCATION "${_FFT_MVEC_HDF5_LIB}")
+        message(STATUS "Using explicit HDF5 library: ${_FFT_MVEC_HDF5_LIB}")
+    endif()
+endif()
 
 # Check for HDF5 parallel support (remains important)
 if(NOT HDF5_IS_PARALLEL)
