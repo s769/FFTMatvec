@@ -72,8 +72,12 @@ Vector &Vector::operator=(Vector &vec) {
       this->d_vec = nullptr;
     }
 
-    // 3. Copy Metadata
-    comm = vec.comm;
+    // 3. Copy Metadata (Comm is a reference and cannot be reseated; both
+    // Vectors must already share the same Comm.)
+    if (&comm != &vec.comm) {
+      fprintf(stderr, "Vector assignment requires both vectors to share the same Comm.\n");
+      MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
     num_blocks = vec.num_blocks;
     glob_num_blocks = vec.glob_num_blocks;
     padded_size = vec.padded_size;
@@ -105,8 +109,11 @@ Vector &Vector::operator=(Vector &&vec) {
       gpuErrchk(cudaFree(this->d_vec));
     }
 
-    // 2. Copy metadata
-    comm = vec.comm;
+    // 2. Copy metadata (Comm is a reference and cannot be reseated)
+    if (&comm != &vec.comm) {
+      fprintf(stderr, "Vector move-assignment requires both vectors to share the same Comm.\n");
+      MPICHECK(MPI_Abort(MPI_COMM_WORLD, 1));
+    }
     num_blocks = vec.num_blocks;
     glob_num_blocks = vec.glob_num_blocks;
     padded_size = vec.padded_size;

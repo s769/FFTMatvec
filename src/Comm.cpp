@@ -34,14 +34,14 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
         gpuErrchk(cudaStreamCreate(&s));
         external_stream = false;
         device = 0;
-    } else {
+    }     else {
         // picking a GPU based on local_rank, make stream
-        uint64_t hostHashs[world_size];
+        std::vector<uint64_t> hostHashs(world_size);
         char hostname[1024];
         Utils::get_host_name(hostname, 1024);
         hostHashs[world_rank] = Utils::get_host_hash(hostname);
-        MPICHECK(MPI_Allgather(MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs, sizeof(uint64_t),
-            MPI_BYTE, global_comm));
+        MPICHECK(MPI_Allgather(MPI_IN_PLACE, 0, MPI_DATATYPE_NULL, hostHashs.data(),
+            sizeof(uint64_t), MPI_BYTE, global_comm));
         for (int p = 0; p < world_size; p++) {
             if (p == world_rank)
                 break;
@@ -77,6 +77,7 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     MPICHECK(MPI_Bcast((void*)&row_id, sizeof(row_id), MPI_BYTE, 0, row_comm));
 
     NCCLCHECK(ncclCommInitRank(&gpu_row_comm, row_group_size, row_id, row_group_rank));
+    gpu_row_comm_size = row_group_size;
 
     col_color = world_rank / proc_rows;
     int col_group_rank, col_group_size;
@@ -92,6 +93,7 @@ Comm::Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream)
     MPICHECK(MPI_Bcast((void*)&col_id, sizeof(col_id), MPI_BYTE, 0, col_comm));
 
     NCCLCHECK(ncclCommInitRank(&gpu_col_comm, col_group_size, col_id, col_group_rank));
+    gpu_col_comm_size = col_group_size;
 
     cublasSafeCall(cublasCreate(&(cublasHandle)));
     cublasSafeCall(cublasSetStream(cublasHandle, s));

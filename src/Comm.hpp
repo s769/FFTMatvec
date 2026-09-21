@@ -27,6 +27,8 @@ private:
     int proc_cols; /**< Number of process columns */
     ncclComm_t gpu_row_comm; /**< NCCL communicator for GPU row communication */
     ncclComm_t gpu_col_comm; /**< NCCL communicator for GPU column communication */
+    int gpu_row_comm_size = 0; /**< Size of the GPU row NCCL communicator */
+    int gpu_col_comm_size = 0; /**< Size of the GPU column NCCL communicator */
     cudaStream_t s; /**< CUDA stream */
     cublasHandle_t cublasHandle; /**< cuBLAS handle */
     bool external_stream; /**< Flag indicating if an external stream was provided */
@@ -42,27 +44,9 @@ public:
      */
     Comm(MPI_Comm comm, int proc_rows, int proc_cols, cudaStream_t stream = 0);
 
-    /**
-     * @brief Copy constructor for the Comm class.
-     * @param comm The Comm object to be copied.
-     */
-    Comm(Comm& comm)
-        : global_comm(comm.global_comm)
-        , proc_rows(comm.proc_rows)
-        , proc_cols(comm.proc_cols)
-        , world_rank(comm.world_rank)
-        , world_size(comm.world_size)
-        , row_color(comm.row_color)
-        , col_color(comm.col_color)
-        , device(comm.device)
-        , row_comm(comm.row_comm)
-        , col_comm(comm.col_comm)
-        , gpu_row_comm(comm.gpu_row_comm)
-        , gpu_col_comm(comm.gpu_col_comm)
-        , s(comm.s)
-        , cublasHandle(comm.cublasHandle)
-    {
-    } // Copy constructor
+    // Non-copyable: NCCL/MPI/stream/handles are owned resources.
+    Comm(const Comm &) = delete;
+    Comm &operator=(const Comm &) = delete;
 
     /**
      * @brief Destructor for the Comm class. Destroys cuBLAS handle and NCCL/MPI communicators.
@@ -80,6 +64,16 @@ public:
      * @return The NCCL communicator for GPU column communication.
      */
     ncclComm_t get_gpu_col_comm() { return gpu_col_comm; }
+
+    /**
+     * @brief Get the size of the GPU row NCCL communicator.
+     */
+    int get_gpu_row_comm_size() const { return gpu_row_comm_size; }
+
+    /**
+     * @brief Get the size of the GPU column NCCL communicator.
+     */
+    int get_gpu_col_comm_size() const { return gpu_col_comm_size; }
 
     /**
      * @brief Get the GPU device ID.

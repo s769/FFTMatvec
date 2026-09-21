@@ -91,7 +91,7 @@ void Matrix::initialize(
     gpuErrchk(cudaMalloc(
         (void **)&(row_vec_freq), (size_t)sizeof(ComplexD) * (padded_size / 2 + 1) * num_rows));
     gpuErrchk(cudaMalloc((void **)&(row_vec_pad),
-                         (size_t)sizeof(double) * padded_size * num_rows)); // num_cols * num_rows));
+                         (size_t)sizeof(double) * padded_size * num_rows));
 
 #if !INDICES_64_BIT
     cufftSafeCall(cufftPlanMany(&(forward_plan_conj), rank, n, inembed, istride, idist, onembed,
@@ -1022,16 +1022,23 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
     int device = comm.get_device();
     ncclComm_t comm1 = (conjugate) ? comm.get_gpu_row_comm() : comm.get_gpu_col_comm();
     ncclComm_t comm2 = (conjugate) ? comm.get_gpu_col_comm() : comm.get_gpu_row_comm();
+    // Trivial communicators (size == 1) are no-ops for broadcast/reduce/allreduce.
+    const int comm1_size =
+        (conjugate) ? comm.get_gpu_row_comm_size() : comm.get_gpu_col_comm_size();
+    const int comm2_size =
+        (conjugate) ? comm.get_gpu_col_comm_size() : comm.get_gpu_row_comm_size();
     cudaStream_t s = comm.get_stream();
     cublasHandle_t cublasHandle = comm.get_cublasHandle();
 
     Precision current_precision = Precision::DOUBLE;
 
 #if TIME_MPI
-    enum_array<ProfilerTimes, profiler_t, 10> *tl, *tl2;
-    if (full)
-        tl2 = (conjugate) ? &t_list_fs : &t_list_f;
-    tl = (conjugate) ? &t_list_fs : &t_list_f;
+    // For full (FG*/GF*) matvecs, half-1 and half-2 use separate timer lists so
+    // stage timings are not overwritten. Non-full uses a single list.
+    enum_array<ProfilerTimes, profiler_t, 10> *tl =
+        (conjugate) ? &t_list_fs : &t_list_f;
+    enum_array<ProfilerTimes, profiler_t, 10> *tl2 =
+        (conjugate) ? &t_list_f : &t_list_fs;
     MPICHECK(MPI_Barrier(MPI_COMM_WORLD));
     (*tl)[ProfilerTimes::TOT].start();
 #endif
@@ -1044,14 +1051,20 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
     if (p_config.broadcast_and_pad == Precision::SINGLE && current_precision == Precision::DOUBLE)
     {
         UtilKernels::cast_vector(in_vec, in_vec_F, vec_in_len * padded_size / 2, s);
-        NCCLCHECK(ncclBroadcast((const void *)in_vec_F, (void *)in_vec_F,
-                                (size_t)vec_in_len * padded_size / 2, ncclFloat, 0, comm1, s));
+        if (comm1_size > 1)
+        {
+            NCCLCHECK(ncclBroadcast((const void *)in_vec_F, (void *)in_vec_F,
+                                    (size_t)vec_in_len * padded_size / 2, ncclFloat, 0, comm1, s));
+        }
         current_precision = Precision::SINGLE;
     }
     else
     {
-        NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
-                                (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm1, s));
+        if (comm1_size > 1)
+        {
+            NCCLCHECK(ncclBroadcast((const void *)in_vec, (void *)in_vec,
+                                    (size_t)vec_in_len * padded_size / 2, ncclDouble, 0, comm1, s));
+        }
     }
 
 #if TIME_MPI
@@ -1231,27 +1244,39 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                     (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            }
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                 (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                     (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, 0, comm2, s));
+            }
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
-                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
+                                     (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            }
             current_precision = Precision::DOUBLE;
         }
         else
         {
-            NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
-                                 (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)res_vec, (void *)res_vec,
+                                     (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, 0, comm2, s));
+            }
         }
 
         if (current_precision == Precision::SINGLE)
@@ -1277,27 +1302,39 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                        (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            }
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(res_vec, res_vec_F, vec_out_len * padded_size /2, s);
-            NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
-                                    (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclAllReduce((const void *)res_vec_F, (void *)res_vec_F,
+                                        (size_t)vec_out_len * padded_size / 2, ncclFloat, ncclSum, comm2, s));
+            }
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(res_vec_F, res_vec, vec_out_len * padded_size /2, s);
-            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
-                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
+                                        (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            }
             current_precision = Precision::DOUBLE;
         }
         else
         {
-            NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
-                                    (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            if (comm2_size > 1)
+            {
+                NCCLCHECK(ncclAllReduce((const void *)res_vec, (void *)res_vec,
+                                        (size_t)vec_out_len * padded_size / 2, ncclDouble, ncclSum, comm2, s));
+            }
         }
 
 #if TIME_MPI
@@ -1460,26 +1497,40 @@ void Matrix::compute_matvec(double *out_vec, double *in_vec, const MatvecConfig 
 #endif
         if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
-            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
-                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            if (comm1_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
+                                     (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            }
         }
         else if (current_precision == Precision::DOUBLE && p_config.unpad_and_reduce == Precision::SINGLE)
         {
             UtilKernels::cast_vector(out_vec, out_vec_F, vec_in_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
-                                 (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            if (comm1_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)out_vec_F, (void *)out_vec_F,
+                                     (size_t)vec_in_len * padded_size / 2, ncclFloat, ncclSum, 0, comm1, s));
+            }
             current_precision = Precision::SINGLE;
         }
         else if (current_precision == Precision::SINGLE && p_config.unpad_and_reduce == Precision::DOUBLE)
         {
             UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);
-            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
-                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            if (comm1_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
+                                     (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            }
             current_precision = Precision::DOUBLE;
         }
         else
-            NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
-                                 (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+        {
+            if (comm1_size > 1)
+            {
+                NCCLCHECK(ncclReduce((const void *)out_vec, (void *)out_vec,
+                                     (size_t)vec_in_len * padded_size / 2, ncclDouble, ncclSum, 0, comm1, s));
+            }
+        }
         if (current_precision == Precision::SINGLE)
         {
             UtilKernels::cast_vector(out_vec_F, out_vec, vec_in_len * padded_size / 2, s);
