@@ -1,14 +1,25 @@
 cmake_minimum_required(VERSION 3.21 FATAL_ERROR) # Recommended for best HIP support
 project(fft_matvec LANGUAGES CXX C) # CUDA/HIP will be enabled conditionally
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules" ${CMAKE_MODULE_PATH}) # Add our module path
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+# Prefer CURRENT/PROJECT paths so this tree works as add_subdirectory() too.
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules" ${CMAKE_MODULE_PATH})
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set(FFTMATVEC_IS_TOP_LEVEL ON)
+else()
+    set(FFTMATVEC_IS_TOP_LEVEL OFF)
+endif()
 
 # --- Option for HIP Build ---
 option(BUILD_WITH_HIP "Build with HIP support instead of CUDA" OFF)
 
 # --- Option for Python Bindings ---
-option(BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" ON)
+# Default OFF when embedded as a subdirectory (e.g. AutonomousInversion).
+if(FFTMATVEC_IS_TOP_LEVEL)
+    option(BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" ON)
+else()
+    option(BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" OFF)
+endif()
 
 # 1. Define the option (this makes it show up in ccmake/cmake-gui)
 option(ENABLE_PROFILING "Enable MPI timing and profiling" OFF)
@@ -88,11 +99,18 @@ else() # CUDA Build
         set(USE_CUTENSOR OFF)
     endif()
 
-    # make sure $NCCL_ROOT is set in the environment
+    # Prefer -DNCCL_ROOT=..., then $NCCL_ROOT / $NCCL_DIR from the environment.
+    if("${NCCL_ROOT}" STREQUAL "")
+        if(DEFINED ENV{NCCL_ROOT} AND NOT "$ENV{NCCL_ROOT}" STREQUAL "")
+            set(NCCL_ROOT "$ENV{NCCL_ROOT}")
+        elseif(DEFINED ENV{NCCL_DIR} AND NOT "$ENV{NCCL_DIR}" STREQUAL "")
+            set(NCCL_ROOT "$ENV{NCCL_DIR}")
+        endif()
+    endif()
     if(NOT "${NCCL_ROOT}" STREQUAL "")
         message(STATUS "Using NCCL from NCCL_ROOT: ${NCCL_ROOT}")
     else()
-        message(FATAL_ERROR "NCCL_ROOT environment variable is not set. Please set it to the NCCL installation path.")
+        message(FATAL_ERROR "NCCL_ROOT is not set. Pass -DNCCL_ROOT=... or set NCCL_ROOT/NCCL_DIR.")
     endif()
 
     include_directories(${NCCL_ROOT}/include) # Ensure NCCL includes are available
@@ -147,7 +165,7 @@ else()
 endif()
 
 find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
+if(FFTMATVEC_IS_TOP_LEVEL AND GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     option(GIT_SUBMODULE "Check submodules during build" ON)
     if(GIT_SUBMODULE)
         message(STATUS "Submodule update")

@@ -102,7 +102,7 @@ if(BUILD_WITH_HIP)
     # Ensure generated test headers (if any) can be found by generated test sources
     include_directories("${HIP_GENERATED_TEST_SRC_DIR} ${HIP_GENERATED_SRC_DIR_FOR_FFT_MVEC}")
 else()
-    include_directories(${CMAKE_SOURCE_DIR}/src)
+    include_directories(${PROJECT_SOURCE_DIR}/src)
 endif()
 
 # Include directories:
